@@ -1,0 +1,14 @@
+It seems that we're analyzing some units that may not be good, which is 
+surprising given the effort made to identify good, beta periodic units, from
+the outset. 
+
+Something is amiss with how units are tagged as good, and also perhaps
+with how units are accessed / indexed / identified. 
+
+The new convention is to use 1-indexing for units, per MATLAB compatibility.
+Arrays in Python are still zero indexed, so accessing should be corrected.
+I doubt this is the source of the problem though. 
+
+Like, Rusty '23 M1 unit 105 is not a good unit. Why is it here? 
+
+

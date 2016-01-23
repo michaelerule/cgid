@@ -1,0 +1,305 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cgid.array_mapper &mdash; cgid 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="cgid 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">cgid 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul class="simple">
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cgid.array_mapper</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">os.path</span>             <span class="kn">import</span> <span class="n">expanduser</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span>    <span class="kn">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">neurotools.array</span>    <span class="kn">import</span> <span class="n">trim_array</span><span class="p">,</span><span class="n">trim_array_as_if</span>
+<span class="kn">from</span> <span class="nn">numpy</span>               <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
+<span class="kn">from</span> <span class="nn">matplotlib.mlab</span>     <span class="kn">import</span> <span class="n">find</span>
+<span class="kn">from</span> <span class="nn">cgid.data_loader</span>    <span class="kn">import</span> <span class="n">get_array_map</span>
+
+<span class="k">def</span> <span class="nf">getElectrodePositions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+<div class="viewcode-block" id="getElectrodePositions"><a class="viewcode-back" href="../../cgid.array_mapper.html#cgid.array_mapper.getElectrodePositions">[docs]</a>    <span class="c"># now comes the hard part: identifying electrode locations in </span>
+    <span class="c"># cortical space. We use the same mapping function as the video</span>
+    <span class="c"># this generates a basis, we still need to convert the array into </span>
+    <span class="c"># that basis</span>
+    <span class="kn">import</span> <span class="nn">pickle</span>
+    <span class="n">corners</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/Dropbox/bin/cgid/new_corners.p&#39;</span><span class="p">),</span><span class="s">&#39;rb&#39;</span><span class="p">))</span>
+    
+    <span class="c"># note run compile_array_maps.py to build this</span>
+    <span class="n">maps</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~/Dropbox/bin/cgid/maps.p&#39;</span><span class="p">),</span><span class="s">&#39;rb&#39;</span><span class="p">))</span>
+    <span class="n">monkey</span> <span class="o">=</span> <span class="n">session</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">arrayChannelMap</span> <span class="o">=</span> <span class="n">maps</span><span class="p">[</span><span class="n">monkey</span><span class="p">][</span><span class="n">area</span><span class="p">]</span>
+
+    <span class="n">availableChannels</span> <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">96</span><span class="p">))</span>
+    <span class="n">foundchannels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ravel</span><span class="p">(</span><span class="n">arrayChannelMap</span><span class="p">))</span>
+    <span class="k">if</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">in</span> <span class="n">foundchannels</span><span class="p">:</span>
+        <span class="n">foundchannels</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">availableChannels</span><span class="p">[</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">foundchannels</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">getMatrixFromAnatomicalToImage</span><span class="p">(</span><span class="n">monkey</span><span class="p">):</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">3.6</span> <span class="c"># size of M1 array in MM </span>
+        <span class="k">if</span> <span class="n">monkey</span><span class="o">==</span><span class="s">&#39;RUS&#39;</span><span class="p">:</span>
+            <span class="n">A</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">B</span> <span class="o">=</span> <span class="n">corners</span><span class="p">[</span><span class="n">monkey</span><span class="p">][</span><span class="s">&#39;M1&#39;</span><span class="p">]</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">B</span>
+            <span class="n">y_vector</span> <span class="o">=</span> <span class="n">C</span><span class="o">-</span><span class="n">origin</span>
+            <span class="n">x_vector</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">B</span>
+            <span class="n">basis</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">x_vector</span><span class="p">,</span><span class="n">y_vector</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">monkey</span><span class="o">==</span><span class="s">&#39;SPK&#39;</span><span class="p">:</span>
+            <span class="n">A</span><span class="p">,</span><span class="n">D</span><span class="p">,</span><span class="n">C</span><span class="p">,</span><span class="n">B</span>  <span class="o">=</span> <span class="n">corners</span><span class="p">[</span><span class="n">monkey</span><span class="p">][</span><span class="s">&#39;M1&#39;</span><span class="p">]</span>   
+            <span class="n">origin</span>   <span class="o">=</span> <span class="n">D</span>
+            <span class="n">y_vector</span> <span class="o">=</span> <span class="n">C</span><span class="o">-</span><span class="n">origin</span>
+            <span class="n">x_vector</span> <span class="o">=</span> <span class="n">A</span><span class="o">-</span><span class="n">D</span>
+            <span class="n">basis</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">x_vector</span><span class="p">,</span><span class="n">y_vector</span><span class="p">])</span>
+        <span class="n">basis</span> <span class="o">/=</span> <span class="n">scale</span>
+        <span class="k">return</span> <span class="n">origin</span><span class="p">,</span><span class="n">basis</span>
+
+    <span class="c"># This quadrilateral defines the physical locations of four points of </span>
+    <span class="c"># the array, starting at the top left, and proceeding counter-clockwise</span>
+    <span class="c"># around the array as specified in arrayChannelMap</span>
+    <span class="n">quad</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">corners</span><span class="p">[</span><span class="n">monkey</span><span class="p">][</span><span class="n">area</span><span class="p">])</span>
+    <span class="n">origin</span><span class="p">,</span><span class="n">basis</span> <span class="o">=</span> <span class="n">getMatrixFromAnatomicalToImage</span><span class="p">(</span><span class="n">monkey</span><span class="p">)</span>
+    <span class="n">anatomical</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+    <span class="n">quad</span> <span class="o">=</span> <span class="p">(</span><span class="n">quad</span><span class="o">-</span><span class="n">origin</span><span class="p">)</span>
+    <span class="n">quad</span> <span class="o">=</span> <span class="p">(</span><span class="n">quad</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">anatomical</span><span class="p">))</span>
+
+    <span class="c"># Need to interpolate in the quadralateral to get electrode positions</span>
+    <span class="c"># consider making this a subroutine</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">nrows</span><span class="p">,</span><span class="n">ncols</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">arrayChannelMap</span><span class="p">)</span>
+    <span class="n">topleft</span><span class="p">,</span><span class="n">bottomleft</span><span class="p">,</span><span class="n">bottomright</span><span class="p">,</span><span class="n">topright</span> <span class="o">=</span> <span class="n">quad</span>
+    <span class="k">for</span> <span class="n">chi</span> <span class="ow">in</span> <span class="n">find</span><span class="p">(</span><span class="n">availableChannels</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">find</span><span class="p">([</span><span class="nb">any</span><span class="p">(</span><span class="n">r</span><span class="o">==</span><span class="n">chi</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">arrayChannelMap</span><span class="p">])</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="n">find</span><span class="p">([</span><span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">==</span><span class="n">chi</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">arrayChannelMap</span><span class="o">.</span><span class="n">T</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">row</span><span class="p">))</span><span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">prod</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">col</span><span class="p">))</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;error cannot locate channel </span><span class="si">%d</span><span class="s">&#39;</span><span class="o">%</span><span class="n">chi</span>
+            <span class="k">continue</span>
+        <span class="c"># The *2+1 accounts for the fact that the electrodes are in </span>
+        <span class="c"># the center of the square patches -- our quadrilateral defines the</span>
+        <span class="c"># outer boundary of the array, not the electrodes</span>
+        <span class="n">row_fraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nrows</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">col_fraction</span> <span class="o">=</span> <span class="p">(</span><span class="n">col</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">ncols</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">row_b</span> <span class="o">=</span> <span class="n">row_fraction</span><span class="o">*</span><span class="p">(</span><span class="n">bottomleft</span><span class="o">-</span><span class="n">topleft</span><span class="p">)</span>
+        <span class="n">col_b</span> <span class="o">=</span> <span class="n">col_fraction</span><span class="o">*</span><span class="p">(</span><span class="n">topright</span>  <span class="o">-</span><span class="n">topleft</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">row_b</span><span class="o">+</span><span class="n">col_b</span><span class="o">+</span><span class="n">topleft</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">chi</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+    
+    <span class="k">return</span> <span class="n">quad</span><span class="p">,</span><span class="n">positions</span>
+
+<span class="k">def</span> <span class="nf">get_electrode_positions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> </div>
+<div class="viewcode-block" id="get_electrode_positions"><a class="viewcode-back" href="../../cgid.array_mapper.html#cgid.array_mapper.get_electrode_positions">[docs]</a>    <span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieves positions of electrodes in the array in anatomical coordinates.</span>
+<span class="sd">    </span>
+<span class="sd">    If an array has empty rows or columns at the edge, these rows and </span>
+<span class="sd">    columnds are trimmed when packing data into the array. This code also</span>
+<span class="sd">    trims array maps to account for this, and will return an array of </span>
+<span class="sd">    position data that can be indexed in the same manner as the array-packed</span>
+<span class="sd">    data.</span>
+<span class="sd">    </span>
+<span class="sd">    For an example 10x10 array, this will return an array of the positiond</span>
+<span class="sd">    marked with &#39;o&#39; below.</span>
+<span class="sd">    </span>
+<span class="sd">    Note: Array wire bundle exits to the right</span>
+<span class="sd">    </span>
+<span class="sd">     0mm                                     4mm</span>
+<span class="sd">     0   1   2   3   4   5   6   7   8   9  10</span>
+<span class="sd">     ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^</span>
+<span class="sd">     +---+---+---+---+---+---+---+---+---+---+ 0</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---+---+---+---+---+---+---+---+---+---+</span>
+<span class="sd">     0                                         1</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">outline</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">outline</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="n">getElectrodePositions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">topleft</span><span class="p">,</span> <span class="n">bottomleft</span><span class="p">,</span> <span class="n">bottomright</span><span class="p">,</span> <span class="n">topright</span> <span class="o">=</span> <span class="n">outline</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">topright</span>  <span class="o">-</span><span class="n">topleft</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">bottomleft</span><span class="o">-</span><span class="n">topleft</span>
+    
+    <span class="n">M</span> <span class="o">=</span> <span class="n">get_array_map</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">nrow</span><span class="p">,</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+    
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span>
+        <span class="n">row</span> <span class="o">+</span> <span class="n">col</span> <span class="o">+</span> <span class="n">topleft</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">nrow</span><span class="p">)</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span><span class="o">*</span><span class="n">dx</span><span class="p">[</span><span class="bp">None</span><span class="p">,:]</span><span class="o">/</span><span class="n">nrow</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">ncol</span><span class="p">)</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)[:,</span><span class="bp">None</span><span class="p">]</span><span class="o">*</span><span class="n">dy</span><span class="p">[</span><span class="bp">None</span><span class="p">,:]</span><span class="o">/</span><span class="n">ncol</span><span class="p">])</span>
+    
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">trim_array_as_if</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">positions</span><span class="p">)</span>
+    <span class="n">dx</span> <span class="o">/=</span> <span class="n">ncol</span>
+    <span class="n">dy</span> <span class="o">/=</span> <span class="n">nrow</span>
+    <span class="k">return</span> <span class="n">positions</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span><span class="n">dy</span>
+
+
+<span class="k">def</span> <span class="nf">get_interelectrode_positions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="get_interelectrode_positions"><a class="viewcode-back" href="../../cgid.array_mapper.html#cgid.array_mapper.get_interelectrode_positions">[docs]</a>    <span class="n">electrode_spacing</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieve information needed to plot array phase gradient derivatives </span>
+<span class="sd">    in anatomical coordinates.</span>
+<span class="sd">    </span>
+<span class="sd">    Array phase gradients are computed in the array coordinates. We need </span>
+<span class="sd">    the positions of the points between groups of 4 electrodes, as well</span>
+<span class="sd">    as X and Y units vectors, to plot them correctly in anatomical </span>
+<span class="sd">    coordinates.</span>
+<span class="sd">    </span>
+<span class="sd">    If an array has empty rows or columns at the edge, these rows and </span>
+<span class="sd">    columnds are trimmed when packing data into the array. This code also</span>
+<span class="sd">    trims array maps to account for this, and will return an array of </span>
+<span class="sd">    position data that can be indexed in the same manner as the array-packed</span>
+<span class="sd">    data.</span>
+<span class="sd">    </span>
+<span class="sd">    Uses the stored array map outline to get anatomical coordinates</span>
+<span class="sd">    of the positions between electrodes.</span>
+<span class="sd">    Returns a dictionary, with 0-index row,column position as the keys</span>
+<span class="sd">    and anatomical coordiantes as the values.</span>
+<span class="sd">    Also returns a pair of transformed unit vectors, so that phase gradient</span>
+<span class="sd">    vector fields can be plotted with the correct orientation.</span>
+<span class="sd">    </span>
+<span class="sd">     Arays are 4x4 mm but the electrodes are at the center, so the electrode</span>
+<span class="sd">     coverage is really only about 3.6x3.6mm. The derivaties are estimated</span>
+<span class="sd">     at neighborhoods of 4 electrodes. </span>
+<span class="sd">    </span>
+<span class="sd">     So I guess they are located at arange(1,10)/10.</span>
+<span class="sd">     </span>
+<span class="sd">     Note: Array wire bundle exits to the right</span>
+<span class="sd">    </span>
+<span class="sd">     0mm                                     4mm</span>
+<span class="sd">     0   1   2   3   4   5   6   7   8   9  10</span>
+<span class="sd">     ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^</span>
+<span class="sd">     +---+---+---+---+---+---+---+---+---+---+ 0</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---x---x---x---x---x---x---x---x---x---+</span>
+<span class="sd">     | o | o | o | o | o | o | o | o | o | o |</span>
+<span class="sd">     +---+---+---+---+---+---+---+---+---+---+</span>
+<span class="sd">     0                                         1</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">positions</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span><span class="n">dy</span> <span class="o">=</span> <span class="n">get_electrode_positions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">outline</span><span class="p">)</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span>
+        <span class="o">+</span> <span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">,</span><span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
+        <span class="o">+</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
+        <span class="o">+</span> <span class="n">positions</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">positions</span><span class="p">,</span><span class="n">dx</span><span class="p">,</span><span class="n">dy</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">cgid 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

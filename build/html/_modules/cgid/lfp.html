@@ -1,0 +1,435 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cgid.lfp &mdash; cgid 0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/bizstyle.js"></script>
+    <link rel="top" title="cgid 0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">cgid 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul class="simple">
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cgid.lfp</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="kn">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">cgid.data_loader</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.multitaper</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">scipy.signal.signaltools</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c">#    lfp = get_raw_lfp(session,area,ch,tr,(e,st,sp),padding)</span>
+
+<div class="viewcode-block" id="get_raw_lfp_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_raw_lfp_session">[docs]</a><span class="k">def</span> <span class="nf">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">metaloaddata</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&#39;%a is not available channel for </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s">&#39;%a is not a good channel for </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span><span class="p">,(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s">&#39;UnsegmentedLFP1KHz&#39;</span><span class="p">][</span><span class="n">ch</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">lfp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<span class="n">get_whole_session_lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span>
+
+<div class="viewcode-block" id="get_raw_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_raw_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    get_raw_lfp(session,area,ch,tr,epoch,pad=0)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="k">print</span> <span class="s">&#39;NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="k">print</span> <span class="s">&#39;NOTE TRIAL   IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="k">print</span> <span class="s">&#39;NOTE EVENT   IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span>
+    <span class="n">debug</span><span class="p">(</span><span class="s">&#39; get_raw_lfp&#39;</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">+</span><span class="mi">0</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
+    <span class="n">tm0</span> <span class="o">=</span> <span class="n">get_trial_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">evt</span> <span class="o">=</span> <span class="n">get_trial_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">t</span>   <span class="o">=</span> <span class="n">tm0</span> <span class="o">+</span> <span class="n">evt</span>
+    <span class="n">st</span>  <span class="o">=</span> <span class="n">st</span><span class="o">+</span><span class="n">t</span><span class="o">-</span><span class="n">pad</span>
+    <span class="n">sp</span>  <span class="o">=</span> <span class="n">sp</span><span class="o">+</span><span class="n">t</span><span class="o">+</span><span class="n">pad</span>
+    <span class="k">assert</span> <span class="n">st</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">sp</span><span class="o">&gt;=</span><span class="mi">0</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lfp</span><span class="p">[</span><span class="n">st</span><span class="p">:</span><span class="n">sp</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="get_all_raw_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_raw_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
+             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
+             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+</div>
+<span class="n">get_lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp</span>
+<span class="n">get_all_lfp</span> <span class="o">=</span> <span class="n">get_all_raw_lfp</span>
+
+<div class="viewcode-block" id="get_good_trial_lfp_data"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_good_trial_lfp_data">[docs]</a><span class="k">def</span> <span class="nf">get_good_trial_lfp_data</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">trial</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">))</span>\
+         <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)])</span>
+    </div>
+<div class="viewcode-block" id="get_all_raw_lfp_all_areas"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_raw_lfp_all_areas">[docs]</a><span class="k">def</span> <span class="nf">get_all_raw_lfp_all_areas</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">alllfp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+        <span class="n">alllfp</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">alllfp</span>
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_filtered_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_filtered_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    get_filtered_lfp(session,area,ch,tr,epoch,fa,fb,Fs=1000)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">=</span><span class="n">tr</span><span class="o">+</span><span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span> <span class="c"># no time to fix correctly</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
+    <span class="k">except</span><span class="p">:</span>    
+        <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
+    <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
+    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;padding </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,(</span><span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span><span class="p">),</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lfp</span><span class="p">[</span><span class="n">padding</span><span class="p">:</span><span class="o">-</span><span class="n">padding</span><span class="p">]</span>
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_filtered_lfp_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_filtered_lfp_session">[docs]</a><span class="k">def</span> <span class="nf">get_filtered_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="get_all_filtered_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_filtered_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">onlygood</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span> \
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span> \
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_analytic_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_analytic_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">fb</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;need at least one frequency bound&#39;</span>
+        <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
+    <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
+    <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
+    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s">&#39;padding </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,(</span><span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span><span class="p">),</span><span class="n">pad</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">lfp</span><span class="p">)[</span><span class="n">padding</span><span class="p">:</span><span class="o">-</span><span class="n">padding</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="get_all_analytic_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_analytic_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
+            <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+</div>
+<div class="viewcode-block" id="get_MUA_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MUA_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+    <span class="c">#assert ch is None</span>
+    <span class="c">#assert not fsmooth is None</span>
+    <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+</div>
+<div class="viewcode-block" id="get_all_MUA_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_MUA_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
+</div>
+<div class="viewcode-block" id="get_estimate_beta_band"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_estimate_beta_band">[docs]</a><span class="k">def</span> <span class="nf">get_estimate_beta_band</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="get_mean_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_mean_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_mean_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">True</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="get_mean_raw_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_mean_raw_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_mean_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">get_all_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span>
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_band_envelope"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_band_envelope">[docs]</a><span class="k">def</span> <span class="nf">get_band_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Amplitude envelope for a specified band. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+</div>
+<div class="viewcode-block" id="get_beta_power"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_beta_power">[docs]</a><span class="k">def</span> <span class="nf">get_beta_power</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">get_band_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="get_MEP"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP">[docs]</a><span class="k">def</span> <span class="nf">get_MEP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+</div>
+<div class="viewcode-block" id="get_MEP_average"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP_average">[docs]</a><span class="k">def</span> <span class="nf">get_MEP_average</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
+    <span class="n">tr</span><span class="o">=</span><span class="n">tr</span><span class="o">+</span><span class="mi">0</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lfp</span>
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_MEP_envelope"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP_envelope">[docs]</a><span class="k">def</span> <span class="nf">get_MEP_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">None</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lfp</span>
+    </div>
+<div class="viewcode-block" id="get_beta_suppression"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_beta_suppression">[docs]</a><span class="k">def</span> <span class="nf">get_beta_suppression</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">bpwr</span> <span class="o">=</span> <span class="n">get_beta_power</span>  <span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span>
+    <span class="n">mepp</span> <span class="o">=</span> <span class="n">get_MEP_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span>
+    <span class="n">meps</span> <span class="o">=</span> <span class="n">get_MEP</span>         <span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span>
+    <span class="n">muap</span> <span class="o">=</span> <span class="n">get_MUA_lfp</span>     <span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">zscore</span><span class="p">(</span><span class="n">zscore</span><span class="p">(</span><span class="n">bpwr</span><span class="p">)</span><span class="o">-</span><span class="n">zscore</span><span class="p">(</span><span class="n">mepp</span><span class="p">)</span><span class="o">-</span><span class="n">zscore</span><span class="p">(</span><span class="n">muap</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="beta_suppression_summary_plot"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.beta_suppression_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">beta_suppression_summary_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">get_mean_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">),</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">get_mean_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">45</span><span class="p">),</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">),</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">45</span><span class="p">),</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">get_MEP_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">))</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">get_MEP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">))</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">get_beta_power</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">))</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">get_beta_suppression</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</div>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Test example</span>
+<span class="sd">plot_beta_suppression = beta_suppression_summary_plot</span>
+<span class="sd">ch = get_good_channels(session,area)[0]</span>
+<span class="sd">for tr in get_good_trials(session,area):</span>
+<span class="sd">    print session,area,tr</span>
+<span class="sd">    plot_beta_suppression(session,area,tr,ch)</span>
+<span class="sd">    wait()</span>
+<span class="sd">    clf()</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="get_wavelet_transforms"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_wavelet_transforms">[docs]</a><span class="k">def</span> <span class="nf">get_wavelet_transforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span>
+    <span class="n">fa</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">freqs</span><span class="p">,</span><span class="n">cwt</span> <span class="o">=</span> <span class="n">fft_cwt_transposed</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">cwt</span>
+</div>
+<div class="viewcode-block" id="get_nearest_neighbor_average_referenced_LFP"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_nearest_neighbor_average_referenced_LFP">[docs]</a><span class="k">def</span> <span class="nf">get_nearest_neighbor_average_referenced_LFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[</span><span class="n">ch</span><span class="p">]</span>
+    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">n</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lfp</span><span class="o">-</span><span class="n">nn_avg</span>
+</div>
+<div class="viewcode-block" id="get_nearest_neighbor_average_referenced_LFP_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session">[docs]</a><span class="k">def</span> <span class="nf">get_nearest_neighbor_average_referenced_LFP_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[</span><span class="n">ch</span><span class="p">]</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
+    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">n</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lfp</span><span class="o">-</span><span class="n">nn_avg</span>
+</div>
+<div class="viewcode-block" id="get_average_band_power_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_average_band_power_session">[docs]</a><span class="k">def</span> <span class="nf">get_average_band_power_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Takes whole session LFP, filtered, gets the Hilbert amplitude per </span>
+<span class="sd">    channel, returns average over channels.</span>
+<span class="sd">    function is too slow don&#39;t use it.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">global</span> <span class="n">areas</span>
+    <span class="n">use_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">area</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">areas</span>
+    <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+            <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+            <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">lfp</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="signal_history_features"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.signal_history_features">[docs]</a><span class="k">def</span> <span class="nf">signal_history_features</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="c"># note: as currently implemeted this adds a 1ms delay</span>
+    <span class="c"># that is, history features are really history features, and </span>
+    <span class="c"># never include the current timestep,</span>
+    <span class="c"># with the exception of the fact that it&#39;s currently set up to use</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span><span class="mi">250</span><span class="p">,</span><span class="mi">125</span><span class="p">,</span><span class="mf">62.5</span><span class="p">,</span><span class="mf">31.25</span><span class="p">,</span><span class="mf">15.625</span><span class="p">,</span><span class="mf">7.8125</span><span class="p">,</span><span class="mf">3.90625</span><span class="p">]</span>
+    <span class="n">hlen</span>   <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">Fs</span>     <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">allfeatures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">nyquist</span> <span class="ow">in</span> <span class="n">scales</span><span class="p">:</span>
+        <span class="n">samplerate</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">nyquist</span>
+        <span class="n">sampleskip</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">samplerate</span>
+        <span class="n">sampletime</span> <span class="o">=</span> <span class="n">sampleskip</span><span class="o">*</span><span class="n">hlen</span>
+        <span class="n">minfreq</span>    <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Fs</span><span class="p">)</span><span class="o">/</span><span class="n">sampletime</span>
+        <span class="n">event</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span> <span class="o">=</span> <span class="n">epoch</span>
+        <span class="k">if</span> <span class="n">minfreq</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">xfilt</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">start</span><span class="o">-</span><span class="n">sampletime</span><span class="o">+</span><span class="n">sampleskip</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">stop</span><span class="p">),</span><span class="n">minfreq</span><span class="p">,</span><span class="n">nyquist</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xfilt</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">start</span><span class="o">-</span><span class="n">sampletime</span><span class="o">+</span><span class="n">sampleskip</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">stop</span><span class="p">),</span><span class="bp">None</span><span class="p">,</span><span class="n">nyquist</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+            
+        <span class="n">tapped</span>     <span class="o">=</span> <span class="p">[</span><span class="n">zscore</span><span class="p">(</span><span class="n">xfilt</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">sampleskip</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">hlen</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">sampleskip</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hlen</span><span class="p">)]</span>
+        <span class="n">allfeatures</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tapped</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">allfeatures</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_array_packed_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_array_packed_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_array_packed_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieves LFP signals and packs them as they are arranged in the </span>
+<span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<div class="viewcode-block" id="get_array_packed_lfp_filtered"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_array_packed_lfp_filtered">[docs]</a><span class="k">def</span> <span class="nf">get_array_packed_lfp_filtered</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieves LFP signals and packs them as they are arranged in the </span>
+<span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span>
+</div>
+<div class="viewcode-block" id="get_array_packed_lfp_analytic"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_array_packed_lfp_analytic">[docs]</a><span class="k">def</span> <span class="nf">get_array_packed_lfp_analytic</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Retrieves LFP signals and packs them as they are arranged in the </span>
+<span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+</div>
+<span class="nd">@memoize</span>
+<div class="viewcode-block" id="get_beta_peak"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_beta_peak">[docs]</a><span class="k">def</span> <span class="nf">get_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="c"># determine beta peak</span>
+    <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="n">allspec</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">,</span><span class="n">mts</span> <span class="o">=</span> <span class="n">multitaper_spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span>
+        <span class="n">allspec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mts</span><span class="p">)</span>
+    <span class="n">allspec</span>     <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">allspec</span><span class="p">)</span>
+    <span class="n">Ntr</span><span class="p">,</span><span class="n">Nch</span><span class="p">,</span><span class="n">Nti</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">allspec</span><span class="p">)</span>
+    <span class="n">meanspec</span>    <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">allspec</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">peaks</span><span class="p">,</span><span class="n">vals</span>  <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">meanspec</span><span class="p">)</span>
+    <span class="n">betapeaks</span>   <span class="o">=</span> <span class="n">peaks</span><span class="p">[(</span><span class="n">f</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span><span class="o">&gt;</span><span class="n">fa</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span><span class="o">&lt;</span><span class="n">fb</span><span class="p">)]</span>
+    <span class="n">betapeak</span>    <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">betapeaks</span><span class="p">][</span><span class="n">argmax</span><span class="p">(</span><span class="n">meanspec</span><span class="p">[</span><span class="n">betapeaks</span><span class="p">])]</span>
+    <span class="k">return</span> <span class="n">betapeak</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">cgid 0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

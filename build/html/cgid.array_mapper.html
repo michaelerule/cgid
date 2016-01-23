@@ -1,0 +1,208 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cgid.array_mapper module &mdash; cgid 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="cgid 0 documentation" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">cgid 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul class="simple">
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cgid.array_mapper.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-cgid.array_mapper">
+<span id="cgid-array-mapper-module"></span><h1>cgid.array_mapper module<a class="headerlink" href="#module-cgid.array_mapper" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="cgid.array_mapper.getElectrodePositions">
+<code class="descclassname">cgid.array_mapper.</code><code class="descname">getElectrodePositions</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/array_mapper.html#getElectrodePositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.array_mapper.getElectrodePositions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.array_mapper.get_electrode_positions">
+<code class="descclassname">cgid.array_mapper.</code><code class="descname">get_electrode_positions</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>outline=None</em>, <em>electrode_spacing=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/array_mapper.html#get_electrode_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.array_mapper.get_electrode_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves positions of electrodes in the array in anatomical coordinates.</p>
+<p>If an array has empty rows or columns at the edge, these rows and 
+columnds are trimmed when packing data into the array. This code also
+trims array maps to account for this, and will return an array of 
+position data that can be indexed in the same manner as the array-packed
+data.</p>
+<p>For an example 10x10 array, this will return an array of the positiond
+marked with &#8216;o&#8217; below.</p>
+<p>Note: Array wire bundle exits to the right</p>
+<blockquote>
+<div>0mm                                     4mm
+0   1   2   3   4   5   6   7   8   9  10
+^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
++&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+ 0
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+
+0                                         1</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.array_mapper.get_interelectrode_positions">
+<code class="descclassname">cgid.array_mapper.</code><code class="descname">get_interelectrode_positions</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>outline=None</em>, <em>electrode_spacing=0.4</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/array_mapper.html#get_interelectrode_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.array_mapper.get_interelectrode_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve information needed to plot array phase gradient derivatives 
+in anatomical coordinates.</p>
+<p>Array phase gradients are computed in the array coordinates. We need 
+the positions of the points between groups of 4 electrodes, as well
+as X and Y units vectors, to plot them correctly in anatomical 
+coordinates.</p>
+<p>If an array has empty rows or columns at the edge, these rows and 
+columnds are trimmed when packing data into the array. This code also
+trims array maps to account for this, and will return an array of 
+position data that can be indexed in the same manner as the array-packed
+data.</p>
+<p>Uses the stored array map outline to get anatomical coordinates
+of the positions between electrodes.
+Returns a dictionary, with 0-index row,column position as the keys
+and anatomical coordiantes as the values.
+Also returns a pair of transformed unit vectors, so that phase gradient
+vector fields can be plotted with the correct orientation.</p>
+<blockquote>
+<div><p>Arays are 4x4 mm but the electrodes are at the center, so the electrode
+coverage is really only about 3.6x3.6mm. The derivaties are estimated
+at neighborhoods of 4 electrodes.</p>
+<p>So I guess they are located at arange(1,10)/10.</p>
+<p>Note: Array wire bundle exits to the right</p>
+<p>0mm                                     4mm
+0   1   2   3   4   5   6   7   8   9  10
+^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
++&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+ 0
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;x&#8212;+
+| o | o | o | o | o | o | o | o | o | o |
++&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+&#8212;+
+0                                         1</p>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">cgid 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, mrule.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

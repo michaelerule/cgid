@@ -1,6 +1,0 @@
-'''
-Things that are difficult to track. 
-Parametric model based statistics.
-'''
-
-execfile(expanduser('~/Dropbox/bin/phasetools.py'))

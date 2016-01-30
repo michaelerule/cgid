@@ -176,6 +176,7 @@
 <span class="sd">ObjectPresent, GripCue, GoCue, StartMov, and Contact from completed trials </span>
 <span class="sd">only are copied over to events with &quot;COMPLETE&quot; appended to the name.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">cgid.config</span>       <span class="kn">import</span> <span class="n">CGID_ARCHIVE</span>
 <span class="kn">from</span> <span class="nn">matplotlib.mlab</span>   <span class="kn">import</span> <span class="n">find</span>
 <span class="kn">from</span> <span class="nn">cgid.config</span>       <span class="kn">import</span> <span class="o">*</span>
@@ -692,7 +693,6 @@
 <span class="sd">    function [ppc,Pxx,F,nTapers] = runppc(</span>
 <span class="sd">        session,area,unit,obj,grp,event,start,stop,chid,perm,permstrategy,jitter,window,bandWidth,subgroup</span>
 <span class="sd">        )</span>
-<span class="sd">    </span>
 <span class="sd">    It may be better to dump the existing PPC archives, update the matlab</span>
 <span class="sd">    code, and just run everything again.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -707,29 +707,34 @@
         <span class="n">allresults</span><span class="p">[</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">keys</span><span class="p">,</span><span class="n">ppcs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">allresults</span>
 </div>
-<div class="viewcode-block" id="get_cgid_unit_info"><a class="viewcode-back" href="../../cgid.data_loader.html#cgid.data_loader.get_cgid_unit_info">[docs]</a><span class="k">def</span> <span class="nf">get_cgid_unit_info</span><span class="p">():</span>
-    <span class="k">print</span> <span class="s">&#39;identifying units&#39;</span>
-    <span class="n">allfiles</span><span class="o">=</span><span class="p">[]</span>
-    <span class="k">for</span> <span class="n">parent</span><span class="p">,</span><span class="n">dirs</span><span class="p">,</span><span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">sortedunits</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">parent</span><span class="o">==</span><span class="n">sortedunits</span><span class="p">:</span> <span class="k">continue</span>
-        <span class="k">if</span> <span class="s">&#39;low_snr&#39;</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span> <span class="k">continue</span>
-        <span class="n">allfiles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">allfiles</span><span class="p">:</span>
-        <span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">uid</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
-        <span class="n">uid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;(&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s">&#39;SPK&#39;</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">nmonkey</span>  <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">nsession</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">spike_sessions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s">&#39;RUS&#39;</span> <span class="ow">in</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">nmonkey</span>  <span class="o">=</span> <span class="mi">2</span>
-            <span class="n">nsession</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">rusty_sessions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&#39;no&#39;</span>
-        <span class="n">narea</span> <span class="o">=</span> <span class="n">areas</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">area</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
-        <span class="n">units</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">uid</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">units</span>
-</pre></div></div>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">USING THIS FUNCTION COULD BE A SOURCE OF ERRORS</span>
+<span class="sd">DO NOT USE IT.</span>
+<span class="sd">USE THE allunitsbysession in unitinfo.py instead</span>
+<span class="sd">def get_cgid_unit_info():</span>
+<span class="sd">    print &#39;identifying units&#39;</span>
+<span class="sd">    allfiles=[]</span>
+<span class="sd">    for parent,dirs,files in os.walk(sortedunits):</span>
+<span class="sd">        if parent==sortedunits: continue</span>
+<span class="sd">        if &#39;low_snr&#39; in parent: continue</span>
+<span class="sd">        allfiles.extend(files)</span>
+<span class="sd">    units = []</span>
+<span class="sd">    for file in allfiles:</span>
+<span class="sd">        session,area,uid,_,_ = file.split(&#39;_&#39;)[:5]</span>
+<span class="sd">        uid = int(uid.split(&#39;(&#39;)[0])</span>
+<span class="sd">        if &#39;SPK&#39; in session:</span>
+<span class="sd">            nmonkey  = 1</span>
+<span class="sd">            nsession = 1+spike_sessions.index(session)</span>
+<span class="sd">        elif &#39;RUS&#39; in session:</span>
+<span class="sd">            nmonkey  = 2</span>
+<span class="sd">            nsession = 1+rusty_sessions.index(session)</span>
+<span class="sd">        else:</span>
+<span class="sd">            print &#39;no&#39;</span>
+<span class="sd">        narea = areas.index(area)+1</span>
+<span class="sd">        units.append((session,area,uid))</span>
+<span class="sd">    return units</span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
 
           </div>
         </div>

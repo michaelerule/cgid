@@ -13,6 +13,7 @@ Submodules
    cgid.circulardistributions
    cgid.config
    cgid.data_loader
+   cgid.dependencies
    cgid.grabunits
    cgid.lfp
    cgid.phase_plots

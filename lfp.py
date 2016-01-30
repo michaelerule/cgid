@@ -2,7 +2,7 @@ from neurotools.tools import memoize
 from cgid.data_loader import *
 from neurotools.signal import *
 from neurotools.multitaper import *
-
+import cgid.tools
 from scipy.signal.signaltools import *
 
 #    lfp = get_raw_lfp(session,area,ch,tr,(e,st,sp),padding)
@@ -291,7 +291,7 @@ def get_array_packed_lfp(session,area,trial,epoch):
     array. Missing channels are interpolated from nearest neighbors
     '''
     x = get_all_lfp(session,area,trial,epoch,False)
-    x = real(pack_array_data_interpolate(session,area,x))
+    x = real(cgid.tools.pack_array_data_interpolate(session,area,x))
     return x
 
 
@@ -301,7 +301,7 @@ def get_array_packed_lfp_filtered(session,area,trial,epoch,fa,fb):
     array. Missing channels are interpolated from nearest neighbors
     '''
     x = get_all_filtered_lfp(session,area,trial,epoch,fa,fb,False)
-    x = real(pack_array_data_interpolate(session,area,x))
+    x = real(cgid.tools.pack_array_data_interpolate(session,area,x))
     return x
 
 def get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb):
@@ -310,26 +310,6 @@ def get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb):
     array. Missing channels are interpolated from nearest neighbors
     '''
     x = get_all_analytic_lfp(session,area,trial,epoch,fa,fb,False)
-    x = pack_array_data_interpolate(session,area,x)
+    x = cgid.tools.pack_array_data_interpolate(session,area,x)
     return x
-
-
-@memoize
-def get_beta_peak(session,area,epoch,fa,fb):
-    # determine beta peak
-    Fs=1000
-    allspec=[]
-    for trial in good_trials(session):
-        x = get_all_raw_lfp(session, area, trial, epoch)
-        f,mts = multitaper_spectrum(x,5,Fs)
-        allspec.append(mts)
-    allspec     = arr(allspec)
-    Ntr,Nch,Nti = shape(allspec)
-    meanspec    = mean(allspec,axis=(0,1))
-    peaks,vals  = local_maxima(meanspec)
-    betapeaks   = peaks[(f[peaks]>fa)&(f[peaks]<fb)]
-    betapeak    = f[betapeaks][argmax(meanspec[betapeaks])]
-    return betapeak
-
-
 

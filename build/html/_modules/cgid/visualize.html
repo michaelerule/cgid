@@ -237,15 +237,17 @@
     <span class="n">epoch</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
     <span class="n">cut</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span>
     <span class="n">skip</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-    <span class="k">print</span> <span class="s">&#39;COMPLETELY IGNORING SMOOTHING SCALE PARAMETER AND USING 1.7&#39;</span>
-    <span class="k">print</span> <span class="s">&#39;Also, normalizing the gradient vectors to unit length&#39;</span>
     <span class="k">if</span> <span class="n">areas</span>    <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">areas</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;M1&#39;</span><span class="p">,</span><span class="s">&#39;PMv&#39;</span><span class="p">,</span><span class="s">&#39;PMd&#39;</span><span class="p">]</span>
     <span class="n">gradients</span><span class="o">=</span><span class="p">{}</span>
+    <span class="k">print</span> <span class="s">&#39;spatial low-pass is&#39;</span><span class="p">,</span><span class="n">cut</span>
     <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
         <span class="n">x</span><span class="o">=</span><span class="n">get_array_packed_lfp_analytic</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
         <span class="n">a</span><span class="o">=</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">a</span><span class="o">=</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">y</span><span class="o">=</span><span class="n">dct_cut_antialias</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">cut</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cut</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">dct_cut_antialias</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">cut</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">g</span><span class="o">=</span><span class="n">array_phase_gradient</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="n">g</span><span class="o">=</span><span class="n">g</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">/</span><span class="mi">40</span>
         <span class="n">gradients</span><span class="p">[</span><span class="n">area</span><span class="p">]</span><span class="o">=</span><span class="n">g</span><span class="p">[</span><span class="o">...</span><span class="p">,::</span><span class="n">skip</span><span class="p">]</span>
@@ -290,7 +292,8 @@
     <span class="n">FPS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
     <span class="n">areas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
     <span class="n">saveas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-    <span class="n">plot_gradient</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="n">plot_gradient</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">draw_wire</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Animation function. Units are millimeters. </span>
 <span class="sd">    </span>
@@ -368,14 +371,19 @@
     <span class="n">canvas</span><span class="p">[</span><span class="n">canvas</span><span class="o">&gt;=</span><span class="n">shape</span><span class="p">(</span><span class="n">video</span><span class="p">)[</span><span class="mi">1</span><span class="p">]]</span><span class="o">=</span><span class="mi">0</span> <span class="c">#???? WHY ????</span>
     <span class="n">blank</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">==</span><span class="mi">0</span>
     <span class="c"># outline arrays. This uses a modified anatomical coodinates</span>
-    <span class="n">draw_array_outlines</span><span class="p">(</span><span class="n">anatomy</span><span class="o">=</span><span class="n">anatomy</span><span class="p">)</span>
-    <span class="c"># prepare video</span>
+    <span class="n">draw_array_outlines</span><span class="p">(</span><span class="n">anatomy</span><span class="o">=</span><span class="n">anatomy</span><span class="p">,</span><span class="n">draw_wire</span><span class="o">=</span><span class="n">draw_wire</span><span class="p">)</span>
+    <span class="c"># prepare video. in this rendering mode, just use real signal</span>
+    <span class="c"># it&#39;s standardized, a bit. </span>
+    <span class="c"># we should make a colorbar?</span>
     <span class="n">video</span>  <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">real</span>
     <span class="n">video</span> <span class="o">-=</span> <span class="n">mean</span><span class="p">(</span><span class="n">video</span><span class="p">)</span>
-    <span class="n">video</span> <span class="o">/=</span> <span class="n">std</span><span class="p">(</span><span class="n">video</span><span class="p">)</span><span class="o">*</span><span class="mf">1.5</span>
+    <span class="n">video</span> <span class="o">/=</span> <span class="n">std</span><span class="p">(</span><span class="n">video</span><span class="p">)</span><span class="o">*</span><span class="mi">4</span>
     <span class="n">video</span>  <span class="o">=</span> <span class="p">(</span><span class="n">video</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
     <span class="n">video</span>  <span class="o">=</span> <span class="n">int32</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">video</span><span class="p">)</span>
     <span class="n">video</span>  <span class="o">=</span> <span class="n">clip</span><span class="p">(</span><span class="n">video</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span>
+    <span class="c"># calculate actual limits in case we need a color bar</span>
+    
+    
     <span class="c"># prepare plot: pre-render a frame, will update later</span>
     <span class="c"># formerly used </span>
     <span class="c"># Now just plotting real component and overlaying phase field</span>
@@ -395,7 +403,7 @@
         <span class="n">ensuredir</span><span class="p">(</span><span class="n">savedir</span><span class="p">)</span>
     <span class="c"># render video</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">t</span><span class="p">,</span><span class="n">frame</span><span class="p">)</span> <span class="ow">in</span> <span class="n">en</span><span class="o">|</span><span class="n">iz</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">video</span><span class="p">):</span>
-        <span class="n">RGBA</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">extended_data</span><span class="p">[</span><span class="n">frame</span><span class="p">[</span><span class="n">canvas</span><span class="p">]]</span>
+        <span class="n">RGBA</span><span class="p">[</span><span class="o">...</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">parula_data</span><span class="p">[</span><span class="n">frame</span><span class="p">[</span><span class="n">canvas</span><span class="p">]]</span>
         <span class="n">RGBA</span><span class="p">[</span><span class="n">blank</span><span class="p">,:]</span><span class="o">=</span><span class="mi">1</span>
         <span class="n">img</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">RGBA</span><span class="p">)</span>
         <span class="n">title</span><span class="p">(</span><span class="n">figtitle</span><span class="o">+</span><span class="s">&#39; t=</span><span class="si">%s</span><span class="s">ms&#39;</span><span class="o">%</span><span class="n">t</span><span class="p">)</span>
@@ -461,7 +469,8 @@
         <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
         <span class="n">figtitle</span><span class="o">=</span><span class="n">figtitle</span><span class="p">,</span>
         <span class="n">hook</span><span class="o">=</span><span class="n">hook</span><span class="p">,</span>
-        <span class="n">FPS</span><span class="o">=</span><span class="n">FPS</span><span class="p">)</span>
+        <span class="n">FPS</span><span class="o">=</span><span class="n">FPS</span><span class="p">,</span>
+        <span class="n">plot_gradient</span><span class="o">=</span><span class="n">plot_gradient</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="lookat"><a class="viewcode-back" href="../../cgid.visualize.html#cgid.visualize.lookat">[docs]</a><span class="k">def</span> <span class="nf">lookat</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">tafter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">upsample</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">cut</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span><span class="n">FPS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">timebar</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">plot_gradient</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>

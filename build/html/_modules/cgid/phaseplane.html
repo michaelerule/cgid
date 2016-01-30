@@ -75,13 +75,13 @@
           <div class="body" role="main">
             
   <h1>Source code for cgid.phaseplane</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">cgid.data_loader</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">cgid.lfp</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.ntime</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.tools</span> <span class="kn">import</span> <span class="n">memoize</span><span class="p">,</span><span class="n">globalize</span><span class="p">,</span><span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">cgid.data_loader</span>  <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">cgid.lfp</span>          <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.ntime</span>  <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span>  <span class="kn">import</span> <span class="n">memoize</span><span class="p">,</span><span class="n">globalize</span><span class="p">,</span><span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.plot</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">neurotools.color</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.plot</span>   <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.color</span>  <span class="kn">import</span> <span class="o">*</span>
 
 <div class="viewcode-block" id="phase_plane_animation"><a class="viewcode-back" href="../../cgid.phaseplane.html#cgid.phaseplane.phase_plane_animation">[docs]</a><span class="k">def</span> <span class="nf">phase_plane_animation</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">areas</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>\
     <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">saveas</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">hook</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">FPS</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">stabilize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">extension</span><span class="o">=</span><span class="s">&#39;.pdf&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">figtitle</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -277,7 +277,6 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Test code:</span>
 <span class="sd">    from os.path import expanduser</span>
-<span class="sd">    execfile(expanduser(&#39;~/Dropbox/bin/cgid/cgidsetup.py&#39;))</span>
 <span class="sd">    session = &#39;SPK120918&#39;</span>
 <span class="sd">    area = &#39;M1&#39;</span>
 <span class="sd">    trial = 2</span>

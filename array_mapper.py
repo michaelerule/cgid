@@ -1,4 +1,5 @@
 
+import os
 from cgid.config         import CGID_PACKAGE
 from neurotools.tools    import memoize
 from neurotools.array    import trim_array,trim_array_as_if

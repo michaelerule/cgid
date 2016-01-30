@@ -160,15 +160,17 @@ def get_phase_gradients_for_animation(session,trial,
     epoch=None,
     cut=1.7,
     skip=3):
-    print 'COMPLETELY IGNORING SMOOTHING SCALE PARAMETER AND USING 1.7'
-    print 'Also, normalizing the gradient vectors to unit length'
     if areas    is None: areas=['M1','PMv','PMd']
     gradients={}
+    print 'spatial low-pass is',cut
     for area in areas:
         x=get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb)
         a=abs(x)
         a=0.25*(a[1:,1:]+a[:-1,1:]+a[1:,:-1]+a[:-1,:-1])
-        y=dct_cut_antialias(x,cut)
+        if not cut is None:
+            y=dct_cut_antialias(x,cut)
+        else: 
+            y = x
         g=array_phase_gradient(y)
         g=g/abs(g)*a/40
         gradients[area]=g[...,::skip]
@@ -213,7 +215,8 @@ def arrays_video_gradient(
     FPS=20,
     areas=None,
     saveas=None,
-    plot_gradient=True):
+    plot_gradient=True,
+    draw_wire=False):
     '''
     Animation function. Units are millimeters. 
     
@@ -291,14 +294,19 @@ def arrays_video_gradient(
     canvas[canvas>=shape(video)[1]]=0 #???? WHY ????
     blank = canvas==0
     # outline arrays. This uses a modified anatomical coodinates
-    draw_array_outlines(anatomy=anatomy)
-    # prepare video
+    draw_array_outlines(anatomy=anatomy,draw_wire=draw_wire)
+    # prepare video. in this rendering mode, just use real signal
+    # it's standardized, a bit. 
+    # we should make a colorbar?
     video  = video.real
     video -= mean(video)
-    video /= std(video)*1.5
+    video /= std(video)*4
     video  = (video+1)/2.
     video  = int32(255*video)
     video  = clip(video,0,255)
+    # calculate actual limits in case we need a color bar
+    
+    
     # prepare plot: pre-render a frame, will update later
     # formerly used 
     # Now just plotting real component and overlaying phase field
@@ -318,7 +326,7 @@ def arrays_video_gradient(
         ensuredir(savedir)
     # render video
     for i,(t,frame) in en|iz(times,video):
-        RGBA[...,:3] = extended_data[frame[canvas]]
+        RGBA[...,:3] = parula_data[frame[canvas]]
         RGBA[blank,:]=1
         img.set_data(RGBA)
         title(figtitle+' t=%sms'%t)
@@ -384,7 +392,8 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
         skip=skip,
         figtitle=figtitle,
         hook=hook,
-        FPS=FPS)
+        FPS=FPS,
+        plot_gradient=plot_gradient)
 
 def lookat(session,trial,time=0,tafter=None,fa=10,fb=45,upsample=1,
     cut=0.4,FPS=20,timebar=False,plot_gradient=True,skip=1):

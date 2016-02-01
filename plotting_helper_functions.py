@@ -524,7 +524,74 @@ def add_spectrum_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=Non
     sca(ax)
     ax.set_position((x,y,w-spacing-cbarwidth,h))
 
+def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
+    drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',W=4,H=4):
+    if extent!=(0,4,0,4):
+        print 'different size?'
+    if vmin is None: 
+        vmin=np.nanmin(data)
+        print 'vmin=',vmin
+    if vmax is None: 
+        vmax=np.nanmax(data)
+        print 'vmax=',vmax
+    imshow(data,vmin=vmin,vmax=vmax,cmap=cmap,origin=origin,
+        interpolation=interpolation,extent=extent)
+    if drawlines:
+        for i in linspace(0,10,11):
+            axvline(i*4.0/10,color='w',lw=0.3)
+            axhline(i*4.0/10,color='w',lw=0.3)
+    xlim(0,H)
+    ylim(0,W)
+    nicex()
+    nicey()
+    xlabel('mm')
+    ylabel('mm')
+    fudgex()
+    fudgey(3)
+    draw()
+    cax=good_colorbar(vmin,vmax,cmap,ctitle,sideways=0,spacing=15)
+    fudgey(4,cax)
+    return cax
 
+def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE=6):
+    '''
+    Accepts an analytic signal map, upsamples it, and plots in the current
+    axis the phases. For now, expects a 10x10 array 4x4mm is size. 
+    '''
+    cla()
+    W,H = shape(mean_analytic_signal)
+    print W,H
+    Wmm,Hmm = W*0.4, H*0.4
+    print Wmm,Hmm
+    upsampled = dct_upsample(dct_cut_antialias(mean_analytic_signal,smooth),UPSAMPLE)
+    # upsampling trims the array a bit
+    # figure out how to re-center the trimmed array:
+    sw,sh  = shape(upsampled)
+    print sw, sh
+    fw,fh  = float32(shape(mean_analytic_signal)[:2])*UPSAMPLE
+    dw,dh  = (fw-sw)/fw*0.5*Wmm,(fh-sh)/fh*0.5*Hmm
+    extent = (dh,dh+sh/fh*Hmm,dw,dw+sw/fw*Wmm)
+     
+    # extract angles
+    amean  = angle(mean(upsampled))
+    angles = (angle(upsampled*exp(-1j*amean))+2*pi+pi+1.75)%(2*pi)
+    # plot phase angles
+    cax    = array_imshow(angles,0,2*pi,cm,ctitle='Phase (radians)',extent=extent,W=Wmm,H=Hmm)
+    # add countours
+    for phi in linspace(0,pi,NLINE+1)[:-1]:
+        c=contour((angles+phi)%(2*pi),[pi],linewidths=0.8,colors='k',extent=extent)
+    # Add title
+    title('Average phase delay',fontsize=13)
+    # fix up colorbar axis labels
+    oldax = gca()
+    sca(cax)
+    yticks([0,2*pi],['0','$2\pi$'])
+    # redraw the plot
+    draw()
+    sca(oldax)
+    xlabel('mm',fontsize=11)
+    return cax
+    
 
 
 

@@ -44,20 +44,10 @@ from cgid.phasetools import *
 from cgid.phaseplane import *
 from cgid.array_mapper import *
 from cgid.array import *
-from cgid.beta_events import *
 from cgid.circulardistributions import *
 from cgid.waveparametrics import *
 from cgid.plotting_helper_functions import *
 from cgid.plotting_unit_summary     import *
-
-
-# This was previously needed to load in the unit sorts / classes from elsewhere
-# but that information should have been tranferred to the unitinfo.py script
-# this may still be used to regenerate the unit classifications, but the
-# path to my manual sorts will need to be set correctly. 
-
-# from cgid.grabunits import *
-
 from cgid.phase_plots import *
 from cgid.unitinfo import *
 from cgid.beta import *
@@ -89,23 +79,26 @@ from neurotools.color import *
 
 import matplotlib
 
-matplotlib.rcParams['axes.titlesize']=11
-matplotlib.rcParams['axes.labelsize']=9
-matplotlib.rcParams['axes.facecolor']=(1,)*4
-matplotlib.rcParams['axes.linewidth']=0.8
-matplotlib.rcParams['figure.figsize']=(7.5,7.0)
-matplotlib.rcParams['figure.facecolor']=(1,)*4
-matplotlib.rcParams['lines.solid_capstyle']='projecting'
-matplotlib.rcParams['lines.solid_joinstyle']='miter'
-matplotlib.rcParams['xtick.labelsize']=9
-matplotlib.rcParams['ytick.labelsize']=9
-matplotlib.rcParams['figure.subplot.bottom']=0.08
-matplotlib.rcParams['figure.subplot.hspace']=0.45
-matplotlib.rcParams['figure.subplot.left'  ]=0.08
-matplotlib.rcParams['figure.subplot.right' ]=0.98
-matplotlib.rcParams['figure.subplot.top'   ]=0.9
-matplotlib.rcParams['figure.subplot.wspace']=0.35
-
+try:
+    matplotlib.rcParams['axes.titlesize']=11
+    matplotlib.rcParams['axes.labelsize']=9
+    matplotlib.rcParams['axes.facecolor']=(1,)*4
+    matplotlib.rcParams['axes.linewidth']=0.8
+    matplotlib.rcParams['figure.figsize']=(7.5,7.0)
+    matplotlib.rcParams['figure.facecolor']=(1,)*4
+    matplotlib.rcParams['lines.solid_capstyle']='projecting'
+    matplotlib.rcParams['lines.solid_joinstyle']='miter'
+    matplotlib.rcParams['xtick.labelsize']=9
+    matplotlib.rcParams['ytick.labelsize']=9
+    matplotlib.rcParams['figure.subplot.bottom']=0.08
+    matplotlib.rcParams['figure.subplot.hspace']=0.45
+    matplotlib.rcParams['figure.subplot.left'  ]=0.08
+    matplotlib.rcParams['figure.subplot.right' ]=0.98
+    matplotlib.rcParams['figure.subplot.top'   ]=0.9
+    matplotlib.rcParams['figure.subplot.wspace']=0.35
+except:
+    print 'Static configuration of matplotlib failed'
+    print 'Are we inside Sphinx autodoc?'
 
 
 

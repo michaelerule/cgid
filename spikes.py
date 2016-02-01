@@ -5,6 +5,7 @@ from cgid.data_loader import *
 from cgid.unitinfo import allunitsbysession,classification_results
 from cgid.tools import find_all_extension, sessions_areas
 from neurotools.modefind import modefind
+from neurotools.signal import box_filter
 
 def get_spikes_session(session,area,unit,Fs=1000):
     '''
@@ -527,6 +528,26 @@ def get_isi_stats_unit_epoch(session,area,unit,epoch):
     for trial in good_trials(session):
         spikes.append(cgid.spikes.get_spikes_event(session,area,unit,trial,event,start,stop))
     return get_isi_stats(spikes,epoch)
+
+
+@memoize
+def get_boxfiltered_mua(units,epoch,box=25):
+    spikes = array([cgid.spikes.get_spikes_raster_all_trials(s,a,u,epoch) for (s,a,u) in units])
+    MUA    = array([box_filter(tr,25) for tr in mean(spikes,0)])
+    return MUA
+
+
+@memoize
+def get_epoch_firing_rate(session,area,unit,epoch):
+    Fs=1000
+    spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
+    n_total_spikes     = len(spikes)
+    n_total_times      = len(good_trials(session))*(epoch[-1]-epoch[-2])
+    rate = float(n_total_spikes*Fs)/n_total_times
+    return rate
+
+
+
 
 
 

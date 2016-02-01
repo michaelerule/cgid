@@ -313,3 +313,39 @@ def get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb):
     x = cgid.tools.pack_array_data_interpolate(session,area,x)
     return x
 
+
+
+
+
+@memoize
+def get_mean_bandfiltered_session(session,epoch,fa,fb):
+    try:
+        mean_beta_cache
+    except:
+        mean_beta_cache = {}
+    try:
+        mean_beta_cache.update(pickle.load(open('mean_beta_cache.p','rb')))
+    except:
+        print "no disk cache available"
+    if (session,epoch) in mean_beta_cache:
+        mean_beta = mean_beta_cache[session,epoch]
+    else:
+        print 'recomputing',session,epoch
+        lfp = [concatenate([cgid.lfp.get_all_analytic_lfp(session, area, tr, epoch, fa, fb, onlygood=True) for area in areas]) for tr in good_trials(session)]
+        lfp = array(lfp)
+        mean_beta = mean(lfp,1)
+        mean_beta_cache[session,epoch] = mean_beta
+        pickle.dump(mean_beta,open('mean_beta_cache.p','wb'))  
+    return mean_beta
+
+
+
+
+
+
+
+
+
+
+
+

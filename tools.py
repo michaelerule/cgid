@@ -9,6 +9,9 @@ from neurotools.getfftw import *
 from neurotools.array   import trim_array, pack_array_data
 from matplotlib.pyplot  import *
 from neurotools.plot    import *
+from scipy.stats.stats  import *
+
+
 
 def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,labels=None,clip_on=False):
     '''

@@ -35,7 +35,7 @@ This directory should contain the following files:
 # This needs to be defined if we want to load the unit sorts from my external copy on disk
 # The current version as of 20160122 has been hard coded into the unitinfo module
 # so this should not be needed anymore.
-# sortedunits    = expanduser('~/Workspace2/CGID_unit_classification/all_summary_by_epoch_waveforms_fixed_autocorrelation_ok_manually_sorted/')
+sortedunits    = expanduser('~/Workspace2/CGID_unit_classification/all_summary_by_epoch_waveforms_fixed_autocorrelation_ok_manually_sorted/')
 
 # Formerly used path to datasets. Does not appear to be required anymore
 # Preserving in case surprising bugs happen

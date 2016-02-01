@@ -25,7 +25,7 @@ from neurotools.tools        import memoize
 
 from scipy.signal.signaltools import *
 from numpy import *
-
+from cgid.spikes import *
 
 @memoize
 def get_beta_peak(session,area,epoch,fa,fb):
@@ -98,6 +98,7 @@ def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
 
 
 def get_stored_beta_peak(session,area,epoch):
+    epochs = [(6, -1000, 0),(8, -1000, 0)]
     if epoch not in epochs:
         print 'supporting onle the 1s pre-obj and pre go'
         print 'epoch',epoch,'not available'
@@ -143,7 +144,10 @@ def get_stored_beta_peak(session,area,epoch):
     return beta_peaks[session,area,epoch]
 
 def get_mean_beta_peak(session,epoch):
-    return mean([get_stored_beta_peak(session,s,epoch) for a in areas])
+    return mean([get_stored_beta_peak(session,a,epoch) for a in areas])
+    
+def get_mean_beta_peak_full_trial(session):
+    return mean([get_stored_beta_peak(session,a,epoch) for a in areas for epoch in [(6,-1000,0),(8,-1000,0)]])
     
     
     
@@ -296,4 +300,6 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     return threshold, event_rate, nonevent_rate
 
 
-
+    
+    
+    

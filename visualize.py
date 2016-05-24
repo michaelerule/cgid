@@ -4,7 +4,7 @@ Note: Array wire bundle exits to the right
 
 from neurotools.plot   import plot_complex
 from matplotlib.pyplot import gca, gcf, figure, clf
-from cgid.data_loader  import get_trial_times_ms
+import cgid.data_loader
 from cgid.lfp          import *
 from cgid.array_mapper import *
 from neurotools.nlab   import *
@@ -360,7 +360,7 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
     '''
     # load and upsample all data
     print 'epoch is',epoch
-    times = get_trial_times_ms(session,'M1',tr,epoch)[::skip]
+    times = cgid.data_loader.get_trial_times_ms(session,'M1',tr,epoch)[::skip]
     phase_gradients = get_phase_gradients_for_animation(
         session,tr,fa=10,fb=45,epoch=epoch,cut=cut,skip=skip)
     arraydata = {}
@@ -440,7 +440,7 @@ def full_MUA_lfp_video(session,tr,epoch=None,fc=250,fsmooth=30,upsample=1,
     >>> for tr in get_good_trials(session):
     >>>     full_MUA_lfp_video(session,tr,upsample=6,cut=0.1,fsmooth=30)
     '''
-    times = get_trial_times_ms(session,'M1',tr,epoch)[::skip]
+    times = cgid.data_loader.get_trial_times_ms(session,'M1',tr,epoch)[::skip]
     arraydata = {}
     for a in areas:
         print 'loading area',a

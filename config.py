@@ -46,21 +46,25 @@ sortedunits    = expanduser('~/Workspace2/CGID_unit_classification/all_summary_b
 CGID_PACKAGE = os.path.dirname(cgid.__file__)
 
 CGID_ARCHIVE   = archive
-areas          = 'M1 PMv PMd'.split()
-monkeys        = 'RUS SPK'.split()
-sessions       = [['120518','120521','120523'],
-                  ['120918','120924','120925']]
-spike_sessions = 'SPK120918 SPK120924 SPK120925'.split()
-rusty_sessions = 'RUS120518 RUS120521 RUS120523'.split()
-sessionnames   = [rusty_sessions,spike_sessions]
+areas          = tuple('M1 PMv PMd'.split())
+monkeys        = tuple('RUS SPK'.split())
+sessions       = (('120518','120521','120523'),
+                  ('120918','120924','120925'))
+spike_sessions = tuple('SPK120918 SPK120924 SPK120925'.split())
+rusty_sessions = tuple('RUS120518 RUS120521 RUS120523'.split())
+sessionnames   = (rusty_sessions,spike_sessions)
+
+
+session_name_map = dict([(name,'Monkey %s Session %d'%(name[0],i+1)) for names in sessionnames for (i,name) in enumerate(names)])
 
 
 
+import datetime
 
+def today():
+    return datetime.date.today().strftime('%y%m%d')
 
-
-
-
+print today()
 
 
 

@@ -8,7 +8,8 @@ from matplotlib.pyplot import *
 from neurotools.nlab import *
 
 def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
-    drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle=''):
+    drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',spacing=0,
+    draw_colorbar=True):
     if extent!=(0,4,0,4):
         print 'different size?'
     if vmin is None: 
@@ -34,8 +35,11 @@ def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
     fudgex()
     fudgey(3)
     draw()
-    cax=good_colorbar(vmin,vmax,cmap,ctitle,sideways=1)
-    fudgey(4,cax)
+    if draw_colorbar:
+        cax=good_colorbar(vmin,vmax,cmap,ctitle,sideways=1,spacing=spacing)
+        fudgey(4,cax)
+    else:
+        cax = None
     return cax
 
 def array_plot_upsampled(data,factor,vmin=None,vmax=None,
@@ -87,7 +91,6 @@ def array_plot_upsampled(data,factor,vmin=None,vmax=None,
     fudgey(4,cax)
     return cax
 
-
 def overlay_gradient(phase_gradient):
     NH,NW = shape(phase_gradient)[:2]
     p = arange(max(NW,NH))+0.5
@@ -104,8 +107,17 @@ def overlay_gradient(phase_gradient):
                  [py-a.imag,py-imag(dz),py-b.imag],color='k')[0]
     gca().tick_params(axis=u'both', which=u'both',length=0)
 
+def get_upsampled_extent(upsampled_shape):
+    assert 0 # not implemented
+    warn('assuming 10x10?')
+    # upsampling trims the array a bit
+    # figure out how to re-center the trimmed array:
+    sw,sh  = shape(upsampled)
+    fw,fh  = float32(shape(mean_analytic_signal)[:2])*UPSAMPLE
+    dw,dh  = (fw-sw)/fw*0.5*4,(fh-sh)/fw*0.5*4
+    extent = (dw,dw+sw/fw*4,dh,dh+sh/fh*4)
 
-def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE=6):
+def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=100,smooth=2.3,NLINE=6,recenter=True,draw_colorbar=True):
     '''
     Accepts an analytic signal map, upsamples it, and plots in the current
     axis the phases. For now, expects a 10x10 array 4x4mm is size. 
@@ -119,10 +131,13 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     dw,dh  = (fw-sw)/fw*0.5*4,(fh-sh)/fw*0.5*4
     extent = (dw,dw+sw/fw*4,dh,dh+sh/fh*4)
     # extract angles
-    amean  = angle(mean(upsampled))
-    angles = (angle(upsampled*exp(-1j*amean))+2*pi+pi+1.75)%(2*pi)
+    if recenter:
+        amean  = angle(mean(upsampled))
+        angles = (angle(upsampled*exp(-1j*amean))+2*pi+pi+1.75)%(2*pi)
+    else:
+        angles = (angle(upsampled)+2*pi+pi+1.75)%(2*pi)
     # plot phase angles
-    cax    = array_imshow(angles,0,2*pi,cm,ctitle='',extent=extent)
+    cax = array_imshow(angles,0,2*pi,cm,ctitle='',extent=extent,draw_colorbar=draw_colorbar)
     # add countours
     for phi in linspace(0,pi,NLINE+1)[:-1]:
         c=contour((angles+phi)%(2*pi),[pi],linewidths=0.8,colors='k',extent=extent)
@@ -130,13 +145,16 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     title('Average phase delay',fontsize=13)
     # fix up colorbar axis labels
     oldax = gca()
-    sca(cax)
-    yticks([0,2*pi],['0','$2\pi$'])
-    # redraw the plot
-    draw()
+    if draw_colorbar:
+        sca(cax)
+        noaxis()    
+        cax.tick_params(axis=u'both', which=u'both',length=0,labelleft='off', labelright='on')
+        yticks([0,2*pi],['0','$2\pi$'])
+        # redraw the plot
+        sca(oldax)
     xlabel('mm',fontsize=11)
-    sca(oldax)
-    return cax
+    draw()
+    return cax,extent
 
 
 def vector_summary_plot_subroutine(mu,sigma,vectors):

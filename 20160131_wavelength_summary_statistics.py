@@ -80,7 +80,7 @@ for isa,(session,area) in en|todo:
             for s,a in sessions_areas():
                 if not a==area: continue
                 if not session[:3] in s: continue
-                for trial in good_trials(s):
+                for trial in get_good_trials(s):
                     x = get_array_packed_lfp_analytic(s,a,trial,epoch,fa,fb)[...,::SKIP]
                     trialdata = x.transpose(2,0,1)
                     sessiondata.extend(trialdata)

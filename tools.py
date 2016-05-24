@@ -1,17 +1,26 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
 
-from cgid.config        import *
+from collections import defaultdict
+
+from scipy.stats.stats  import *
+from matplotlib.cbook   import flatten
+from matplotlib.pyplot  import *
+
+from neurotools.tools   import memoize
+from neurotools.getfftw import *
+from neurotools.plot    import *
+from neurotools.spatial.array import trim_array, pack_array_data
+
+from   cgid.config        import *
+from   cgid.data_loader   import *
 import cgid.lfp 
 import cgid.array
-from neurotools.tools   import memoize
-from matplotlib.cbook   import flatten
-from cgid.data_loader   import *
-from neurotools.getfftw import *
-from neurotools.array   import trim_array, pack_array_data
-from matplotlib.pyplot  import *
-from neurotools.plot    import *
-from scipy.stats.stats  import *
-
-
 
 def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,labels=None,clip_on=False):
     '''
@@ -61,7 +70,7 @@ def get_all_isi_epoch(session,area,unit,epoch):
     unit, and epoch
     '''
     all_isi = []
-    for trial in get_valid_trials(session,area):
+    for trial in cgid.data_loader.get_valid_trials(session,area):
         spk = get_spikes_epoch(session,area,unit,trial,epoch)
         isi = diff(spk)
         all_isi.extend(isi)
@@ -76,7 +85,7 @@ def get_all_ibi_epoch(session,area,unit,epoch,thr):
     if dowarn(): print 'note: threshold is in ms, defaults to 5'
     all_ibi = []
     if thr==None: thr=5
-    for trial in get_valid_trials(session,area):
+    for trial in cgid.data_loader.get_valid_trials(session,area):
         spk   = get_spikes_epoch(session,area,unit,trial,epoch)
         if spk==None:
             warn('ERROR %s %s %s %s'%(session,area,unit,epoch))
@@ -94,7 +103,7 @@ def get_all_ibi_merged_epoch(session,area,unit,epoch,thr):
     if dowarn(): print 'note: misses burst if starts on 1st spike, TODOFIX'
     all_ibi = []
     if thr==None: thr=5
-    for trial in get_valid_trials(session,area):
+    for trial in cgid.data_loader.get_valid_trials(session,area):
         spk   = get_spikes_epoch(session,area,unit,trial,epoch)
         if spk==None:
             warn('ERROR %s %s %s %s'%(session,area,unit,epoch))
@@ -132,7 +141,7 @@ def ch2chi(session,area,ch):
     Some electrode banks are split over two arrays. 
     '''
     assert ch>0
-    all_available = get_available_channels(session,area)
+    all_available = cgid.data_loader.get_available_channels(session,area)
     chi = find(all_available==ch) # note zero indexing!
     if not len(chi)==1:
         warn('unusual',(session,area,ch,all_available,chi))
@@ -153,7 +162,7 @@ def pack_array_data_interpolate(session,area,data):
     :param area: the area corresponding to the data, needed to get array map
     :return: returns LxKxNtimes 3D array of the interpolated channel data
     '''
-    arrayMap = get_array_map(session,area)
+    arrayMap = cgid.data_loader.get_array_map(session,area)
     def pack_array_data(data,arrayMap):
         '''
         Accepts a collection of signals from array channels, as well as
@@ -218,7 +227,7 @@ def onarraydata(function,session,area,trial,epoch,fa,fb):
         a,b = shape(result)
         if a<b: result=result.T
     M     = shape(result)[0]
-    times = get_trial_times_ms(session,area,trial,epoch)
+    times = cgid.data_loader.get_trial_times_ms(session,area,trial,epoch)
     T     = len(times)
     assert T==N
     if M>N:
@@ -246,7 +255,7 @@ def ondatadata(function,session,area,trial,epoch,fa,fb):
         a,b = shape(result)
         if a<b: result=result.T
     M      = shape(result)[0]
-    times  = get_trial_times_ms(session,area,trial,epoch)
+    times  = cgid.data_loader.get_trial_times_ms(session,area,trial,epoch)
     N      = len(times)
     if M>N:
         print M,N,shape(times),shape(result)
@@ -271,7 +280,7 @@ def ofrawdata(function,session,area,trial,epoch):
         a,b = shape(result)
         if a<b: result=result.T
     M      = shape(result)[0]
-    times  = get_trial_times_ms(session,area,trial,epoch)
+    times  = cgid.data_loader.get_trial_times_ms(session,area,trial,epoch)
     N      = len(times)
     if M>N:
         print M,N,shape(times),shape(result)
@@ -313,7 +322,7 @@ def onpopdata(statistic,session,area,trial,epoch,fa,fb):
     processed = statistic(lfp)
     assert len(shape(processed))==1
     M = shape(processed)[0]
-    times = get_trial_times_ms(session,area,trial,epoch)
+    times = cgid.data_loader.et_trial_times_ms(session,area,trial,epoch)
     T = len(times)
     assert T==N
     assert M<=N
@@ -367,7 +376,7 @@ def onsession(statistic,session,area,epoch,fa,fb):
         epoch = 6,-1000,6000
         e,st,sp  = epoch
     debug('!!>>> applying'+' '.join(map(str,(statistic,session,area,epoch,fa,fb))))
-    trials  = get_good_trials(session)
+    trials  = cgid.data_loader.get_good_trials(session)
     print trials
     results = [overdata(statistic,session,area,tr,epoch,fa,fb) for tr in trials]
     results = arr(results)
@@ -521,73 +530,37 @@ def ontrial_summary_plot(statistic,session,area,trial,epoch,fa,fb):
     #tight_layout()
     draw()
 
-
-def neighbors(session,area):
-    am = get_array_map(session,area)
-    goodch = good_channels(session,area)
-    maskedam = -ones(shape(am),dtype=int32)
-    for c in goodch: maskedam[am==c]=c
-    N,M = shape(maskedam)
-    from collections import defaultdict
+def neighbors(session,area,onlygood):
+    '''
+    Constructs an adjacency graph for a given array. Each channel 
+    number is mapped to a list of the up to 4 channels immediately 
+    adjacent to it. If argument "onlygood" is true, then bad channels
+    are excluded from this map.
+    '''
+    am = cgid.data_loader.get_array_map(session,area,removebad=False)
+    if onlygood:
+        goodch   = cgid.data_loader.get_good_channels(session,area)
+        maskedam = -ones(shape(am),dtype=int32)
+        for c in goodch: maskedam[am==c]=c
+        am = maskedam
+    else:
+        goodch = cgid.data_loader.get_available_channels(session,area)
+    N,M = shape(am)
     neighbors = defaultdict(list)
     for c in goodch:
-        i,j = squeeze(where(maskedam==c))
-        if i-1>=0 and maskedam[i-1][j]!=-1: neighbors[c].append(maskedam[i-1][j])
-        if i+1<N  and maskedam[i+1][j]!=-1: neighbors[c].append(maskedam[i+1][j])
-        if j-1>=0 and maskedam[i][j-1]!=-1: neighbors[c].append(maskedam[i][j-1])
-        if j+1<M  and maskedam[i][j+1]!=-1: neighbors[c].append(maskedam[i][j+1])
+        i,j = squeeze(where(am==c))
+        if i-1>=0 and am[i-1][j]!=-1: neighbors[c].append(am[i-1][j])
+        if i+1<N  and am[i+1][j]!=-1: neighbors[c].append(am[i+1][j])
+        if j-1>=0 and am[i][j-1]!=-1: neighbors[c].append(am[i][j-1])
+        if j+1<M  and am[i][j+1]!=-1: neighbors[c].append(am[i][j+1])
     return neighbors
 
 
-def find_all_extension(d,ext='png'):
-    '''
-    Locate manually sorted unit classes
-    '''
-    found = []
-    for root,dirs,files in os.walk(d):
-        found.extend([f for f  in files if f.lower().split('.')[-1]==ext])
-    return found
 
 
-# dictionary filter to set
-# really should make nice datastructures for all this
-setinrange = lambda data,a,b: {k for k,v in data.iteritems() if (v>=a) and (v<=b)}
-mapdict    = lambda data,function: {k:function(v) for k,v in data.iteritems()}
-getdict    = lambda data,index: mapdict(data, lambda v:v[index])
 
 
-# quick complete statistical description
-class description:
-    def __init__(self,data):
-        
-        self.N, (self.min, self.max),self.mean,self.variance,self.skewness,self.kurtosis = describe(data)
-        self.median = median(data)
-        self.std  = std(data)
-        
-        # quartiles
-        self.q1   = percentile(data,25)
-        self.q3   = self.median
-        self.q2   = percentile(data,75)
-        
-        # percentiles
-        self.p01  = percentile(data,1)
-        self.p025 = percentile(data,2.5)
-        self.p05  = percentile(data,5)
-        self.p10  = percentile(data,10)
-        self.p90  = percentile(data,90)
-        self.p95  = percentile(data,95)
-        self.p975 = percentile(data,97.5)
-        self.p99  = percentile(data,99)
-        
-    def __str__(self):
-        result = ''
-        for stat,value in self.__dict__.iteritems():
-            result += ' %s=%0.2f '%(stat,value)
-        return result
 
 
-def shortscientific(x):
-    return ('%0.0e'%x).replace('-0','-')
-    
-    
+
 

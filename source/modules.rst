@@ -1,5 +1,5 @@
-.
-=
+cgid
+====
 
 .. toctree::
    :maxdepth: 4

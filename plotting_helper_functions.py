@@ -6,8 +6,12 @@
 
 from neurotools.color import *
 from pylab import *
-from cgid.data_loader import metaloaddata
+from cgid.data_loader import *
 from neurotools.plot import *
+from neurotools.stats.modefind import *
+from neurotools.getfftw import *
+
+import cgid.spikes
 
 CMAP = parula
 
@@ -57,16 +61,16 @@ def waveletshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
     return ax,cbax
 
 def getTrial(session,area,unit,start,stop,trial):
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     tsp = ByTrialSpikesMS[unit-1,trial-1]
     tsp = tsp[tsp>=start+1000]
     tsp = tsp[tsp<stop+1000] 
     return tsp
 
 def getSTLFP(session,area,unit,start,stop,window=100):
-    ByTrialLFP1KHz  = metaloaddata(session,area)['ByTrialLFP1KHz']
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
-    channelIds      = metaloaddata(session,area)['channelIds']
+    ByTrialLFP1KHz  = metaloadvariable(session,area,'ByTrialLFP1KHz')
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
+    channelIds      = metaloadvariable(session,area,'channelIds')
     channel         = channelIds[0,unit-1] # channels are also 1 indexed
     channeldata     = ByTrialLFP1KHz[channel-1,0]
     NUNITS,NTRIALS  = shape(ByTrialSpikesMS)
@@ -235,15 +239,15 @@ def plotSTA(session,area,unit,start,stop,window=100,texttop=False,color='k',labe
 
 def getRaster(session,area,unit,trial):
     #print 'both unit and trial should be 1 indexed'
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     tsp    = ByTrialSpikesMS[unit-1,trial-1]
     y      = zeros(stop-start,dtype=int32)
     y[tsp] = 1
     return y
 
-def plotAllTrials(session,area,unit,start,stop,FS=1000.0,s=4):
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
-    eventsByTrial   = metaloaddata(session,area)['eventsByTrial']
+def plotAllTrials(session,area,unit,start,stop,FS=1000.0,s=4,clip_on=False):
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
+    eventsByTrial   = metaloadvariable(session,area,'eventsByTrial')
     cla()
     isgood = find(eventsByTrial[:,0])+1
     NT = stop-start
@@ -254,7 +258,7 @@ def plotAllTrials(session,area,unit,start,stop,FS=1000.0,s=4):
         if not it in isgood:continue
         spikes = getTrial(session,area,unit,start,stop,it+1)
         tally += 1
-        scatter(spikes/FS,ones(len(spikes))*tally,marker='.',s=s)
+        scatter(spikes/FS,ones(len(spikes))*tally,marker='.',s=s,)
     xlim(start/FS+1,stop/FS+1)
     ylabel('Trial No.')
     ylim(0.5,tally+0.5)
@@ -336,7 +340,7 @@ def plotWaveforms(session,area,unit):
     waveForms = get_waveforms(session,area)
     wfs = waveForms[0,unit-1]
     times = arange(48)/30000.*1000*1000 # in uS
-    toshow = wfs[:,::500]
+    toshow = wfs[:,:100:]
     nshow = shape(toshow)[1]
     for i in range(nshow):
         wf = toshow[:,i]
@@ -344,20 +348,18 @@ def plotWaveforms(session,area,unit):
         t  = arange(48*4)/4./30000.*1000000
         dt = t[argmin(wf)]-400
         t -= dt
-        plot(t,wf,color=(0.1,0.1,0.1),lw=0.5)#color=hsv2rgb(rand()*270+80.,1,1))
-        #plot(times,wf,color=hsv2rgb(rand()*270+80.,1,1))
+        plot(t,wf,color=(0.1,0.1,0.1),lw=0.5)
     xlim(times[0],times[-1])
     xlabel(u'μs')
     ylabel(u'μV')
     nicelimits()
     bareaxis(gca())
     title('Waveforms')
-    #gca().xaxis.labelpad = -10
     gca().yaxis.labelpad = -20
 
 def plotISIhist(session,area,unit,start,stop):
     cla()
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS,NTRIALS = shape(ByTrialSpikesMS)
     isi = []
     for it in range(NTRIALS):
@@ -375,7 +377,7 @@ def plotISIhist(session,area,unit,start,stop):
     gca().yaxis.labelpad = -20
     
 def isimodefreq(session,area,unit,start,stop,FS=1000):
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS,NTRIALS = shape(ByTrialSpikesMS)
     isi = []
     for it in range(NTRIALS):
@@ -387,7 +389,7 @@ def isimodefreq(session,area,unit,start,stop,FS=1000):
     return mf
 
 def plotISIhistHz(session,area,unit,start,stop,FS=1000,style='bar',color='k',nbins=30,label=None,linestyle='-',lw=2):
-    ByTrialSpikesMS = metaloaddata(session,area)['ByTrialSpikesMS']
+    ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS,NTRIALS = shape(ByTrialSpikesMS)
     isi = []
     for it in range(NTRIALS):
@@ -592,6 +594,54 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     xlabel('mm',fontsize=11)
     return cax
     
+def unit_ISI_plot(session,area,unit,epoch=((6,-1000,0),(8,-1000,0)),INFOXPOS=70,LABELSIZE=8,NBINS=20,TMAX=300,INFOYSTART=0,BURST=10):
+    cla()
+    spikes = []
+    for trial in get_good_trials(session):
+        try:
+            e,a,b = epoch
+            spikes.append(cgid.spikes.get_spikes_event(session,area,unit,trial,e,a,b))
+        except:
+            for e,a,b in epoch:
+                spikes.append(cgid.spikes.get_spikes_event(session,area,unit,trial,e,a,b))
+    ISI_events = array(list(flatten(map(diff,spikes))))
+    SNR        = cgid.spikes.get_unit_SNR(session,area,unit)
+    histc,edges = histogram(ISI_events, bins = linspace(0,TMAX,NBINS+1))
+    dx         = diff(edges)[0]
+    bar(edges[:-1]+dx*0.1,histc,width=dx*0.8,color=GATHER[-1],edgecolor=(0,)*4)
+    allisi = array(ISI_events)
+    K   = 20
+    x,y = kdepeak(log(K+allisi[allisi>0]))
+    x   = exp(x)-K
+    y   = y/(K+x)
+    y   = y*len(allisi)*dx
+    plot(x,y,color=RUST,lw=1.5)
+    mean_rate           = sum(map(len,spikes))/float(len(get_good_trials(session))*2)
+    noburst = allisi[allisi>BURST]
+    ISI_cv              = std(noburst)/mean(noburst)
+    burstiness          = sum(allisi<BURST)/float(len(allisi))*100
+    ll                  = 1./mean(allisi)
+    expected_short_isi  = (1.0-exp(-ll*10))*100
+    residual_burstiness = burstiness-expected_short_isi
+    LH = LABELSIZE+4
+    text(INFOXPOS,ylim()[1]-pixels_to_yunits(INFOYSTART   ),'Mean rate = %d Hz'%mean_rate,
+        horizontalalignment='left',
+        verticalalignment  ='bottom',fontsize=LABELSIZE)
+    text(INFOXPOS,ylim()[1]-pixels_to_yunits(INFOYSTART+LH*1),'ISI CV = %0.2f'%ISI_cv,
+        horizontalalignment='left',
+        verticalalignment  ='bottom',fontsize=LABELSIZE)
+    text(INFOXPOS,ylim()[1]-pixels_to_yunits(INFOYSTART+LH*2),'SNR = %0.1f'%SNR,
+        horizontalalignment='left',
+        verticalalignment  ='bottom',fontsize=LABELSIZE)
+    xlabel('ms',fontsize=LABELSIZE)
+    ylabel('No. Events',fontsize=LABELSIZE)
+    fudgey(10)
+    fudgex(5)
+    xlim(0,TMAX)
+    nicex()
+    nicey()
+    simpleaxis() 
+    title('Monkey %s area %s\nsession %s unit %s'%(session[0],area,session[-2:],unit),loc='center',fontsize=7)
 
 
 

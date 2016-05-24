@@ -5,6 +5,7 @@ from neurotools.nlab import *
 from cgid.setup import *
 from cgid.plotting_helper_functions import *
 from pylab import *
+from cgid.data_loader import metaloadvariable
 
 def unitsum(session,area,unit):
     SUPTITLESIZE = 14
@@ -75,7 +76,7 @@ def unitsumfig(session,area,unit,savein='./'):
 def dumpallunits():
     for s,a in sessions_areas():
         print s,a
-        NUNITS = len(metaloaddata(s,a)['unitIds'][0])
+        NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
         print 'No. Units = ',NUNITS
         for i in range(NUNITS):
             print '\t',s,a,i
@@ -132,7 +133,7 @@ def surveyallunits():
     allsnr    = []
     for s,a in sessions_areas():
         print s,a
-        NUNITS = len(metaloaddata(s,a)['unitIds'][0])
+        NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
         print 'No. Units = ',NUNITS
         for u in range(1,1+NUNITS):
             printstats(s,a,u)
@@ -151,7 +152,7 @@ def filterunits():
     prego     = 8,-1000,0 # pre-go
     for s,a in sessions_areas():
         print s,a
-        NUNITS = len(metaloaddata(s,a)['unitIds'][0])
+        NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
         print 'No. Units = ',NUNITS
         for u in range(1,1+NUNITS):
             if not is_unit_on_good_lfp_channel(s,a,u): continue
@@ -186,7 +187,7 @@ def find_very_good_beta_examples():
     prego     = 8,-1000,0 # pre-go
     for s,a in sessions_areas():
         print s,a
-        NUNITS = len(metaloaddata(s,a)['unitIds'][0])
+        NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
         print 'No. Units = ',NUNITS
         for u in range(1,1+NUNITS):
             if not is_unit_on_good_lfp_channel(s,a,u): continue

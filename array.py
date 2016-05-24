@@ -1,8 +1,17 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+
 import cgid.lfp 
 import cgid.tools
 
-from neurotools.array import array_count_critical
+from neurotools.spatial.array import array_count_critical
 from neurotools.tools import warn
+
 
 DEFAULT_SPATIAL_SCALE_CUTOFF = 2.0
 

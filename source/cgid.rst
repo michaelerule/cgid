@@ -6,10 +6,11 @@ Submodules
 
 .. toctree::
 
+   cgid.20160131_wavelength_summary_statistics
+   cgid.20160207_permissive_unit_groups
    cgid.array
    cgid.array_mapper
    cgid.beta
-   cgid.beta_events
    cgid.circulardistributions
    cgid.config
    cgid.data_loader
@@ -21,6 +22,7 @@ Submodules
    cgid.phasetools
    cgid.plotting_helper_functions
    cgid.plotting_unit_summary
+   cgid.results
    cgid.setup
    cgid.spikes
    cgid.tools

@@ -1,12 +1,23 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+
 
 import os
-from cgid.config         import CGID_PACKAGE
-from neurotools.tools    import memoize
-from neurotools.array    import trim_array,trim_array_as_if
-from numpy               import *
-from numpy.linalg.linalg import inv
-from matplotlib.mlab     import find
-from cgid.data_loader    import get_array_map
+
+from numpy                    import *
+from numpy.linalg.linalg      import inv
+from matplotlib.mlab          import find
+
+from neurotools.tools         import memoize
+from neurotools.spatial.array import trim_array,trim_array_as_if
+
+from cgid.config              import CGID_PACKAGE
+from cgid.data_loader         import get_array_map
 
 def getElectrodePositions(session,area):
     # now comes the hard part: identifying electrode locations in 

@@ -1,3 +1,11 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+
 """
 The documentation for the CGID archive format is important
 This archive contains extracted Cued Grasp with Instructed Delay (CGID) 
@@ -71,7 +79,7 @@ waveForms:
 
 availableChannels:
 	a 96x1 array of flags. 1 means that a channel is present, 0 means that it
-	is no. For Gary and Costello, all even numbered channels were discarded,
+	is not. For Gary and Costello, all even numbered channels were discarded,
 	though spikes were collected from all 96 channels. For Rusty and Spike, 
 	PMv has a full 96 channels. M1 and PMd share a single bank of 96 channels,
 	and are hooked up randomly. So a random 50% of M1 and PMd channels are not
@@ -100,42 +108,132 @@ ObjectPresent, GripCue, GoCue, StartMov, and Contact from completed trials
 only are copied over to events with "COMPLETE" appended to the name.
 """
 
+from warnings import warn
+
 from cgid.config       import CGID_ARCHIVE
 from matplotlib.mlab   import find
 from cgid.config       import *
 from scipy.io          import savemat,loadmat
-from neurotools.tools  import *
+import numpy as np
+from numpy import *
+import neurotools.tools
+import neurotools.jobs.cache
+import cgid.tools
+import cgid.lfp
+import cgid.spikes
 
-def metaloaddata(session,area):
+from neurotools.nlab  import memoize
+from neurotools.tools import dowarn,debug
+from matplotlib.cbook import flatten
+
+def archive_name(session,area):
     archive = '%s_%s.mat'%(session,area)
-    dataset = metaloadmat(CGID_ARCHIVE+archive)
-    return dataset    
+    return CGID_ARCHIVE+archive
+
+cgid_matfilecache = {}
+def metaloaddata(session,area):
+    '''
+    Loads a matfile from the provided path, caching it in the global dict
+    "matfilecache" using path as the lookup key.
+    
+    Parameters
+    ----------
+    path : string
+        unique absolute path to matfile to be loaded
+    '''
+    global cgid_matfilecache
+    path = archive_name(session,area)
+    if path in cgid_matfilecache: 
+        return cgid_matfilecache[path]
+    print 'caching',path
+    if dowarn(): print 'loading data...',
+    data = loadmat(path)
+    cgid_matfilecache[path]=data
+    if dowarn(): print 'loaded'
+    return data
+
+@neurotools.jobs.cache.unsafe_disk_cache
+def metaloadvariable(session,area,variable):
+    global cgid_matfilecache
+    path = archive_name(session,area)
+    
+    # if CGID archive is already loaded grab the variable from memory
+    if path in cgid_matfilecache: 
+        return cgid_matfilecache[path][variable]
+        
+    # Otherwise, try to just load the one variable
+    return loadmat(path,variable_names=[variable])[variable]
 
 def preload_cgid():
+    # It's faster to just load the whole archives into memory
+    for session,area in cgid.tools.sessions_areas():
+        prefetched = metaloaddata(session,area)
+    '''
     for s in flatten(sessionnames):
         for a in areas:
             dataset = metaloaddata(s,a)
             print 'preloaded',s,a
-
+    '''
+    # First prefetch individual variables
+    variables = '''
+        README ByTrialLFP1KHz ByTrialSpikesMS UnsegmentedLFP1KHz
+        eventsByTrial spikeTimes unitIds channelIds waveForms
+        availableChannels arrayChannelMap unitQuality'''.split()
+    '''
+    for session,area in cgid.tools.sessions_areas():
+        for variable in variables:
+            prefetched = metaloadvariable(session,area,variable)
+    '''
+    # Then, presets per-channel and per-unit stuff
+    '''
+    ByTrialSpikesMS:
+	    NUNITSxNTRIALS cell array. Each entry is a list of spike times for the 
+	    corresponding cell and trial, in MS, and shifted so that StartTrial 
+	    is time 0
+    spikeTimes: 
+	    1xNUNITS cell array of spike times in seconds. These are raw spike times
+	    for the whole session and have not been segmented into individual trials.
+    waveForms: 
+	    Original waveform data from spike sorting. It is a 1xNUNITS cell array.
+	    Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
+    '''
+    for session,area in cgid.tools.sessions_areas():
+        # prefetch the LFP channels (UnsegmentedLFP1KHz)
+        for ch in get_available_channels(session,area):
+            prefetched = cgid.lfp.get_raw_lfp_session(session,area,ch)
+        for unit in cgid.spikes.get_all_units(session,area):
+            # prefetch spike times
+            prefetched = cgid.spikes.get_spikes_session(session,area,unit)
+            # prefetch waveforms
+            prefetched = get_waveforms(session,area,unit)
+            
+@memoize
 def get_waveforms(session,area,unit=None):   
-    data = metaloaddata(session,area) 
-    if unit is None:
-        return data['waveForms']
-    else:
-        return data['waveForms'][0,unit-1]
+    waveforms = metaloadvariable(session,area,'waveForms')
+    if unit is None: return waveforms
+    return waveforms[0,unit-1]
 
+def get_unitIds(session,area):
+    return metaloadvariable(session,area,'unitIds')[0]
+
+def get_channelIds(session,area):
+    return metaloadvariable(session,area,'channelIds')
+
+def get_availableChannels(session,area):
+    return metaloadvariable(session,area,'availableChannels')
+
+def get_unitQualities(session,area):
+    return metaloadvariable(session,area,'unitQuality')[:,0]
 
 def readme(session,area):
-    data = metaloaddata(session,area)
-    print data['README'][0]
-
+    return metaloadvariable(session,area,'README')[0]
 
 def get_array_map(session,area,removebad=True):
     # there is a problem where bad channels were removed from this
     # array before saving in the archive. If you really want all channes
     # we need the original map -- which i've hard coded here
     if 'SPK' in session and area=='PMv' and removebad==False:
-       return array([[88,  2,  1,  3,  4,  6,  8, 10, 14, 92],
+       return np.array([[88,  2,  1,  3,  4,  6,  8, 10, 14, 92],
                      [65, 66, 33, 34,  7,  9, 11, 12, 16, 18],
                      [67, 68, 35, 36,  5, 17, 13, 23, 20, 22],
                      [69, 70, 37, 38, 48, 15, 19, 25, 27, 24],
@@ -145,43 +243,35 @@ def get_array_map(session,area,removebad=True):
                      [77, 78, 82, 49, 53, 55, 57, 59, 61, 32],
                      [79, 80, 84, 86, 87, 89, 91, 94, 63, 95],
                      [81, -1, 83, 85, -1, 90, -1, 93, 96, -1]], dtype=int32)
-    dataset = metaloaddata(session,area)
-    arrmap = dataset['arrayChannelMap']
+    arrmap = metaloadvariable(session,area,'arrayChannelMap')
     if removebad:
         if (session[:3]=='SPK' and area=='PMv'):
             arrmap[2,6]=-1
     return arrmap
-
 
 def get_trial_event(session,area,trial,event):
     if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     assert trial>0
     debug(trial,event)
-    dataset = metaloaddata(session,area)
-    return dataset['eventsByTrial'][trial-1,event-1]
-
+    return metaloadvariable(session,area,'eventsByTrial')[trial-1,event-1]
 
 def get_valid_trials(session,area=None):
     if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     if area is None:
-        trials  = set(find(metaloaddata(session,'M1' )['eventsByTrial'][:,0])+1)
-        trials &= set(find(metaloaddata(session,'PMv')['eventsByTrial'][:,0])+1)
-        trials &= set(find(metaloaddata(session,'PMd')['eventsByTrial'][:,0])+1)
-        return array(list(trials))
+        trials  = set(find(metaloadvariable(session,'M1' ,'eventsByTrial')[:,0])+1)
+        trials &= set(find(metaloadvariable(session,'PMv','eventsByTrial')[:,0])+1)
+        trials &= set(find(metaloadvariable(session,'PMd','eventsByTrial')[:,0])+1)
+        return np.array(list(trials))
     else:
-        dataset = metaloaddata(session,area)
-        return array(find(1==dataset['eventsByTrial'][:,0]))
-
+        return np.array(find(1==metaloadvariable(session,area,'eventsByTrial')[:,0]))
 
 def get_available_channels(session,area):
     '''
     Gets the list of channels that are available for a sessiona and area
     '''
     if dowarn(): print 'NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    dataset = metaloaddata(session,area)
-    good = find(dataset['availableChannels'][:,0])+1
-    return good
+    return find(metaloadvariable(session,area,'availableChannels')[:,0])+1
 
 def get_bad_channels_and_trials(rule='liberal'):  
     forbid = {'conservative':'''
@@ -388,7 +478,6 @@ def get_good_trials(session,rule='liberal'):
             trials=np.delete(trials,find(trials==bad))
     return trials  
 
-good_trials = get_good_trials
 
 def get_trial_epoch_in_session_ms(session,area,trial,epoch=None):
     ''' 
@@ -515,9 +604,10 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
     '''
     if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     print 'loading data...',
-    dataset = metaloaddata(session,area)
+    availableChannels = metaloadvariable(session,area,'availableChannels')
+    eventsByTrial     = metaloadvariable(session,area,'eventsByTrial')
     print 'done'
-    trialEvents = dataset['eventsByTrial'][trial-1]
+    trialEvents = eventsByTrial[trial-1]
     trialStart  = trialEvents[3]
     eventCode   = trialEvents[event-1]
     dataStart   = eventCode+trialStart+start
@@ -531,7 +621,7 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
     # compile the list of spatial locations
     box,positions = getElectrodePositions(session,area)
     xys = arr([positions[ch] for ch in sorted(list(positions.keys()))])
-    return times,xys,array(data).T,squeeze(dataset['availableChannels'])
+    return times,xys,np.array(data).T,squeeze(availableChannels)
 
 
 def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
@@ -541,7 +631,7 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     if (session,area,event,start,stop,lowf,highf,params) in get_data_all_trials_cache:
         return get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params]
     """
-    Need to abstract loading on neural data from the CGID arrays -- this is 
+    Need to abstract loading of neural data from the CGID arrays -- this is 
     getting too complicated.
     Interface
     request:
@@ -575,9 +665,11 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     from scipy.signal import butter,filtfilt,lfilter
     archive = '%s_%s.mat'%(session,area)
     print 'loading data...',
-    dataset = metaloadmat(CGID_ARCHIVE+archive)
+    eventsByTrial      = metaloadvariable(session,area,'eventsByTrial')
+    availableChannels  = metaloadvariable(session,area,'availableChannels')
+    UnsegmentedLFP1KHz = metaloadvariable(session,area,'UnsegmentedLFP1KHz')
     print 'done'
-    NTRIALS,_ = shape(dataset['eventsByTrial'])
+    NTRIALS,_ = shape(eventsByTrial)
     # design filtering paramters
     # currently 15-30Hz 4th order butterworth zero phase
     # will case on "params" if we ever want to alter this
@@ -588,23 +680,23 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     bandwidth  = highf-lowf;
     wavelength = FS/bandwidth;
     padding    = int(ceil(ORDER*wavelength*5/4));
-    b,a = butter(ORDER,array([lowf,highf])/NYQ,btype='bandpass')
+    b,a = butter(ORDER,np.array([lowf,highf])/NYQ,btype='bandpass')
     alldata = []
     for trial in range(1,NTRIALS+1):
-        trialEvents = dataset['eventsByTrial'][trial-1]
+        trialEvents = eventsByTrial[trial-1]
         trialStart  = trialEvents[3]
         eventCode   = trialEvents[event-1]
         dataStart   = eventCode+trialStart+start
         dataStop    = eventCode+trialStart+stop
         # extracting and filtering the data is the easy part
         data = []
-        for chi,ishere in enumerate(dataset['availableChannels']):
+        for chi,ishere in enumerate(availableChannels):
             if not ishere: continue
-            raw = dataset['UnsegmentedLFP1KHz'][chi][dataStart-padding:dataStop+padding]
+            raw = UnsegmentedLFP1KHz[chi][dataStart-padding:dataStop+padding]
             clipped = hilbert(filtfilt(b,a,raw))[padding:-padding]
             data.append(clipped)
         alldata.append(data)
-    result = (array(alldata).T,dataset['availableChannels'])
+    result = (np.array(alldata).T,availableChannels)
     get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params] = result
     return result
 

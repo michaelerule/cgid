@@ -5,6 +5,7 @@ from neurotools.tools  import memoize,globalize,warn
 from matplotlib.pyplot import *
 from neurotools.plot   import *
 from neurotools.color  import *
+from cgid.circulardistributions import *
 
 def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
     skip=1,saveas=None,hook=None,FPS=30,stabilize=True,extension='.pdf',markersize=1.5,figtitle=None):
@@ -205,11 +206,11 @@ def phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,epoch=None,\
     trial = 2
     tr = trial
     epoch = None
-    fa,fb = estimate_beta_band(session,None,bw=7,doplot=1)
+    fa,fb = 15,30
     fa = int(round(fa))
     fb = int(round(fb))
     close('all')
-    phase_plane_animation_distribution(session,tr,fa=10,fb=45,FPS=Inf,
+    phase_plane_animation_distribution(session,tr,['M1','PMv','PMd'],fa=10,fb=45,FPS=Inf,
     M=100,skip=1,extension='pdf',saveas='cgauss')
     '''
     models = [logpolar_stats,complex_gaussian]

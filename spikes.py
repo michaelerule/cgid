@@ -1,28 +1,60 @@
-'''spiking analysis tools for CGID'''
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# The above two lines should appear in all python source files!
+# It is good practice to include the lines below
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
 
+'''
+spiking analysis tools for CGID
+'''
+
+from warnings import warn
 from cgid.lfp import get_raw_lfp
-from cgid.data_loader import *
-from cgid.unitinfo import allunitsbysession,classification_results
-from cgid.tools import find_all_extension, sessions_areas
-from neurotools.modefind import modefind
-from neurotools.signal import box_filter
 
+from neurotools.stats.modefind  import modefind
+from neurotools.signal.signal   import box_filter
+from neurotools.jobs.cache      import memoize
+from neurotools.tools           import dowarn
+
+from cgid.unitinfo import allunitsbysession,classification_results
+from cgid.tools    import find_all_extension, sessions_areas, neighbors
+
+import cgid.data_loader
+from cgid.data_loader import *
+
+from   numpy import *
+import numpy as np
+
+from  matplotlib.cbook import flatten
+
+def get_all_units(session,area):
+    '''
+    Reports all sorted units (even if they are noise or multiunit)
+    '''
+    spikeTimes = squeeze(etaloadvariable(session,area,'unitIds'))
+    return range(1,len(spikeTimes)+1)
+
+@memoize
 def get_spikes_session(session,area,unit,Fs=1000):
     '''
-    spikeTimes: 
+    spikeTimes:
 	    1xNUNITS cell array of spike times in seconds. These are raw spike times
 	    for the whole session and have not been segmented into individual trials.
 	'''
     if dowarn(): print 'NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    dataset = metaloaddata(session,area)
-    return int32(dataset['spikeTimes'][0,unit-1][:,0]*Fs)
+    spikeTimes = cgid.data_loader.metaloadvariable(session,area,'spikeTimes')
+    return int32(spikeTimes[0,unit-1][:,0]*Fs)
 
+@memoize
 def get_spikes_session_time(session,area,unit,start,stop):
     assert stop>start
     assert start>=0
     spikes = get_spikes_session(session,area,unit)
     return spikes[(spikes>=start)&(spikes<stop)]
 
+@memoize
 def get_spikes_session_filtered_by_epoch(session,area,unit,epoch):
     '''
     spike times from session.
@@ -31,15 +63,16 @@ def get_spikes_session_filtered_by_epoch(session,area,unit,epoch):
     '''
     allspikes = []
     event,est,esp = epoch
-    for tr in get_good_trials(session):
-        t     = get_trial_event(session,area,tr,4)
-        te    = get_trial_event(session,area,tr,event)
+    for tr in cgid.data_loader.get_good_trials(session):
+        t     = cgid.data_loader.get_trial_event(session,area,tr,4)
+        te    = cgid.data_loader.get_trial_event(session,area,tr,event)
         start = t+te+est
         stop  = t+te+esp
         sp = get_spikes_session_time(session,area,unit,start,stop)
         allspikes.append(sp)
-    return array(list(flatten(allspikes)),dtype=int32)
+    return np.array(list(flatten(allspikes)),dtype=int32)
 
+@memoize
 def get_spikes_session_raster(session,area,unit,start,stop,decimate=1):
     '''
     Get spikes as raster for a fixed time window relative to session time
@@ -48,17 +81,18 @@ def get_spikes_session_raster(session,area,unit,start,stop,decimate=1):
     assert stop>start
     assert start>=0
     spikes = get_spikes_session_time(session,area,unit,start,stop)
-    raster = zeros((stop-start)//decimate)
+    raster = np.zeros((stop-start)//decimate)
     raster[(spikes-start)//decimate]=1
     return raster
 
+@memoize
 def get_spikes(session,area,unit,trial):
     if dowarn(): print 'NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     assert trial>0
-    dataset = metaloaddata(session,area)
-    return dataset['ByTrialSpikesMS'][unit-1,trial-1]
+    ByTrialSpikesMS = cgid.data_loader.metaloadvariable(session,area,ByTrialSpikesMS)
+    return ByTrialSpikesMS[unit-1,trial-1]
 
 @memoize
 def get_spikes_event(session,area,unit,trial,event,start,stop):
@@ -66,15 +100,15 @@ def get_spikes_event(session,area,unit,trial,event,start,stop):
     if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
     assert trial>0
-    dataset = metaloaddata(session,area)
-    spikems = dataset['ByTrialSpikesMS'][unit-1,trial-1]
-    te      = get_trial_event(session,area,trial,event)
+    ByTrialSpikesMS = cgid.data_loader.metaloadvariable(session,area,'ByTrialSpikesMS')
+    spikems = ByTrialSpikesMS[unit-1,trial-1]
+    te      = cgid.data_loader.get_trial_event(session,area,trial,event)
     start  += te
     stop   += te
-    if len(spikems)==0: return array(spikems)
+    if len(spikems)==0: return np.array(spikems)
     spikems = spikems[spikems>=start]
     spikems = spikems[spikems<stop]
-    return unique(array(spikems)-start)
+    return np.unique(np.array(spikems)-start)
 
 def get_spikes_epoch(session,area,unit,trial,epoch):
     if type(epoch)==str:
@@ -92,24 +126,21 @@ def get_spikes_epoch(session,area,unit,trial,epoch):
         return get_spikes_event(session,area,unit,trial,*epoch)
     assert 0
 
-get_spikes_times = get_spikes_epoch
-get_spike_times = get_spikes_epoch
-
 def get_spikes_epoch_all_trials(session,area,unit,epoch):
-    trials = get_good_trials(session)
+    trials = cgid.data_loader.get_good_trials(session)
     allspikes = []
     for trial in trials:
         allspikes.append(get_spikes_epoch(session,area,unit,trial,epoch))
-    return array(allspikes)
+    return np.array(allspikes)
 
 def get_good_units(session,area):
-    return array(sorted(list(allunitsbysession[session,area])))
+    return np.array(sorted(list(allunitsbysession[session,area])))
 
 def get_good_high_rate_units(session,area):
     units = get_good_units(session,area)
     ok = set([u for (s,a,u) in cgid.unitinfo.acceptable if (s,a)==(session,area)])
     units = set(units) & ok
-    return array(sorted(list(units)))
+    return np.array(sorted(list(units)))
 
 def get_cgid_units_class(session,area,unitclass='Periodic'):
     '''
@@ -118,7 +149,7 @@ def get_cgid_units_class(session,area,unitclass='Periodic'):
     Burst
     Poisson
     Other
-    Created November 2015 
+    Created November 2015
     See the file Figure_1_ISIs_and_classifications.py
     All Units have at least 200 ISI events between the first second
     and 1s pre-go periods.
@@ -191,11 +222,11 @@ def get_cgid_units_class(session,area,unitclass='Periodic'):
       ('SPK120925','PMv'): {1,22,25,26,35,52,54,82,83,85,86,89,94,140,160,163,166,167,171,172,178,179,181,191,220}}}
     return classifiedunits[unitclass][session,area]
 
+
 def get_channel_ids(session,area):
     warn('NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
-    data = metaloaddata(session,area)
-    return data['channelIds'][0]
-    
+    return cgid.data_loader.metaloadvariable(session,area,'channelIds')[0]
+
 def get_channel_id(session,area,unit):
     warn('NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
     warn('NOTE UNIT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
@@ -205,15 +236,14 @@ get_unit_channel = get_channel_id
 get_channel = get_channel_id
 
 def get_unit_ids(session,area):
-    data = metaloaddata(session,area)
-    return data['unitIds'][0]
+    return cgid.data_loader.metaloadvariable(session,area,'unitIds')[0]
 
 def get_unit_quality(session,area,unit=None):
-    data = metaloaddata(session,area)
+    data = cgid.data_loader.metaloadvariable(session,area,'unitQuality')[:,0]
     if unit is None:
-        return data['unitQuality'][:,0]
+        return data
     else:
-        return data['unitQuality'][:,0][unit-1]
+        return data[unit-1]
 
 def get_good_units_on_channel(session,area,ch):
     warn('NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
@@ -239,42 +269,50 @@ def get_all_units(session,area):
     quality = get_unit_quality(session,area)
     use = find(quality>0)+1
     return use
-    
-def get_spikes_raster(session,area,u,tr,epoch=None):
+
+def get_spikes_raster(session,area,unit,trial,epoch=None):
     if epoch is None: epoch = (6,-1000,6000)
-    e,st,sp = epoch
-    evt = get_trial_event(session,area,tr,e)
-    spikes = get_spikes_epoch(session,area,u,tr,epoch)
-    binned = zeros((sp-st,),dtype=int32)
+    eventID,start,stop = epoch
+    spikes = get_spikes_epoch(session,area,unit,trial,epoch)
+    binned = np.zeros((stop-start,),dtype=int32)
     if len(spikes)>0:
         binned[spikes]=1
     return binned
 
 def get_spikes_raster_all_trials(session,area,unit,epoch):
-    trials = get_good_trials(session)
+    trials = cgid.data_loader.get_good_trials(session)
     allspikes = []
     for trial in trials:
         allspikes.append(get_spikes_raster(session,area,unit,trial,epoch))
-    return array(allspikes)
+    return np.array(allspikes)
+
 
 def get_spike_times_all_trials(session,area,unit,epoch,good=True):
-    trials = get_good_trials(session) if good else get_valid_trials(session)
+    trials = cgid.data_loader.get_good_trials(session) if good \
+        else get_valid_trials(session)
     alltrials = []
     for trial in trials:
-        alltrials.append(get_spike_times(session,area,unit,trial,epoch))
+        alltrials.append(get_spikes_epoch(session,area,unit,trial,epoch))
     return alltrials
+
 
 def get_all_good_trial_spike_times(session,area,unit,epoch):
     return get_spike_times_all_trials(session,area,unit,epoch,good=True)
 
+
+@memoize
 def get_all_good_spike_times(session,area,tr,epoch):
     spikes = [get_spikes_epoch(session,area,u,tr,epoch) for u in get_good_units(session,area)]
     return spikes
 
+
+@memoize
 def get_all_good_spike_rasters(session,area,tr,epoch):
     spikes = [get_spikes_raster(session,area,u,tr,epoch) for u in get_good_units(session,area)]
     return spikes
 
+
+@memoize
 def get_MUA_spikes(session,area,tr,epoch,ch=None,fsmooth=None,Fs=1000):
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
@@ -282,41 +320,49 @@ def get_MUA_spikes(session,area,tr,epoch,ch=None,fsmooth=None,Fs=1000):
         use = get_good_units(session,area)
     else:
         use = get_good_units_on_channel(session,area,ch)
-    if len(use)>0: 
-        spikes = array([get_spikes_raster(session,area,u,tr,epoch) for u in use])
-        mua = mean(spikes,0)*Fs
+    if len(use)>0:
+        spikes = np.array([get_spikes_raster(session,area,u,tr,epoch) for u in use])
+        mua = np.mean(spikes,0)*Fs
         if not fsmooth is None:
             mua = bandfilter(mua,fb=fsmooth)
     else:
-        mua = zeros((sp-st,),dtype=float32)
+        mua = np.zeros((sp-st,),dtype=float32)
     return mua
 
 get_good_MUA_spikes = get_MUA_spikes
 get_MUA_good_spikes = get_MUA_spikes
 
-def get_all_MUA_spikes(s,a,tr,epoch,fsmooth=5):
-    return array([get_MUA_spikes(s,a,tr,epoch,ch,fsmooth) for ch in get_available_channels(s,a)])
 
+@memoize
+def get_all_MUA_spikes(s,a,tr,epoch,fsmooth=5):
+    return np.array([get_MUA_spikes(s,a,tr,epoch,ch,fsmooth) for ch in get_available_channels(s,a)])
+
+
+@memoize
 def get_all_MUA_spikes_all_areas(session,trial,epoch,fsmooth=5):
     allMUA = []
     for area in areas:
         for u in get_good_units(session,area):
             allMUA.append(get_spikes_raster(session,area,u,trial,epoch))
-    MUA = array(allMUA)*Fs
+    MUA = np.array(allMUA)*Fs
     if not fsmooth is None:
-        MUA = array([bandfilter(x,fb=fsmooth) for x in MUA])
+        MUA = np.array([bandfilter(x,fb=fsmooth) for x in MUA])
     return MUA
 
+
+@memoize
 def get_all_MUA_spikes_all_areas_average(session,trial,epoch,fsmooth=5,Fs=1000):
     allMUA = []
     for area in areas:
         for u in get_good_units(session,area):
             allMUA.append(get_spikes_raster(session,area,u,trial,epoch))
-    MUA = mean(allMUA,0)*Fs
+    MUA = np.mean(allMUA,0)*Fs
     if not fsmooth is None:
         MUA = bandfilter(MUA,fb=fsmooth)
     return MUA
 
+
+@memoize
 def get_MUA_all_spikes(session,area,tr,ch=None,fsmooth=5,epoch=None):
     assert 0 # don't use it
     if epoch is None: epoch = (6,-1000,6000)
@@ -325,18 +371,22 @@ def get_MUA_all_spikes(session,area,tr,ch=None,fsmooth=5,epoch=None):
         use = get_all_units(session,area)
     else:
         use = get_all_units_on_channel(session,area,ch)
-    if len(use)>0: 
-        spikes = array([get_spikes_raster(session,area,u,tr,epoch) for u in use])
+    if len(use)>0:
+        spikes = np.array([get_spikes_raster(session,area,u,tr,epoch) for u in use])
         mua = sum(spikes,0)
         mua = bandfilter(mua,fb=fsmooth)
     else:
-        mua = zeros((sp-st,),dtype=float32)
+        mua = np.zeros((sp-st,),dtype=float32)
     return mua
 
+
+@memoize
 def get_all_MUA_all_spikes(s,a,tr,fsmooth=5,epoch=None):
     assert 0 # don't use it
-    return array([get_MUA_all_spikes(s,a,tr,ch,fsmooth,epoch) for ch in get_available_channels(s,a)])
+    return np.array([get_MUA_all_spikes(s,a,tr,ch,fsmooth,epoch) for ch in get_available_channels(s,a)])
 
+
+@memoize
 def get_all_good_spike_times_all_areas(session,trial,epoch):
     allspikes = []
     for area in areas:
@@ -344,6 +394,8 @@ def get_all_good_spike_times_all_areas(session,trial,epoch):
         allspikes.extend(spikes)
     return allspikes
 
+
+@memoize
 def get_all_good_spike_rasters_all_areas(session,trial,epoch):
     allspikes = []
     for area in areas:
@@ -354,54 +406,57 @@ def get_all_good_spike_rasters_all_areas(session,trial,epoch):
 def spikejitter(x,jitter=50):
     '''
     accepts and returns raster.
-    spikes might be jittered outside of range of x, in which case they 
+    spikes might be jittered outside of range of x, in which case they
     are removed.
     '''
     t = find(x)
     t = t+(int32(rand(len(t))*(2*jitter+1))-jitter)
-    copy = zeros(shape(x),dtype=int32)
+    copy = np.zeros(shape(x),dtype=int32)
     t = t[(t>=0) & (t<len(x))]
     copy[t]=1
     return copy
 
+
+@memoize
 def get_spikes_for_all_units_all_areas(s,epoch,B=None,use=None,decimate=1):
     if epoch is None: epoch = 6,-1000,6000 # whole trial
     e,t0,t1 = epoch
-    trials = get_good_trials(s)
+    trials = cgid.data_loader.get_good_trials(s)
     allspikes = defaultdict(list)
     for a in areas:
         for tr in trials:
-            t = get_trial_event(s,a,tr,4)+get_trial_event(s,a,tr,e)
+            t = cgid.data_loader.get_trial_event(s,a,tr,4)+\
+                cgid.data_loader.get_trial_event(s,a,tr,e)
             for u in get_good_units(s,a) if use is None else use[a]:
                 raster = get_spikes_session_raster(s,a,u,t+t0,t+t1,
                     decimate=decimate)
                 allspikes[a,u].append(raster)
     return allspikes
 
+@memoize
 def get_unit_SNR(session,area,unit):
     '''
     Defined as in Vargas-Irwin and Donoghue 2007
-    SNR = 0.5 * (peak-trough) / std( first time-bin )
+    SNR = 0.5 * (peak-trough) / np.std( first time-bin )
     '''
-    waveforms = get_waveforms(session,area,unit)
-    noise     = std(waveforms[0,:])
-    signal    = 0.5*(mean(map(np.max,waveforms))-mean(map(np.min,waveforms)))
+    waveforms = cgid.data_loader.get_waveforms(session,area,unit)
+    noise     = np.std(waveforms[0,:])
+    signal    = 0.5*(np.mean(map(np.max,waveforms))-np.mean(map(np.min,waveforms)))
     return signal/noise
 
-from neurotools.tools import memoize
 @memoize
 def get_spikes_and_lfp_all_trials(session,area,unit,epoch):
     spikes = get_spikes_epoch_all_trials(session,area,unit,epoch)
     ch     = get_unit_channel(session,area,unit)
-    lfps   = array([get_raw_lfp(session,area,ch,tr,epoch) for tr in good_trials(session)])
+    lfps   = np.array([get_raw_lfp(session,area,ch,tr,epoch) for tr in good_trials(session)])
     return spikes, lfps
 
 
-
+@memoize
 def unit_class_summary(group,verbose=True):
     '''
     Extracts summary statistics for a tagged group of neurons.
-    This is hard coded to use unit categories defined at 
+    This is hard coded to use unit categories defined at
     /home/mrule/Desktop/Workspace2/CGID_unit_classification/20141106 manually sort isi wf acorr isolated units/
     >>>> useable,thin,thick,missing = unit_class_summary(group,verbose=True)
     '''
@@ -417,7 +472,7 @@ def unit_class_summary(group,verbose=True):
             number = int(number.split('(')[1][:-1])
             foundunits.append((session,area,number))
         except:
-            print 'found file',u,'is not a unit summary figure.'    
+            print 'found file',u,'is not a unit summary figure.'
     if verbose:
         print ''
         print len(foundunits),'units categorized as',group,'(not all may be useable)'
@@ -454,6 +509,8 @@ def unit_class_summary(group,verbose=True):
             missing.append((s,a,u))
     return useable,thin,thick,missing
 
+
+@memoize
 def poisson_KS(allisi):
     '''
     KS statistics for an ISI distribution against the Poisson (Exponential)
@@ -461,13 +518,15 @@ def poisson_KS(allisi):
     '''
     NMAX = max(1000,np.max(allisi)*2)
     K = float(len(allisi))
-    CDF = cumsum(array([sum(allisi==n) for n in range(NMAX)])/K)
-    ll = 1./mean(allisi)
+    CDF = cumsum(np.array([sum(allisi==n) for n in range(NMAX)])/K)
+    ll = 1./np.mean(allisi)
     CDF2 = 1.0-exp(-ll*arange(NMAX))
     difference = CDF-CDF2
     KS = np.max(abs(difference))
     return KS
 
+
+@memoize
 def remove_bursts(spikes, duration=5):
     '''
     remove spikes too close together
@@ -490,8 +549,9 @@ def remove_bursts(spikes, duration=5):
                 newtrain.append(spike)
             previous = spike
         results.append(newtrain)
-    return array(results)
+    return np.array(results)
 
+@memoize
 def get_isi_stats(spikes,epoch,FS=1000,BURST_CUTOFF_MS=10,MIN_NISI=100):
     '''
     Computes a statistical summary of an ISI distribution.
@@ -501,23 +561,23 @@ def get_isi_stats(spikes,epoch,FS=1000,BURST_CUTOFF_MS=10,MIN_NISI=100):
     event,start,stop = epoch
     duration = (stop-start)/float(FS)
     ISI_events = list(flatten(map(diff,spikes)))
-    allisi = array(ISI_events)
+    allisi = np.array(ISI_events)
     if len(ISI_events)<MIN_NISI: return None
     mode = FS/modefind(allisi)
     mean_rate = (sum(map(len,spikes))) / float(len(spikes)) / duration
-    ISI_cv = std(allisi)/mean(allisi)
+    ISI_cv = np.std(allisi)/np.mean(allisi)
     KS = poisson_KS(allisi)
     burstiness = sum(allisi<BURST_CUTOFF_MS)/float(len(allisi))*100
     burst_free_spikes     = remove_bursts(spikes, duration=BURST_CUTOFF_MS)
     burst_free_ISI_events = list(flatten(map(diff,burst_free_spikes)))
-    burst_free_allisi     = array(burst_free_ISI_events)
+    burst_free_allisi     = np.array(burst_free_ISI_events)
     burst_free_mode   = FS/modefind(burst_free_allisi)
     burst_free_mean_rate = (sum(map(len,burst_free_spikes))) / float(len(burst_free_spikes)) / duration
-    burst_free_ISI_cv    = std(burst_free_allisi)/mean(burst_free_allisi)
+    burst_free_ISI_cv    = np.std(burst_free_allisi)/np.mean(burst_free_allisi)
     return burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode
 
 @memoize
-def get_isi_stats_unit_epoch(session,area,unit,epoch):
+def get_isi_stats_unit_epoch(session,area,unit,epoch,MIN_NISI):
     '''
     Computes a statistical summary of an ISI distribution for given unit
     for all good trials for given epoch
@@ -527,13 +587,16 @@ def get_isi_stats_unit_epoch(session,area,unit,epoch):
     spikes = []
     for trial in good_trials(session):
         spikes.append(cgid.spikes.get_spikes_event(session,area,unit,trial,event,start,stop))
-    return get_isi_stats(spikes,epoch)
+    return get_isi_stats(spikes,epoch,MIN_NISI=MIN_NISI)
 
+@memoize
+def get_unfiltered_mua(units,epoch):
+    spikes = np.array([cgid.spikes.get_spikes_raster_all_trials(s,a,u,epoch) for (s,a,u) in units])
+    return np.mean(spikes,0)
 
 @memoize
 def get_boxfiltered_mua(units,epoch,box=25):
-    spikes = array([cgid.spikes.get_spikes_raster_all_trials(s,a,u,epoch) for (s,a,u) in units])
-    MUA    = array([box_filter(tr,25) for tr in mean(spikes,0)])
+    MUA    = np.array([box_filter(tr,25) for tr in get_unfiltered_mua(units,epoch)])
     return MUA
 
 
@@ -546,8 +609,97 @@ def get_epoch_firing_rate(session,area,unit,epoch):
     rate = float(n_total_spikes*Fs)/n_total_times
     return rate
 
+@memoize
+def locate_multiunit_hash_on_channel(session,area,channel):
+    '''
+    For a given session, area, and channel, determines which unit
+    ID (1-indexed) corresponds to the multi-unit hash on that channel.
+    Note that this may not always be available. Note that some
+    "sorted" units may also be multi-unit
+    '''
+    garbage1 = get_unitQualities(session,area)==0
+    garbage2 = get_unitIds(session,area)==0
+    assert all(garbage1.T==garbage2)
+    # note: channelIds are 1-indexed
+    thischannel = cgid.data_loader.get_channelIds(session,area)==channel
+    # we use 1-indexing for units, so an offset is added
+    multiunit_hash = find(thischannel.T & garbage1)+1
+    assert len(multiunit_hash)==1
+    unit = multiunit_hash[0]
+    return unit
 
+@memoize
+def locate_multiunits_on_channel(session,area,channel):
+    '''
+    Any channel may have one or more units marked as multi-unit.
+    This code locates them.
+    '''
+    garbage1 = get_unitQualities(session,area)==0
+    garbage2 = get_unitIds(session,area)==0
+    assert all(garbage1.T==garbage2)
+    # These are also multi-unit, but not in the "hash" group
+    garbage3 = get_unitQualities(session,area)==1
+    # note: channelIds are 1-indexed
+    thischannel = cgid.data_loader.get_channelIds(session,area)==channel
+    # we use 1-indexing for units, so an offset is added
+    units = find( thischannel.T & (garbage1 | garbage3) )+1
+    return units
 
+@memoize
+def get_hash_on_channel(session,area,trial,channel,epoch):
+    '''
+    Returns the multi-unit hash (if available) on the specified channel
+    Returns a 1ms binned count
+    '''
+    unit = locate_multiunit_hash_on_channel(session,area,channel)
+    return get_spikes_raster(session,area,unit,trial,epoch)
 
+@memoize
+def get_multiunit_on_channel(session,area,trial,channel,epoch):
+    '''
+    Returns the multi-unit hash (if available) on the specified channel
+    Returns a 1ms binned count
+    '''
+    units = locate_multiunits_on_channel(session,area,channel)
+    return sum([get_spikes_raster(session,area,unit,trial,epoch) for unit in units],0)
 
+@memoize
+def get_all_spikes_on_channel(session,area,trial,channel,epoch):
+    '''
+    Returns ALL threshold crossing, including noise and multi-unit
+    has as well as potentially well isolated units, on a given
+    channel.
+    Returns a 1ms binned count
+    '''
+    # we use 1-indexing for units, so an offset is added
+    units = find(cgid.data_loader.get_channelIds(session,area)==channel) + 1
+    if len(units)<1:
+        e,a,b = epoch
+        return np.zeros(b-a)
+    return sum([get_spikes_raster(session,area,unit,trial,epoch) for unit in units],0)
 
+@memoize
+def get_all_other_spikes_on_channel(session,area,unit,trial,epoch):
+    '''
+    Returns ALL threshold crossing, including noise and multi-unit
+    has as well as potentially well isolated units, on a given
+    channel. EXCLUDING the unit passed as argument.
+    Returns a 1ms binned count
+    '''
+    # we use 1-indexing for units, so an offset is added
+    channel = get_channel(session,area,unit)
+    units   = find(cgid.data_loader.get_channelIds(session,area)==channel) + 1
+    units   = units[units!=unit]
+    if len(units)>0:
+        return sum([get_spikes_raster(session,area,u,trial,epoch) for u in units],0)
+    # Special case, we need to fake it!
+    return 0*get_spikes_raster(session,area,unit,trial,epoch)
+
+@memoize
+def get_neighbor_MUA(session,area,unit,trial,epoch):
+    '''
+    Version 0.2
+    '''
+    channel = get_channel(session,area,unit)
+    nn = neighbors(session,area,False)[channel]
+    return sum([get_all_spikes_on_channel(session,area,trial,channel,epoch) for channel in nn],0)

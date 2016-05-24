@@ -8,31 +8,28 @@ from matplotlib.pyplot import *
 from numpy import *
 from neurotools.plot import *
  
-from cgid.data_loader import get_good_trials,get_good_channels
-from cgid.lfp import get_filtered_lfp
-from cgid.setup import areas
-
 import numpy as np
-from cgid.lfp                import get_raw_lfp_session, get_filtered_lfp
-from cgid.spikes             import get_spikes_session_filtered_by_epoch,get_unit_channel
-from cgid.data_loader        import get_trial_event, good_trials
-from neurotools.signal       import bandfilter, get_edges
-from neurotools.tools        import wait
-from numpy.core.numeric      import convolve
-from numpy.lib.function_base import diff
-from matplotlib.pyplot       import clf,axvspan,plot,ylim,axhline,draw
-from neurotools.tools        import memoize
-
+from numpy.core.numeric       import convolve
+from numpy.lib.function_base  import diff
+from matplotlib.pyplot        import clf,axvspan,plot,ylim,axhline,draw
 from scipy.signal.signaltools import *
-from numpy import *
-from cgid.spikes import *
+
+from neurotools.signal.signal import bandfilter, get_edges
+from neurotools.tools         import wait
+from neurotools.tools         import memoize
+from neurotools.signal.ppc    import *
+
+from cgid.setup               import areas
+from cgid.lfp                 import get_raw_lfp_session, get_filtered_lfp
+from cgid.spikes              import get_spikes_session_filtered_by_epoch,get_unit_channel
+from cgid.data_loader         import get_trial_event,get_good_trials,get_good_channels
 
 @memoize
 def get_beta_peak(session,area,epoch,fa,fb):
     # determine beta peak
     Fs=1000
     allspec=[]
-    for trial in good_trials(session):
+    for trial in get_good_trials(session):
         x = get_all_raw_lfp(session, area, trial, epoch)
         f,mts = multitaper_spectrum(x,5,Fs)
         allspec.append(mts)
@@ -186,7 +183,7 @@ def get_high_beta_events(session,area,channel,epoch,
     signal = get_raw_lfp_session(session,area,channel)
     
     # esimate threshold for beta events
-    beta_trials = [get_filtered_lfp(session,area,channel,t,(6,-1000,0),lowf,highf) for t in good_trials(session)]
+    beta_trials = [get_filtered_lfp(session,area,channel,t,(6,-1000,0),lowf,highf) for t in get_good_trials(session)]
     threshold   = np.std(beta_trials)*THSCALE
     print 'threshold=',threshold
     
@@ -194,7 +191,7 @@ def get_high_beta_events(session,area,channel,epoch,
     event,start,stop = epoch
     all_events = []
     all_high_beta_times = []
-    for trial in good_trials(session):
+    for trial in get_good_trials(session):
         evt        = get_trial_event(session,area,trial,event)
         trialstart = get_trial_event(session,area,trial,4)
         epochstart = evt + start + trialstart
@@ -239,7 +236,7 @@ def get_high_and_low_beta_spikes(session,area,unit,epoch,fa,fb):
     threshold,events = get_high_beta_events(session,area,get_unit_channel(session,area,unit),epoch,lowf=fa,highf=fb)
     spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
     n_total_spikes     = len(spikes)
-    n_total_times      = len(good_trials(session))*(epoch[-1]-epoch[-2])
+    n_total_times      = len(get_good_trials(session))*(epoch[-1]-epoch[-2])
     events = array(events)
     if shape(events)[0]==0:
         print 'NO EVENTS!!!!!!!'
@@ -282,7 +279,7 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
 
     n_total_spikes     = len(spikes)
-    n_total_times      = len(good_trials(session))*(epoch[-1]-epoch[-2])
+    n_total_times      = len(get_good_trials(session))*(epoch[-1]-epoch[-2])
 
     events = array(events)
     if shape(events)[0]==0:

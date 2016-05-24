@@ -13,35 +13,41 @@
 
 /* -- page layout ----------------------------------------------------------- */
 
+html {
+  height: 100%;
+}
+body, document, documentwrapper {
+    min-height: 100%;
+}
 body {
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
-                 'Verdana', sans-serif;
+    font-family: Gill Sans,Gill Sans MT,Calibri,sans-serif;
     font-size: 14px;
     letter-spacing: -0.01em;
     line-height: 150%;
     text-align: center;
     background-color: white;
-    background-image: url(background_b01.png);
     color: black;
     padding: 0;
-    border-right: 1px solid #336699;
-    border-left: 1px solid #336699;
 
     margin: 0px 40px 0px 40px;
 }
 
 div.document {
-    background-color: white;
+    background-color: #fff;
     text-align: left;
-    background-repeat: repeat-x;
-
     -moz-box-shadow: 2px 2px 5px #000;
     -webkit-box-shadow: 2px 2px 5px #000;
+    height: 100%;
+}
+
+div.documentwrapper {
+    background-color: #333;
 }
 
 div.bodywrapper {
     margin: 0 0 0 240px;
     border-left: 1px solid #ccc;
+    background-color: #fff;
 }
 
 div.body {
@@ -51,16 +57,14 @@ div.body {
 
 div.related {
     font-size: 1em;
-
     -moz-box-shadow: 2px 2px 5px #000;
     -webkit-box-shadow: 2px 2px 5px #000;
 }
 
 div.related ul {
-    background-color: #336699;
+    background-color: #333;
     height: 100%;
     overflow: hidden;
-    border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
 
@@ -90,29 +94,41 @@ div.related ul li a:hover {
 }
 
 div.sphinxsidebarwrapper {
-    padding: 0;
+    padding: 12px;
+    min-height: 100%;
 }
 
 div.sphinxsidebar {
-    margin: 0;
-    padding: 0.5em 12px 12px 12px;
-    width: 210px;
+    margin: -1px 0 -1px 0;
+    padding: 0px;
+    width: 240px;
     font-size: 1em;
     text-align: left;
+    background-color: #333;
+    min-height: 100%;
+}
+
+div.sphinxsidebar p {
+    color:#fff;
 }
 
 div.sphinxsidebar h3, div.sphinxsidebar h4 {
     margin: 1em 0 0.5em 0;
     font-size: 1em;
-    padding: 0.1em 0 0.1em 0.5em;
-    color: white;
-    border: 1px solid #336699;
-    background-color: #336699;
+    padding: 0.1em 0.5em 0.1em 1em;
+    color: #333;
+    border: 1px solid #333;
+    background-color: #fff;
+    border-radius: 300px;
+    line-height:30px;
+    font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;
+	font-size: 120%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 700;
+	line-height: 28.5px;
 }
 
-div.sphinxsidebar h3 a {
-    color: white;
-}
 
 div.sphinxsidebar ul {
     padding-left: 1.5em;
@@ -126,24 +142,24 @@ div.sphinxsidebar ul ul {
 }
 
 div.sphinxsidebar input {
-    border: 1px solid #336699;
+    border: 1px solid #333;
 }
 
 div.footer {
     background-color: white;
-    color: #336699;
+    color: #333;
     padding: 3px 8px 3px 0;
     clear: both;
     font-size: 0.8em;
     text-align: right;
-    border-bottom: 1px solid #336699;
+    border-bottom: 1px solid #333;
 
     -moz-box-shadow: 2px 2px 5px #000;
     -webkit-box-shadow: 2px 2px 5px #000;
 }
 
 div.footer a {
-    color: #336699;
+    color: #333;
     text-decoration: underline;
 }
 
@@ -154,12 +170,12 @@ p {
 }
 
 a {
-    color: #336699;
+    color: #333;
     text-decoration: none;
 }
 
 a:hover {
-    color: #336699;
+    color: #333;
     text-decoration: underline;
 }
 
@@ -168,7 +184,10 @@ div.body a {
 }
 
 h1, h2, h3 {
-    color: #336699;
+    color: #333;
+    font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;
+    font-size:120%;
+    font-weight: 700;
 }
 
 h1 {
@@ -181,7 +200,7 @@ h2 {
     margin: 1.3em 0 0.2em 0;
     font-size: 1.35em;
     padding-bottom: .5em;
-    border-bottom: 1px solid #336699;
+    border-bottom: 1px solid #333;
 }
 
 h3 {

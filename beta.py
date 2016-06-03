@@ -7,7 +7,7 @@ Routines related to extracting and processing beta
 from matplotlib.pyplot import *
 from numpy import *
 from neurotools.plot import *
- 
+
 import numpy as np
 from numpy.core.numeric       import convolve
 from numpy.lib.function_base  import diff
@@ -20,7 +20,7 @@ from neurotools.tools         import memoize
 from neurotools.signal.ppc    import *
 
 from cgid.setup               import areas
-from cgid.lfp                 import get_raw_lfp_session, get_filtered_lfp
+from cgid.lfp                 import *
 from cgid.spikes              import get_spikes_session_filtered_by_epoch,get_unit_channel
 from cgid.data_loader         import get_trial_event,get_good_trials,get_good_channels
 
@@ -142,12 +142,12 @@ def get_stored_beta_peak(session,area,epoch):
 
 def get_mean_beta_peak(session,epoch):
     return mean([get_stored_beta_peak(session,a,epoch) for a in areas])
-    
+
 def get_mean_beta_peak_full_trial(session):
     return mean([get_stored_beta_peak(session,a,epoch) for a in areas for epoch in [(6,-1000,0),(8,-1000,0)]])
-    
-    
-    
+
+
+
 @memoize
 def get_high_beta_events(session,area,channel,epoch,
     MINLEN  = 40,   # ms
@@ -160,33 +160,33 @@ def get_high_beta_events(session,area,channel,epoch,
     audit   = False
     ):
     '''
-    get_high_beta_events(session,area,channel,epoch) will identify periods of 
+    get_high_beta_events(session,area,channel,epoch) will identify periods of
     elevated beta-frequency power for the given channel.
-    
+
     Thresholds are selected per-channel based on all available trials.
     The entire trial time is used when estimating the average beta power.
     To avoid recomputing, we extract beta events for all trials at once.
-    
+
     By default events that extend past the edge of the specified epoch will
     be clipped. Passing clip=False will discard these events.
-    
-    returns the event threshold, and a list of event start and stop 
+
+    returns the event threshold, and a list of event start and stop
     times relative to session time (not per-trial or epoch time)
-    
+
     passing audit=True will enable previewing each trial and the isolated
     beta events.
-    
+
     >>> thr,events = get_high_beta_events('SPK120925','PMd',50,(6,-1000,0))
     '''
 
     # get LFP data
     signal = get_raw_lfp_session(session,area,channel)
-    
+
     # esimate threshold for beta events
     beta_trials = [get_filtered_lfp(session,area,channel,t,(6,-1000,0),lowf,highf) for t in get_good_trials(session)]
     threshold   = np.std(beta_trials)*THSCALE
     print 'threshold=',threshold
-    
+
     N = len(signal)
     event,start,stop = epoch
     all_events = []
@@ -209,7 +209,7 @@ def get_high_beta_events(session,area,channel,epoch,
         if clip:
             E[0,:] = np.maximum(E[0,:],epochstart)
             E[1,:] = np.minimum(E[1,:],epochstop )
-        else: 
+        else:
             E = E[:,(E[1,:]<=epochstop)&(E[0,:]>=epochstart)]
         if audit:
             clf()
@@ -229,7 +229,7 @@ def get_high_beta_events(session,area,channel,epoch,
     return threshold, all_events
 
 @memoize
-def get_high_and_low_beta_spikes(session,area,unit,epoch,fa,fb):   
+def get_high_and_low_beta_spikes(session,area,unit,epoch,fa,fb):
     '''
     threshold, event_spikes, nonevent_spikes = get_high_and_low_beta_spikes(session,area,unit,epoch,ishighbeta)
     '''
@@ -255,7 +255,7 @@ def get_high_low_ppc_unit(s,a,u,e,fa,fb):
     freqs, event_ppc, nonevent_ppc, threshold = get_high_low_ppc_unit(s,a,u,e,fa,fb)
     '''
     # get beta LFP.
-    # No need to restrict this to high or low beta, 
+    # No need to restrict this to high or low beta,
     # restricting the spikes will accomplish that
     ch = get_channel(s,a,u)
     lfp = get_raw_lfp_session(s,a,ch)
@@ -295,8 +295,3 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     nonevent_rate      = Fs*float(n_nonevent_spikes)/n_nonevent_times
     print session,area,unit,epoch,event_rate,nonevent_rate, threshold
     return threshold, event_rate, nonevent_rate
-
-
-    
-    
-    

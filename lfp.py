@@ -9,12 +9,9 @@ from __future__ import print_function
 
 from neurotools.tools import memoize
 from cgid.data_loader import *
-
 from neurotools.signal.signal     import *
 from neurotools.signal.multitaper import *
-
 from scipy.signal.signaltools import *
-
 import pickle
 import cgid.tools
 import cgid.data_loader
@@ -106,7 +103,6 @@ def get_all_filtered_lfp(session,area,tr,epoch,fa,fb,onlygood,Fs=1000):
             for ch in cgid.data_loader.get_available_channels(
                 session,area)])
 
-@memoize
 def get_analytic_lfp(session,area,tr,ch,epoch,fa,fb,Fs=1000):
     if fa is None and fb is None:
         print('need at least one frequency bound')
@@ -322,6 +318,7 @@ def get_array_packed_lfp_filtered(session,area,trial,epoch,fa,fb):
     x = real(cgid.tools.pack_array_data_interpolate(session,area,x))
     return x
 
+@memoize
 def get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb):
     '''
     Retrieves LFP signals and packs them as they are arranged in the

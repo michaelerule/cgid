@@ -1,14 +1,13 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import print_function
 
 """
 The documentation for the CGID archive format is important
-This archive contains extracted Cued Grasp with Instructed Delay (CGID) 
+This archive contains extracted Cued Grasp with Instructed Delay (CGID)
 data for session RUS120521 area PMv. The variables are as follows:
 
 README:
@@ -16,34 +15,34 @@ README:
 
 ByTrialLFP1KHz:
 	LFP data segmented by trial. This is a NCHANNELx1 cell array. Most areas
-	do not have all channels, and only channel numbers that were recorded 
+	do not have all channels, and only channel numbers that were recorded
 	are stored. Each channel is a NTRIALx7000 array. This is seven seconds of
-	LFP data at 1KHz starting at 1 second before "ObjectPresent". Note: 
+	LFP data at 1KHz starting at 1 second before "ObjectPresent". Note:
 	for rusty and spike, the StartTrial events occur about 1 second before
 	object presentation. For Gary, they occur about 15ms before object
-	presentation. ObjectPresent is the first consistent task event marker 
+	presentation. ObjectPresent is the first consistent task event marker
 	available for alignment. Trials that did not advance as far as object
 	presentation have been discarded.
-	
+
 ByTrialSpikesMS:
-	NUNITSxNTRIALS cell array. Each entry is a list of spike times for the 
-	corresponding cell and trial, in MS, and shifted so that StartTrial 
+	NUNITSxNTRIALS cell array. Each entry is a list of spike times for the
+	corresponding cell and trial, in MS, and shifted so that StartTrial
 	is time 0
 
 UnsegmentedLFP1KHz:
-	This is the original LFP data. It is stored in a 96x1 cell array, where 
-	the index into the cell array corresponds to the LFP channel number. 
-	For most arrays, not all channels are available. Missing channels do 
-	not contiain data. Each channel entry is a NSAMPLESx1 sequence of LFP 
+	This is the original LFP data. It is stored in a 96x1 cell array, where
+	the index into the cell array corresponds to the LFP channel number.
+	For most arrays, not all channels are available. Missing channels do
+	not contiain data. Each channel entry is a NSAMPLESx1 sequence of LFP
 	values sampled at 1KHz. These samples have been downsampled from 30KHz
 	in two stages. First, a 500Hz 4th order low-pass Butterworth filter is
-	used, and the LFPs are resampled at 2KHz. Second, Matlab Decimate is 
-	used to downsample them to 1KHz, which applies a 400Hz cutoff 
-	Chebyshev filter. 
+	used, and the LFPs are resampled at 2KHz. Second, Matlab Decimate is
+	used to downsample them to 1KHz, which applies a 400Hz cutoff
+	Chebyshev filter.
 
-eventsByTrial: 
-	NTRIALSx12 trial summary information. 
-	The 1 column contains a flag indicating which trials are good. 
+eventsByTrial:
+	NTRIALSx12 trial summary information.
+	The 1 column contains a flag indicating which trials are good.
 	The 2 column contains a flag indicating object type. 0=KG 1=TC
 	The 3 column contains a flag indicating grip type. 0=Pre 1=Pow
 	the 4 column contains time (MS) that we start taking data for a trial
@@ -52,16 +51,16 @@ eventsByTrial:
 		-1. Most error trials will have missing events. The event codes, in
 		order, are:
 		5	StartTrial
-		6	ObjectPresent 
-		7	GripCue 
-		8	GoCue 
-		9	StartMov 
-		10	Contact 
-		11	BeginLift 
+		6	ObjectPresent
+		7	GripCue
+		8	GoCue
+		9	StartMov
+		10	Contact
+		11	BeginLift
 		12	EndLift
 		13	Reward
 
-spikeTimes: 
+spikeTimes:
 	1xNUNITS cell array of spike times in seconds. These are raw spike times
 	for the whole session and have not been segmented into individual trials.
 
@@ -73,14 +72,14 @@ channelIds:
 	1xNUNITS array of channel IDs. A unit can be identified as "unit [unitID]
 	on channel [channelID]".
 
-waveForms: 
+waveForms:
 	Original waveform data from spike sorting. It is a 1xNUNITS cell array.
 	Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
 
 availableChannels:
 	a 96x1 array of flags. 1 means that a channel is present, 0 means that it
 	is not. For Gary and Costello, all even numbered channels were discarded,
-	though spikes were collected from all 96 channels. For Rusty and Spike, 
+	though spikes were collected from all 96 channels. For Rusty and Spike,
 	PMv has a full 96 channels. M1 and PMd share a single bank of 96 channels,
 	and are hooked up randomly. So a random 50% of M1 and PMd channels are not
 	assigned in Rusty and Spike datasets.
@@ -102,9 +101,9 @@ These are of the form [Object][Grip][Event]. There are two objects, key-grip
 object "KG" and tapered-cylinder object "TC". There are two grips, precision
 grip "Pre" and power grip "Pow". Each sucessful trial contains the events
 StartTrial, ObjectPresent, GripCue, GoCue, StartMov, Contact, BeginLift,
-EndLift, and Reward. Trials may end with an error before all events occur. 
+EndLift, and Reward. Trials may end with an error before all events occur.
 Error related events include UndefinedGrip, WrongGrip, and Error. The events
-ObjectPresent, GripCue, GoCue, StartMov, and Contact from completed trials 
+ObjectPresent, GripCue, GoCue, StartMov, and Contact from completed trials
 only are copied over to events with "COMPLETE" appended to the name.
 """
 
@@ -135,7 +134,7 @@ def metaloaddata(session,area):
     '''
     Loads a matfile from the provided path, caching it in the global dict
     "matfilecache" using path as the lookup key.
-    
+
     Parameters
     ----------
     path : string
@@ -143,24 +142,24 @@ def metaloaddata(session,area):
     '''
     global cgid_matfilecache
     path = archive_name(session,area)
-    if path in cgid_matfilecache: 
+    if path in cgid_matfilecache:
         return cgid_matfilecache[path]
-    print 'caching',path
-    if dowarn(): print 'loading data...',
+    print('caching',path)
+    if dowarn(): print('loading data...')
     data = loadmat(path)
     cgid_matfilecache[path]=data
-    if dowarn(): print 'loaded'
+    if dowarn(): print('loaded')
     return data
 
 @neurotools.jobs.cache.unsafe_disk_cache
 def metaloadvariable(session,area,variable):
     global cgid_matfilecache
     path = archive_name(session,area)
-    
+
     # if CGID archive is already loaded grab the variable from memory
-    if path in cgid_matfilecache: 
+    if path in cgid_matfilecache:
         return cgid_matfilecache[path][variable]
-        
+
     # Otherwise, try to just load the one variable
     return loadmat(path,variable_names=[variable])[variable]
 
@@ -172,7 +171,7 @@ def preload_cgid():
     for s in flatten(sessionnames):
         for a in areas:
             dataset = metaloaddata(s,a)
-            print 'preloaded',s,a
+            print('preloaded',s,a)
     '''
     # First prefetch individual variables
     variables = '''
@@ -187,13 +186,13 @@ def preload_cgid():
     # Then, presets per-channel and per-unit stuff
     '''
     ByTrialSpikesMS:
-	    NUNITSxNTRIALS cell array. Each entry is a list of spike times for the 
-	    corresponding cell and trial, in MS, and shifted so that StartTrial 
+	    NUNITSxNTRIALS cell array. Each entry is a list of spike times for the
+	    corresponding cell and trial, in MS, and shifted so that StartTrial
 	    is time 0
-    spikeTimes: 
+    spikeTimes:
 	    1xNUNITS cell array of spike times in seconds. These are raw spike times
 	    for the whole session and have not been segmented into individual trials.
-    waveForms: 
+    waveForms:
 	    Original waveform data from spike sorting. It is a 1xNUNITS cell array.
 	    Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
     '''
@@ -206,9 +205,9 @@ def preload_cgid():
             prefetched = cgid.spikes.get_spikes_session(session,area,unit)
             # prefetch waveforms
             prefetched = get_waveforms(session,area,unit)
-            
+
 @memoize
-def get_waveforms(session,area,unit=None):   
+def get_waveforms(session,area,unit=None):
     waveforms = metaloadvariable(session,area,'waveForms')
     if unit is None: return waveforms
     return waveforms[0,unit-1]
@@ -245,19 +244,20 @@ def get_array_map(session,area,removebad=True):
                      [81, -1, 83, 85, -1, 90, -1, 93, 96, -1]], dtype=int32)
     arrmap = metaloadvariable(session,area,'arrayChannelMap')
     if removebad:
-        if (session[:3]=='SPK' and area=='PMv'):
-            arrmap[2,6]=-1
+		if (session[:3]=='SPK' and area=='PMv'):
+			arrmap = array(arrmap) #remove read-only if present
+			arrmap[2,6]=-1
     return arrmap
 
 def get_trial_event(session,area,trial,event):
-    if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+    if dowarn(): print('EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     assert trial>0
     debug(trial,event)
     return metaloadvariable(session,area,'eventsByTrial')[trial-1,event-1]
 
 def get_valid_trials(session,area=None):
-    if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     if area is None:
         trials  = set(find(metaloadvariable(session,'M1' ,'eventsByTrial')[:,0])+1)
         trials &= set(find(metaloadvariable(session,'PMv','eventsByTrial')[:,0])+1)
@@ -270,10 +270,10 @@ def get_available_channels(session,area):
     '''
     Gets the list of channels that are available for a sessiona and area
     '''
-    if dowarn(): print 'NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     return find(metaloadvariable(session,area,'availableChannels')[:,0])+1
 
-def get_bad_channels_and_trials(rule='liberal'):  
+def get_bad_channels_and_trials(rule='liberal'):
     forbid = {'conservative':'''
     r18m1
     ch 80 79 45
@@ -286,8 +286,8 @@ def get_bad_channels_and_trials(rule='liberal'):
     tr 4 5 6 10 16 17 18 19 20 21 23 24 25 26 27 28 29 30 31 33 34 35 36 37
     r18d
     ch 6 64 27 18 16 14 10 8 22 21 56 92
-    tr 4 5 6 10 40 12 
-    
+    tr 4 5 6 10 40 12
+
     r21m1
     ch 2 4 78 80 79
     tr 51 102 32 93
@@ -304,7 +304,7 @@ def get_bad_channels_and_trials(rule='liberal'):
 
     r23m1
     ch 68 77
-    tr 86 6 50 85 125 
+    tr 86 6 50 85 125
     tr 116 12 14 15
     r23v
     ch 70 55 96 40
@@ -315,14 +315,14 @@ def get_bad_channels_and_trials(rule='liberal'):
     tr 84 77 41 42 37 22 11 32 22
     tr 122 119 115 114 113
     tr 12 14 15 35 44 68 81 116 16
-    
+
     s18m1
     ch 53 33 49 77 78
     s18v
     ch 40 41 20 44 48 56 62 5
     ch 63 89 90 95 96 61 59 58 57 28 32 30 27 83 73 85 87 26
     tr 142 107
-    
+
     s24m1
     ch 85 76 75 78
     tr 13
@@ -332,7 +332,7 @@ def get_bad_channels_and_trials(rule='liberal'):
     tr 95 92 6 13
     s24d
     ch 14
-    
+
     s25m1
     ch 33
     tr 86
@@ -345,7 +345,7 @@ def get_bad_channels_and_trials(rule='liberal'):
     ch 14 15 22 56 60
     tr 86
     ''',
-    
+
     'liberal':'''
     r18m1
     ch 80 79 45 2
@@ -358,60 +358,60 @@ def get_bad_channels_and_trials(rule='liberal'):
     r18d
     ch 6 64 27 18 16 14 10 8 22 21 56 92
     tr 40 83 93 94
-    
+
     r21m1
     ch 2 4 78 80 79
-    
+
     r21v
     ch 70 71 66 41 47 42
-    
+
     r21d
     ch 64 27 22 18 16 14 11 10 8 6 92 90 21
 
     r23m1
     ch 68 77
     tr 86
-    
+
     r23v
     ch 70 55 96 40
     tr 86
-    
+
     r23d
     ch 64 61 27 16 14 13 95 21
     tr 86
-    
+
     s18m1
     ch 53 33 49 77 78
-    
+
     s18v
     ch 40 41 20 44 48 56 62 5 63 89 90 95 96 61 59 58 57 28 32 30 27 83 73 85 87 26
-    
+
     s24m1
     ch 85 76 75 78
     tr 6 92
-    
+
     s24v
     ch 13 40 60 93 25 94 5 63 89 90 95 96 61 59 58 57 28 32 30 27 83 73 85 87 26
     tr 6 92
-    
+
     s24d
     tr 6 92
-    
+
     s25m1
     ch 33
     tr 86
-    
+
     s25v
     ch 60 87 13 40 32 25 14 5 63 89 90 95 96 61 59 58 57 28 32 30 27 83 73 85 87 26
     tr 86
-    
+
     s25d
     ch 14 15 22 56 60
     tr 86
     '''
     }
     forbid = forbid[rule]
-    
+
     from collections import defaultdict
     forbidden = defaultdict(list)
     fmonkey  = None
@@ -450,7 +450,7 @@ def get_bad_channels(session,area,rule='liberal'):
 
 def get_bad_trials(session,area=None,rule='liberal'):
     '''
-    This will mark a trial as bad if it is marked as bad for any of 
+    This will mark a trial as bad if it is marked as bad for any of
     each of the three arrays
     '''
     x = get_bad_channels_and_trials(rule=rule)
@@ -462,7 +462,8 @@ def get_bad_trials(session,area=None,rule='liberal'):
 
 
 def get_good_channels(session,area,keepBad=False,rule='liberal'):
-    if dowarn(): print 'NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn():
+		print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     warn('CALLING SEMANTICS CHANGE')
     good = get_available_channels(session,area)
     if not keepBad:
@@ -476,32 +477,32 @@ def get_good_trials(session,rule='liberal'):
     for a in areas:
         for bad in get_bad_trials(session,a,rule=rule):
             trials=np.delete(trials,find(trials==bad))
-    return trials  
+    return trials
 
 
 def get_trial_epoch_in_session_ms(session,area,trial,epoch=None):
-    ''' 
+    '''
     finds the trial times in ms for given start and stop range relative
     to event.
-    epoch = event, start, stop 
+    epoch = event, start, stop
     '''
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
     evt = get_trial_event(session,area,trial,e) # event start time relative
-    return st+evt,sp+evt 
+    return st+evt,sp+evt
 
 
 def get_trial_times_ms(session,area,trial,epoch=None):
-    ''' 
+    '''
     finds the trial times in ms for given start and stop range relative
     to event. These times are not shifted to align with session time,
     they are aligned to object presentation.
-    epoch = event, start, stop 
+    epoch = event, start, stop
     '''
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
     evt = get_trial_event(session,area,trial,e) # event start time relative
-    return arange(st,sp)+evt 
+    return arange(st,sp)+evt
 
 
 def get_session_times_ms(session,area,tr,epoch=None):
@@ -530,7 +531,7 @@ def get_channel_as_data_index(session,area,ch):
     # ch will hopefully be among them
     found  = find(available==ch)
     if len(found)!=1:
-        print 'unusua',session,area,ch,found
+        print('unusual: ',session,area,ch,found)
     return found[0]
 
 
@@ -556,7 +557,7 @@ def get_all_pairs_ordered_as_channel_indecies(session,area):
 
 def get_data(session,area,trial,event,start,stop,lowf,highf,params):
     """
-    Need to abstract loading on neural data from the CGID arrays -- this is 
+    Need to abstract loading on neural data from the CGID arrays -- this is
     getting too complicated.
 
     Interface
@@ -574,17 +575,17 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
         times: len nt trial times in ms for the data relative to reference marker
         xys:   nelectrode-x-2 x,y positions of electrodes in array map space
         data:  a nt-x-nelectrode filtered neural data snippit
-    To do this, we will need to 
+    To do this, we will need to
     -- identify and locate relevant data archive
     -- import data archive
     -- locate relevant trial, possibly in the raw LFP if we need to use padding
     -- perform requested filtering on all channels
     -- generate time and space bases
     -- extract and pack data
-    
+
     Note: trial, event, start, stop are using the matlab convention, 1-index
-    
-    Extracting the cortical locations of the electrodes is very very very 
+
+    Extracting the cortical locations of the electrodes is very very very
     tricky. We will use the same coordinate system as in the videos, where Y is
     the distance from ventral to dorsal along central sulcus from M1 array in
     mm. and X is the distance from caudal to rostral from M1 implant in mm
@@ -599,14 +600,14 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
     stop    = 0
     lowf    = 15
     highf   = 30
-    params  = 0 
+    params  = 0
     times,xys,data = get_data(session,area,trial,event,start,stop,lowf,highf,params)
     '''
-    if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    print 'loading data...',
+    if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+    print('loading data...'),
     availableChannels = metaloadvariable(session,area,'availableChannels')
     eventsByTrial     = metaloadvariable(session,area,'eventsByTrial')
-    print 'done'
+    print('done')
     trialEvents = eventsByTrial[trial-1]
     trialStart  = trialEvents[3]
     eventCode   = trialEvents[event-1]
@@ -631,7 +632,7 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     if (session,area,event,start,stop,lowf,highf,params) in get_data_all_trials_cache:
         return get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params]
     """
-    Need to abstract loading of neural data from the CGID arrays -- this is 
+    Need to abstract loading of neural data from the CGID arrays -- this is
     getting too complicated.
     Interface
     request:
@@ -648,7 +649,7 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
         times: len nt trial times in ms for the data relative to reference marker
         xys:   nelectrode-x-2 x,y positions of electrodes in array map space
         data:  a nt-x-nelectrode filtered neural data snippit
-    To do this, we will need to 
+    To do this, we will need to
     -- identify and locate relevant data archive
     -- import data archive
     -- locate relevant trial, possibly in the raw LFP if we need to use padding
@@ -656,7 +657,7 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     -- generate time and space bases
     -- extract and pack data
     Note: trial, event, start, stop are using the matlab convention, 1-index
-    Extracting the cortical locations of the electrodes is very very very 
+    Extracting the cortical locations of the electrodes is very very very
     tricky. We will use the same coordinate system as in the videos, where Y is
     the distance from ventral to dorsal along central sulcus from M1 array in
     mm. and X is the distance from caudal to rostral from M1 implant in mm
@@ -664,16 +665,16 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     from scipy.io     import loadmat
     from scipy.signal import butter,filtfilt,lfilter
     archive = '%s_%s.mat'%(session,area)
-    print 'loading data...',
+    print('loading data...')
     eventsByTrial      = metaloadvariable(session,area,'eventsByTrial')
     availableChannels  = metaloadvariable(session,area,'availableChannels')
     UnsegmentedLFP1KHz = metaloadvariable(session,area,'UnsegmentedLFP1KHz')
-    print 'done'
+    print('done')
     NTRIALS,_ = shape(eventsByTrial)
     # design filtering paramters
     # currently 15-30Hz 4th order butterworth zero phase
     # will case on "params" if we ever want to alter this
-    assert(params==0)    
+    assert(params==0)
     FS    = 1000.0
     NYQ   = FS/2.0
     ORDER = 4
@@ -703,7 +704,7 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
 # load results from disk
 def load_ppc_results_archives(directory='.'):
     '''
-    Results are stored as keys and ppcs. There are 101 PPC values. 
+    Results are stored as keys and ppcs. There are 101 PPC values.
     The keys should have 13 variables. See the runppc function for details.
     function [ppc,Pxx,F,nTapers] = runppc(
         session,area,unit,obj,grp,event,start,stop,chid,perm,permstrategy,jitter,window,bandWidth,subgroup
@@ -727,7 +728,7 @@ USING THIS FUNCTION COULD BE A SOURCE OF ERRORS
 DO NOT USE IT.
 USE THE allunitsbysession in unitinfo.py instead
 def get_cgid_unit_info():
-    print 'identifying units'
+    print('identifying units')
     allfiles=[]
     for parent,dirs,files in os.walk(sortedunits):
         if parent==sortedunits: continue
@@ -744,12 +745,8 @@ def get_cgid_unit_info():
             nmonkey  = 2
             nsession = 1+rusty_sessions.index(session)
         else:
-            print 'no'
+            print('no')
         narea = areas.index(area)+1
         units.append((session,area,uid))
     return units
 '''
-
-
-
-

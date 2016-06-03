@@ -2,10 +2,10 @@ from os.path import expanduser
 import cgid
 
 # These need to be reconfigured per system. Only two users right now
-# so just hard code it 
+# so just hard code it
 import os
 myhost = os.uname()[1]
-if myhost=='moonbase':
+if myhost in ('moonbase','basecamp','RobotFortress'):
     archive = expanduser('~/Workspace2/CGID_essential/')
 else:
     print 'HI WILSON PLEASE ENTER THE PATH TO THE CGID ARCHIVES BELOW'
@@ -41,7 +41,7 @@ sortedunits    = expanduser('~/Workspace2/CGID_unit_classification/all_summary_b
 # Preserving in case surprising bugs happen
 #datadir        = '/ldisk_2/mrule/archive/'
 
-# Some data is stored with the source code, so we need to know where 
+# Some data is stored with the source code, so we need to know where
 # that's located
 CGID_PACKAGE = os.path.dirname(cgid.__file__)
 
@@ -65,7 +65,3 @@ def today():
     return datetime.date.today().strftime('%y%m%d')
 
 print today()
-
-
-
-

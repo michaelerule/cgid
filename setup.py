@@ -1,7 +1,7 @@
-
-# this ... might be able to install missing dependencies if we're lucky
+# this ... might be able to install missing dependencies
+# In the future we'll make this a package so the dependenies are
+# handeled at installation
 from cgid.dependencies import *
-
 
 import sys
 import os
@@ -27,50 +27,49 @@ from   scipy.stats.stats import *
 import numpy as np
 np.core.arrayprint.set_printoptions(precision=2)
 
-############################################################################
-############################################################################
+################################################################
+################################################################
 
 from cgid.config import *
 
 # the following imports are essential
-from cgid.visualize import *
-from cgid.data_loader import *
-from cgid.tools import *
-from cgid.spikes import *
-from cgid.lfp import *
+from cgid.visualize     import *
+from cgid.data_loader   import *
+from cgid.tools         import *
+from cgid.spikes        import *
+from cgid.lfp           import *
 
 # the following imports may be optional
-from cgid.phasetools import *
-from cgid.phaseplane import *
-from cgid.array_mapper import *
-from cgid.array import *
-from cgid.circulardistributions import *
-from cgid.waveparametrics import *
+from cgid.phasetools                import *
+from cgid.phaseplane                import *
+from cgid.array_mapper              import *
+from cgid.array                     import *
+from cgid.circulardistributions     import *
+from cgid.waveparametrics           import *
 from cgid.plotting_helper_functions import *
 from cgid.plotting_unit_summary     import *
-from cgid.phase_plots import *
-from cgid.unitinfo import *
-from cgid.beta import *
+from cgid.phase_plots               import *
+from cgid.unitinfo                  import *
+from cgid.beta                      import *
 
-############################################################################
-# Gather usable unit info 
-# DONT RUN THIS 
+################################################################
+# Gather usable unit info
+# DONT RUN THIS
 
 # units = get_cgid_unit_info()
 
 # load results from disk
 allresults = load_ppc_results_archives()
 
-
 print 'warning, defining PPCFREQS globally'
 try:
     PPCFREQS = abs(np.fft.helper.fftfreq(200,1./1000)[:101])
 except:
     PPCFREQS = None
-    # sphinx bug workaround 
+    # sphinx bug workaround
 
-############################################################################
-############################################################################
+################################################################
+################################################################
 
 import neurotools
 from neurotools.nlab import *
@@ -99,6 +98,3 @@ try:
 except:
     print 'Static configuration of matplotlib failed'
     print 'Are we inside Sphinx autodoc?'
-
-
-

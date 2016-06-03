@@ -19,13 +19,13 @@ from neurotools.spatial.array import trim_array, pack_array_data
 
 from   cgid.config        import *
 from   cgid.data_loader   import *
-import cgid.lfp 
+import cgid.lfp
 import cgid.array
 
 def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,labels=None,clip_on=False):
     '''
-    labels: default none. Can be 
-        "markers" for symbols or 
+    labels: default none. Can be
+        "markers" for symbols or
         "names" for ['Object presented','Grip cued','Go cue']
         "short" for ['Object','Grip','Go cue']
     '''
@@ -125,7 +125,7 @@ def quicksessions():
     for s in [x[0] for x in sessionnames]:
         for a in areas:
             yield s,a
-    
+
 def fftppc(snippits):
     M,window = shape(snippits)
     if M<=window and dowarn(): print 'WARNING SAMPLES SEEM TRANSPOSED?'
@@ -135,10 +135,10 @@ def fftppc(snippits):
     unbiased = (raw/M-1)/(M-1)
     freqs    = fftfreq(window,1./FS)
     return freqs[:(window+1)/2], unbiased[:(window+1)/2]
-   
+
 def ch2chi(session,area,ch):
     '''
-    Some electrode banks are split over two arrays. 
+    Some electrode banks are split over two arrays.
     '''
     assert ch>0
     all_available = cgid.data_loader.get_available_channels(session,area)
@@ -152,11 +152,11 @@ def pack_array_data_interpolate(session,area,data):
     '''
     Accepts a collection of signals from array channels, as well as
     an array map containing indecies (1-indexed for backwards compatibility
-    with matlab) into that list of channel data. 
-    
-    This will interpolate missing channels as an average of nearest 
+    with matlab) into that list of channel data.
+
+    This will interpolate missing channels as an average of nearest
     neighbors.
-    
+
     :param data: should be a NChannel x Ntimes array
     :param session: the session corresponding to data, needed for array map
     :param area: the area corresponding to the data, needed to get array map
@@ -167,11 +167,11 @@ def pack_array_data_interpolate(session,area,data):
         '''
         Accepts a collection of signals from array channels, as well as
         an array map containing indecies (1-indexed for backwards compatibility
-        with matlab) into that list of channel data. 
-        
-        This will interpolate missing channels as an average of nearest 
+        with matlab) into that list of channel data.
+
+        This will interpolate missing channels as an average of nearest
         neighbors.
-        
+
         :param data: NChannel x Ntimes array
         :param arrayMap: array map, 1-indexed, 0 for missing electrodes
         :return: returns LxKxNtimes 3D array of the interpolated channel data
@@ -186,7 +186,7 @@ def pack_array_data_interpolate(session,area,data):
         M = sum(arrayMap>0)
         if J!=M:
             warn('bad: data dimension differs from number of array electrodes')
-            warn('data %s array',(J,M))
+            warn('data %s array'%((J,M),))
             warn('this may just be because some array channels are removed')
         for i,row in enumerate(arrayMap):
             for j,ch in enumerate(row):
@@ -215,7 +215,7 @@ def onarraydata(function,session,area,trial,epoch,fa,fb):
     '''
     Applies functions that accept AxBxN data where AxB are array indecies.
     and N is timepoints over the specified section of data.
-    
+
     Note: array interp routines take array map from get_array_map.
     Bad channels can be removed by removing them in this function.
     '''
@@ -296,25 +296,25 @@ def ofrawdata(function,session,area,trial,epoch):
 def onpopdata(statistic,session,area,trial,epoch,fa,fb):
     '''
     Extracts data and applies provided function 'statistic' to it.
-    Returns time base and statistic over time. 
+    Returns time base and statistic over time.
     Times may vary as some statistics clip or truncate the data.
-    
+
     Statistic must accept one argument "data" which is a K channel by N time
     complex matrix of analytic signals.
-    
+
     Statistic must return a length M<=N vector. If M<N, this function assumes
     that the data were truncated symmetrically to generate a cropped time
     base.
-    
+
     If not provided, session, area, and trial will be taken from globals
         ( if they are not present in globals it will crash )
     If not provided, epoch is 6,-1000,6000 ( the whole trial )
-    
+
     x = onpopdata(sliding_population_signal_coherence)
-    
+
     todo support functions that returnmultiple values
     '''
-    if epoch is None: 
+    if epoch is None:
         epoch = 6,-1000,6000
     debug( '>>> epoch is %s'%(epoch,))
     lfp = cgid.lfp.get_all_analytic_lfp(session,area,trial,epoch,fa,fb)
@@ -338,13 +338,13 @@ def overdata(statistic,session,area,trial,epoch,fa,fb):
     '''
     This applies the routine "statistic" over data. Statistic can either
     take a K x N array of population analytic signal data, or an A x B x N
-    of array-positioned data. This function inspects the provided 
+    of array-positioned data. This function inspects the provided
     "statistic" function. if it starts with "array_" it applies the function
     to the array packed data. if it starts with "population_" it applies
     the function to population vector data. otherwise, an error is thrown.
-    
+
     note: static typing and pattern matching to array dimension signatures
-    could render this necessray. sadly a language feature python lacks, 
+    could render this necessray. sadly a language feature python lacks,
     afaik.
     '''
     trial += 0
@@ -390,7 +390,7 @@ def onsession(statistic,session,area,epoch,fa,fb):
         difference = N-M
         startcrop = difference//2
         stopcrop = -(difference-startcrop)
-        times = times[startcrop:stopcrop]      
+        times = times[startcrop:stopcrop]
     return times,data
 
 
@@ -402,11 +402,11 @@ def onsession_summary_plot(statistic,session,area,fa,fb,color1=None,color2=None,
     debug('!>>> applying',statistic,session,area,epoch,fa,fb)
     times,res=onsession(statistic,session,area,epoch,fa,fb)
     cla()
-    
+
     filter_function = box_filter
     if not smoothat is None:
         res = arr([filter_function(x,smoothat) for x in res])
-    
+
     offset = (7000-len(times))/2
     times = arange(len(times))+offset
     ss = sort(res,axis=0)
@@ -423,7 +423,7 @@ def onsession_summary_plot(statistic,session,area,fa,fb,color1=None,color2=None,
     M = median(res,0)
     s = std(res,0)
     sem = 1.96*s/sqrt(N)
-    
+
     if not smoothat is None:
         m   = filter_function(m,smoothat)
         M   = filter_function(M,smoothat)
@@ -433,11 +433,11 @@ def onsession_summary_plot(statistic,session,area,fa,fb,color1=None,color2=None,
         Q2 = filter_function(Q2,smoothat)
         P0 = filter_function(P0,smoothat)
         P9 = filter_function(P9,smoothat)
-    
+
     plot(times,M,color=color1,lw=5,zorder=0,label='Interquartile range')
     fill_between(times,Q1,Q2,color=color1,lw=0,zorder=2)
     plot(times,M,color='k',lw=2,zorder=2,label='Median') #color2
-    
+
     if dolegend: nicelegend()
     name = ' '.join(statistic.__name__.replace('_',' ').split()).title()
     title('%s, %s-%sHz, %s %s'%(name,fa,fb,session,area))
@@ -465,7 +465,7 @@ def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,
         if not smoothat is None:
             res = arr([filter_function(x,smoothat) for x in res])
         all_res.extend(res)
-    
+
     offset = (7000-len(times))/2
     times = arange(len(times))+offset
     ss = sort(res,axis=0)
@@ -482,7 +482,7 @@ def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,
     M = median(res,0)
     s = std(res,0)
     sem = 1.96*s/sqrt(N)
-    
+
     if not smoothat is None:
         m   = filter_function(m,smoothat)
         M   = filter_function(M,smoothat)
@@ -492,11 +492,11 @@ def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,
         Q2 = filter_function(Q2,smoothat)
         P0 = filter_function(P0,smoothat)
         P9 = filter_function(P9,smoothat)
-    
+
     #plot(times,M,color=color1,lw=5,zorder=0,label='Interquartile range')
     fill_between(times,Q1,Q2,color=color1,lw=0,zorder=2)
-    plot(times,M,color=color2,lw=2,zorder=2,label='Median') 
-    
+    plot(times,M,color=color2,lw=2,zorder=2,label='Median')
+
     if dolegend: nicelegend()
     name = ' '.join(statistic.__name__.replace('_',' ').split()).title()
     title('%s, %s-%sHz, %s %s'%(name,fa,fb,monkey,area))
@@ -506,7 +506,7 @@ def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,
     if drawCues:
         overlayEvents('k','w',FS=1)
     draw()
-    
+
     return m,s,sem,M,Q1,Q2,P0,P9
 
 
@@ -532,8 +532,8 @@ def ontrial_summary_plot(statistic,session,area,trial,epoch,fa,fb):
 
 def neighbors(session,area,onlygood):
     '''
-    Constructs an adjacency graph for a given array. Each channel 
-    number is mapped to a list of the up to 4 channels immediately 
+    Constructs an adjacency graph for a given array. Each channel
+    number is mapped to a list of the up to 4 channels immediately
     adjacent to it. If argument "onlygood" is true, then bad channels
     are excluded from this map.
     '''
@@ -554,13 +554,3 @@ def neighbors(session,area,onlygood):
         if j-1>=0 and am[i][j-1]!=-1: neighbors[c].append(am[i][j-1])
         if j+1<M  and am[i][j+1]!=-1: neighbors[c].append(am[i][j+1])
     return neighbors
-
-
-
-
-
-
-
-
-
-

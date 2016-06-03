@@ -1,5 +1,5 @@
 '''
-Dependency check for neurotools. 
+Dependency check for neurotools.
 '''
 
 # Gather a list of builtins if possible. These are implemented as part
@@ -71,7 +71,7 @@ except:
 
 
 
-# list 
+# list
 DEPENDENCIES = [
  # modules built in to the python interpreter. should always exist
  ('time', '2.7.6'),
@@ -97,7 +97,7 @@ DEPENDENCIES = [
  ('spectrum', '0.6.0'),         # required, in PYPI
  ('sklearn', '0.15.2'),         # required, in PYPI
  # Numpy and scipy seem to not reliably install over pip/easy_install
- # Possibly due to missing build dependencies? 
+ # Possibly due to missing build dependencies?
  # These will just need to be handled as a special case.
  # http://www.scipy.org/install.html
  ('numpy', '1.9.2'),
@@ -113,7 +113,7 @@ for entry in DEPENDENCIES:
         note = ''
     elif len(entry)==3:
         package,version,note = entry
-    
+
     print 'depends on',package
     if package in builtins:
         print '\tthis is a builtin, it should never be missing'
@@ -127,10 +127,10 @@ for entry in DEPENDENCIES:
         missing.append(package)
         continue # move on to next dependency
 
-    # due to potential weirdness that may arise with python 
-    # environments, it's not clear that the imported version will 
+    # due to potential weirdness that may arise with python
+    # environments, it's not clear that the imported version will
     # always match the one reported via pip. For this reason, we
-    # actually do the import and try to read the version name from 
+    # actually do the import and try to read the version name from
     # the package itself. This doesn't always work, so we use pip
     # as a fallback
     potential_version_variable_names = ['__version__','__VERSION__','VERSION','version','version_info']
@@ -138,7 +138,7 @@ for entry in DEPENDENCIES:
     if loaded_version is None:
         for vname in potential_version_variable_names:
             if vname in mod.__dict__:
-                # try to find version information, 
+                # try to find version information,
                 # just hope and pray it's a string if it exists
                 # take only the first line if multiple lines exist
                 loaded_version = mod.__dict__[vname]
@@ -153,7 +153,7 @@ for entry in DEPENDENCIES:
             p = installed_via_pip[package]
             if p.has_version:
                 loaded_version = p.version
-    
+
     if package in builtins:
         # default to reporting the python version for builtins
         if loaded_version is None:
@@ -166,7 +166,7 @@ for entry in DEPENDENCIES:
             print '\t\tmodule reported',loaded_version
             print '\t\tPython version is',python_version
             loaded_version = python_version
-                
+
     if package in stdlib:
         # default to reporting the python version for the standard library
         if loaded_version is None:
@@ -177,13 +177,13 @@ for entry in DEPENDENCIES:
             print '\t\tmodule reported',loaded_version
             print '\t\tPython version is',python_version
             loaded_version = python_version
-                
+
     if loaded_version is None:
         print '\tNo version information found.'
     else:
         loaded_version = loaded_version.split('\n')[0]
-        print '\tVersion',loaded_version 
-        if loaded_version != version:
+        print '\tVersion',loaded_version
+        if loaded_version < version:
             print '\tThe loaded version differs from the dependency version'
             print '\t\tThe loaded version is',loaded_version
             print '\t\tThe required version is',version
@@ -206,7 +206,7 @@ def ask(msg,default=True):
             break
         if default: print "please type n(o), or press enter for y(es)"
         else:       print "please type y(es), or press enter for n(o)"
-    return answer    
+    return answer
 
 
 # check to see which setup tools are available
@@ -220,6 +220,24 @@ try:
 except:
     pip = None
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
+
+useconda = which('conda')!=None
 
 if easy_install==None and pip==None:
     print 'Neither pip nor easy_install is available, so I will not try to install missing packages.'
@@ -240,11 +258,15 @@ else:
             print 'Please search online and follow installation instructions for your platform'
             continue
         if ask('Package %s is missing, should I try to install it'%package):
-            if not pip==None:
-                pip.main(['install', package])
+            if useconda:
+                print "Using conda"
+                os.system('conda install '+package)
+            elif not pip==None:
+                print "Using pip"
+                if package=='statsmodels':
+                    pip.main(['install', 'six'])
+                    pip.main(['install', 'patsy'])
+                pip.main(['install','--user',package])
             else:
+                print "Using easy_install"
                 easy_install.main( ["-U",package] )
-
-
-
-

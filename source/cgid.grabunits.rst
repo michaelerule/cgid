@@ -1,5 +1,5 @@
-cgid.grabunits module
-=====================
+cgid\.grabunits module
+======================
 
 .. automodule:: cgid.grabunits
     :members:

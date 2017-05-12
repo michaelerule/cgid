@@ -11,90 +11,90 @@ This archive contains extracted Cued Grasp with Instructed Delay (CGID)
 data for session RUS120521 area PMv. The variables are as follows:
 
 README:
-	This message
+    This message
 
 ByTrialLFP1KHz:
-	LFP data segmented by trial. This is a NCHANNELx1 cell array. Most areas
-	do not have all channels, and only channel numbers that were recorded
-	are stored. Each channel is a NTRIALx7000 array. This is seven seconds of
-	LFP data at 1KHz starting at 1 second before "ObjectPresent". Note:
-	for rusty and spike, the StartTrial events occur about 1 second before
-	object presentation. For Gary, they occur about 15ms before object
-	presentation. ObjectPresent is the first consistent task event marker
-	available for alignment. Trials that did not advance as far as object
-	presentation have been discarded.
+    LFP data segmented by trial. This is a NCHANNELx1 cell array. Most areas
+    do not have all channels, and only channel numbers that were recorded
+    are stored. Each channel is a NTRIALx7000 array. This is seven seconds of
+    LFP data at 1KHz starting at 1 second before "ObjectPresent". Note:
+    for rusty and spike, the StartTrial events occur about 1 second before
+    object presentation. For Gary, they occur about 15ms before object
+    presentation. ObjectPresent is the first consistent task event marker
+    available for alignment. Trials that did not advance as far as object
+    presentation have been discarded.
 
 ByTrialSpikesMS:
-	NUNITSxNTRIALS cell array. Each entry is a list of spike times for the
-	corresponding cell and trial, in MS, and shifted so that StartTrial
-	is time 0
+    NUNITSxNTRIALS cell array. Each entry is a list of spike times for the
+    corresponding cell and trial, in MS, and shifted so that StartTrial
+    is time 0
 
 UnsegmentedLFP1KHz:
-	This is the original LFP data. It is stored in a 96x1 cell array, where
-	the index into the cell array corresponds to the LFP channel number.
-	For most arrays, not all channels are available. Missing channels do
-	not contiain data. Each channel entry is a NSAMPLESx1 sequence of LFP
-	values sampled at 1KHz. These samples have been downsampled from 30KHz
-	in two stages. First, a 500Hz 4th order low-pass Butterworth filter is
-	used, and the LFPs are resampled at 2KHz. Second, Matlab Decimate is
-	used to downsample them to 1KHz, which applies a 400Hz cutoff
-	Chebyshev filter.
+    This is the original LFP data. It is stored in a 96x1 cell array, where
+    the index into the cell array corresponds to the LFP channel number.
+    For most arrays, not all channels are available. Missing channels do
+    not contiain data. Each channel entry is a NSAMPLESx1 sequence of LFP
+    values sampled at 1KHz. These samples have been downsampled from 30KHz
+    in two stages. First, a 500Hz 4th order low-pass Butterworth filter is
+    used, and the LFPs are resampled at 2KHz. Second, Matlab Decimate is
+    used to downsample them to 1KHz, which applies a 400Hz cutoff
+    Chebyshev filter.
 
 eventsByTrial:
-	NTRIALSx12 trial summary information.
-	The 1 column contains a flag indicating which trials are good.
-	The 2 column contains a flag indicating object type. 0=KG 1=TC
-	The 3 column contains a flag indicating grip type. 0=Pre 1=Pow
-	the 4 column contains time (MS) that we start taking data for a trial
-	The remaining columns contain trial events, if available, in milliseconds,
-		and relative to object presentation. Missing events are denoted with
-		-1. Most error trials will have missing events. The event codes, in
-		order, are:
-		5	StartTrial
-		6	ObjectPresent
-		7	GripCue
-		8	GoCue
-		9	StartMov
-		10	Contact
-		11	BeginLift
-		12	EndLift
-		13	Reward
+    NTRIALSx12 trial summary information.
+    The 1 column contains a flag indicating which trials are good.
+    The 2 column contains a flag indicating object type. 0=KG 1=TC
+    The 3 column contains a flag indicating grip type. 0=Pre 1=Pow
+    the 4 column contains time (MS) that we start taking data for a trial
+    The remaining columns contain trial events, if available, in milliseconds,
+        and relative to object presentation. Missing events are denoted with
+        -1. Most error trials will have missing events. The event codes, in
+        order, are:
+        5    StartTrial
+        6    ObjectPresent
+        7    GripCue
+        8    GoCue
+        9    StartMov
+        10    Contact
+        11    BeginLift
+        12    EndLift
+        13    Reward
 
 spikeTimes:
-	1xNUNITS cell array of spike times in seconds. These are raw spike times
-	for the whole session and have not been segmented into individual trials.
+    1xNUNITS cell array of spike times in seconds. These are raw spike times
+    for the whole session and have not been segmented into individual trials.
 
 unitIds:
-	1xNUNITS array of unit IDs. A unit can be identified as "unit [unitID] on
-	channel [channelID]".
+    1xNUNITS array of unit IDs. A unit can be identified as "unit [unitID] on
+    channel [channelID]".
 
 channelIds:
-	1xNUNITS array of channel IDs. A unit can be identified as "unit [unitID]
-	on channel [channelID]".
+    1xNUNITS array of channel IDs. A unit can be identified as "unit [unitID]
+    on channel [channelID]".
 
 waveForms:
-	Original waveform data from spike sorting. It is a 1xNUNITS cell array.
-	Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
+    Original waveform data from spike sorting. It is a 1xNUNITS cell array.
+    Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
 
 availableChannels:
-	a 96x1 array of flags. 1 means that a channel is present, 0 means that it
-	is not. For Gary and Costello, all even numbered channels were discarded,
-	though spikes were collected from all 96 channels. For Rusty and Spike,
-	PMv has a full 96 channels. M1 and PMd share a single bank of 96 channels,
-	and are hooked up randomly. So a random 50% of M1 and PMd channels are not
-	assigned in Rusty and Spike datasets.
+    a 96x1 array of flags. 1 means that a channel is present, 0 means that it
+    is not. For Gary and Costello, all even numbered channels were discarded,
+    though spikes were collected from all 96 channels. For Rusty and Spike,
+    PMv has a full 96 channels. M1 and PMd share a single bank of 96 channels,
+    and are hooked up randomly. So a random 50% of M1 and PMd channels are not
+    assigned in Rusty and Spike datasets.
 
 arrayChannelMap
-	An NxK mapping of the spatial locations of various channels. Positions with
-	-1 have no corresponding channels. Matrix is structures so that, when
-	displayed in standard format, recording wires exit to the right.
+    An NxK mapping of the spatial locations of various channels. Positions with
+    -1 have no corresponding channels. Matrix is structures so that, when
+    displayed in standard format, recording wires exit to the right.
 
 unitQuality
-	An NUNITSx1 list of unit quality codes.
-	0 : noise ( not a unit )
-	1 : poorly isolated ( multiunit or very noisy unit )
-	2 : isolated
-	3 : well isolated
+    An NUNITSx1 list of unit quality codes.
+    0 : noise ( not a unit )
+    1 : poorly isolated ( multiunit or very noisy unit )
+    2 : isolated
+    3 : well isolated
 
 There are variables containing the original CGID timestamps in seconds.
 These are of the form [Object][Grip][Event]. There are two objects, key-grip
@@ -113,8 +113,10 @@ from cgid.config       import CGID_ARCHIVE
 from matplotlib.mlab   import find
 from cgid.config       import *
 from scipy.io          import savemat,loadmat
+
 import numpy as np
 from numpy import *
+
 import neurotools.tools
 import neurotools.jobs.cache
 import cgid.tools
@@ -144,11 +146,8 @@ def metaloaddata(session,area):
     path = archive_name(session,area)
     if path in cgid_matfilecache:
         return cgid_matfilecache[path]
-    print('caching',path)
-    if dowarn(): print('loading data...')
     data = loadmat(path)
     cgid_matfilecache[path]=data
-    if dowarn(): print('loaded')
     return data
 
 @neurotools.jobs.cache.unsafe_disk_cache
@@ -167,6 +166,7 @@ def preload_cgid():
     # It's faster to just load the whole archives into memory
     for session,area in cgid.tools.sessions_areas():
         prefetched = metaloaddata(session,area)
+        print('preloaded',session,area)
     '''
     for s in flatten(sessionnames):
         for a in areas:
@@ -178,24 +178,7 @@ def preload_cgid():
         README ByTrialLFP1KHz ByTrialSpikesMS UnsegmentedLFP1KHz
         eventsByTrial spikeTimes unitIds channelIds waveForms
         availableChannels arrayChannelMap unitQuality'''.split()
-    '''
-    for session,area in cgid.tools.sessions_areas():
-        for variable in variables:
-            prefetched = metaloadvariable(session,area,variable)
-    '''
     # Then, presets per-channel and per-unit stuff
-    '''
-    ByTrialSpikesMS:
-	    NUNITSxNTRIALS cell array. Each entry is a list of spike times for the
-	    corresponding cell and trial, in MS, and shifted so that StartTrial
-	    is time 0
-    spikeTimes:
-	    1xNUNITS cell array of spike times in seconds. These are raw spike times
-	    for the whole session and have not been segmented into individual trials.
-    waveForms:
-	    Original waveform data from spike sorting. It is a 1xNUNITS cell array.
-	    Each entry contains 48xNSPIKES matrix of spiking wavforms for that unit.
-    '''
     for session,area in cgid.tools.sessions_areas():
         # prefetch the LFP channels (UnsegmentedLFP1KHz)
         for ch in get_available_channels(session,area):
@@ -244,9 +227,9 @@ def get_array_map(session,area,removebad=True):
                      [81, -1, 83, 85, -1, 90, -1, 93, 96, -1]], dtype=int32)
     arrmap = metaloadvariable(session,area,'arrayChannelMap')
     if removebad:
-		if (session[:3]=='SPK' and area=='PMv'):
-			arrmap = array(arrmap) #remove read-only if present
-			arrmap[2,6]=-1
+        if (session[:3]=='SPK' and area=='PMv'):
+            arrmap = array(arrmap) #remove read-only if present
+            arrmap[2,6]=-1
     return arrmap
 
 def get_trial_event(session,area,trial,event):
@@ -463,7 +446,7 @@ def get_bad_trials(session,area=None,rule='liberal'):
 
 def get_good_channels(session,area,keepBad=False,rule='liberal'):
     if dowarn():
-		print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+        print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     warn('CALLING SEMANTICS CHANGE')
     good = get_available_channels(session,area)
     if not keepBad:

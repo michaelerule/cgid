@@ -1,3 +1,20 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 '''
 Note: Array wire bundle exits to the right
 '''
@@ -51,9 +68,9 @@ def create_multiunit_canvas(
     starts,
     areas=None):
     '''
-    Creates an image buffer for rendering array data to screen in 
+    Creates an image buffer for rendering array data to screen in
     anatomical coordinates.
-    
+
     This code is really complicated.
     '''
     if areas is None: areas=['M1','PMv','PMd']
@@ -65,9 +82,9 @@ def create_multiunit_canvas(
         # retrieve the geometry information for this array
         corners,positions = getElectrodePositions(session,a)
         top_right, bottom_right, bottom_left, top_left = corners
-        print 'corners',corners
+        print('corners',corners)
         # use the anatomical quad coordinates to make a change of basis
-        # matrix to convert from image to array 
+        # matrix to convert from image to array
         # note: as defined, the "x" direction in the arrays is the second axis
         # and the y direction is the first ( row major order )
         B1 = top_right   - top_left
@@ -88,10 +105,10 @@ def create_multiunit_canvas(
         box_top    = min(canvas_h_px-1,int(np.max(quad[:,1])-1))
         box_left   = max(0,int(np.min(quad[:,0])+1))
         box_right  = min(canvas_w_px-1,int(np.max(quad[:,0])+1))
-        print 'image box:',box_bottom,box_top,box_left,box_right
+        print('image box:',box_bottom,box_top,box_left,box_right)
         h,w = shapes[a]
         scale = max(w,h)  # update if ever have array truncated on both axes
-        print a,'scale',scale
+        print(a,'scale',scale)
         for y in range(box_bottom-1,box_top+2):
             for x in range(box_left-1,box_right+2):
                 # convert from image coordinates to anatomical coordinates
@@ -123,12 +140,12 @@ def draw_array_outlines(
     draw_wire=True):
     '''
     Draws outlines of the array locations in anatomical coordinates.
-    
+
     Either session or anatomy must be not None.
-    
+
     If session is specified (is not None), this will plot the array
     annotation in the current axis with units of mm
-    
+
     If anatomy is specified (is not None), it should be a dictionary that
     maps array names to quadrilateral outlines for the array perimeter, in
     the order top_left, bottom_left, bottom_right, top_right
@@ -162,14 +179,15 @@ def get_phase_gradients_for_animation(session,trial,
     skip=3):
     if areas    is None: areas=['M1','PMv','PMd']
     gradients={}
-    print 'spatial low-pass is',cut
+    print('spatial low-pass is',cut)
     for area in areas:
         x=get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb)
+        x = array(x)
         a=abs(x)
         a=0.25*(a[1:,1:]+a[:-1,1:]+a[1:,:-1]+a[:-1,:-1])
         if not cut is None:
             y=dct_cut_antialias(x,cut)
-        else: 
+        else:
             y = x
         g=array_phase_gradient(y)
         g=g/abs(g)*a/40
@@ -178,8 +196,9 @@ def get_phase_gradients_for_animation(session,trial,
 
 def plot_derivative_anatomical(
     gradient_data,
-    (positions,dx,dy),
+    positions_dx_dy,
     lines=None):
+    (positions,dx,dy) = positions_dx_dy
     '''
     Plots the gradient vectors in the correct anatomical locations.
     Need to also change basis to get the correct orientation.
@@ -218,15 +237,15 @@ def arrays_video_gradient(
     plot_gradient=True,
     draw_wire=False):
     '''
-    Animation function. Units are millimeters. 
-    
+    Animation function. Units are millimeters.
+
     Args:
         times : list of timepoints for each frame
         arraydata : array data to show. This needs to be a dictionary mapping
-            area names to array-packed Nrows x Ncols lists of frames. The 
+            area names to array-packed Nrows x Ncols lists of frames. The
             data may be (is required to be?) complex.
-        phase_gradients : Vector field info. Also a dictionary. 
-        session : 
+        phase_gradients : Vector field info. Also a dictionary.
+        session :
         skip=3 : only render every skip frames
         figtitle : Optionally, a figure title may be specified. Defaults to
             the name of the session.
@@ -238,14 +257,14 @@ def arrays_video_gradient(
         saveas : None,
         plot_gradient : True
     '''
-    # We can opt to plot only some areas, but by default we assume that 
-    # all areas are being plotted. Note that the arraydata and the 
-    # phase_gradients arguments must contain corresponding entries for 
+    # We can opt to plot only some areas, but by default we assume that
+    # all areas are being plotted. Note that the arraydata and the
+    # phase_gradients arguments must contain corresponding entries for
     # each area being plotted.
     if areas    is None: areas=['M1','PMv','PMd']
     # Set figure title to the name of the session if not otherwise specified
     if figtitle is None: figtitle = '%s'%session
-    # Prepare plot: axis labels, title, etc. 
+    # Prepare plot: axis labels, title, etc.
     # Draw the axis to screen so we can measure how many pixels it uses
     # This lets us define an image the exact resolution of the canvas
     # and render to the axis as if it were just another image buffer
@@ -267,16 +286,15 @@ def arrays_video_gradient(
     ylim(0,canvas_w_px-1)
     draw()
     # Get information about the areas being plotted. Array data is going
-    # to be unwrapped and packed in a sequential array, so we need to 
+    # to be unwrapped and packed in a sequential array, so we need to
     # store pointers to where each array stars in this buffer. Thus, we
     # need the length and shape of each bit of arraydata
     # Pack array data into the buffer for fast indexing by the video
     shapes = {}
     sizes  = {}
     data   = {}
-    print "ERROR X IS FLIPPED"
-    print "THERE IS A PROBLEM IN THE CODE"
-    print "APPLYING PATCH BELOW BUT REALLY, YOU SHOULD LOCATE THIS BUG"
+    print("ERROR X IS FLIPPED")
+    print("APPLYING PATCH")
     for a in areas:
         x = arraydata[a][:,::-1,:]
         h,w,n = shape(x)
@@ -296,7 +314,7 @@ def arrays_video_gradient(
     # outline arrays. This uses a modified anatomical coodinates
     draw_array_outlines(anatomy=anatomy,draw_wire=draw_wire)
     # prepare video. in this rendering mode, just use real signal
-    # it's standardized, a bit. 
+    # it's standardized, a bit.
     # we should make a colorbar?
     video  = video.real
     video -= mean(video)
@@ -305,27 +323,26 @@ def arrays_video_gradient(
     video  = int32(255*video)
     video  = clip(video,0,255)
     # calculate actual limits in case we need a color bar
-    
-    
     # prepare plot: pre-render a frame, will update later
-    # formerly used 
+    # formerly used
     # Now just plotting real component and overlaying phase field
     # Using the "extended" map (parula also available)
     RGBA = ones(shape(canvas)+(4,))
     img  = imshow(RGBA,interpolation='nearest',animated=True)
     # precompute the origins for phase gradient vector fields
     positions = {}
-    print anatomy
+    print(anatomy)
     for a in areas:
-        positions[a]=get_interelectrode_positions(session,a,anatomy[a])
-    print positions
+        positions[a]=\
+            get_interelectrode_positions(session,a,anatomy[a])
+    print(positions)
     if plot_gradient:
         lines ={a:plot_derivative_anatomical(phase_gradients[a][...,0],positions[a]) for a in areas}
     if not saveas is None:
         savedir = './'+saveas
         ensuredir(savedir)
     # render video
-    for i,(t,frame) in en|iz(times,video):
+    for i,(t,frame) in en|izip(times,video):
         RGBA[...,:3] = parula_data[frame[canvas]]
         RGBA[blank,:]=1
         img.set_data(RGBA)
@@ -345,7 +362,7 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
     interp='nearest',hook=None,FPS=20,plot_gradient=True):
     '''
     TEST CODE
-    >>> # play an animation 
+    >>> # play an animation
     >>> session = 'RUS120518'
     >>> for tr in get_good_trials(session):
     >>>     full_analytic_lfp_video(session,tr,fa=18,fb=23)
@@ -359,13 +376,13 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
     >>> full_analytic_lfp_video(session,tr,fa=18,fb=22,saveas='narrowbeta')
     '''
     # load and upsample all data
-    print 'epoch is',epoch
+    print('epoch is',epoch)
     times = cgid.data_loader.get_trial_times_ms(session,'M1',tr,epoch)[::skip]
     phase_gradients = get_phase_gradients_for_animation(
         session,tr,fa=10,fb=45,epoch=epoch,cut=cut,skip=skip)
     arraydata = {}
     if upsample is None:
-        print 'No upsampling specified. using heuristics'
+        print('No upsampling specified. using heuristics')
         force_aspect()
         draw()
         mm_per_electrode = 0.4
@@ -373,14 +390,15 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
         px_per_win       = int(ceil(max(*get_ax_size())))
         px_per_electrode = mm_per_electrode * px_per_win / mm_per_win
         upsample = int(ceil(px_per_electrode))+3
-        print 'upsample is',upsample
+        print('upsample is',upsample)
     for a in areas:
         x = get_array_packed_lfp_analytic(session,a,tr,epoch,fa,fb)[...,::skip]
+        x = array(x)
         x -= mean(x,-1)[:,:,None]
         x /= std(x,-1)[:,:,None]
         if not cut is None: x = dct_cut_antialias(x,cut)
         if upsample>1:      x = dct_upsample(x,upsample)
-        arraydata[a]=x    
+        arraydata[a]=x
     figtitle = 'Analytic LFP activity %s-%sHz\n%s trial %s'%(fa,fb,session,tr)
     if not saveas is None:
         saveas += '_%s_%s_%s_%s'%(session,tr,fa,fb)
@@ -429,10 +447,10 @@ def lookat(session,trial,time=0,tafter=None,fa=10,fb=45,upsample=1,
     if not ff is None: figure(ff.number)
 
 
-def full_MUA_lfp_video(session,tr,epoch=None,fc=250,fsmooth=30,upsample=1,
-    cut=0.4,skip=3,canvas_N=None,saveas=None):
-    ''' 
-    Routine to visualize the multiunit activity. 
+def full_MUA_lfp_video(session,tr,epoch=None,fc=250,fsmooth=30,
+    upsample=1,cut=0.4,skip=3,canvas_N=None,saveas=None):
+    '''
+    Routine to visualize the multiunit activity.
     >>> close('all')
     >>> figure(figsize=(6,6))
     >>> session = 'SPK120918'
@@ -443,22 +461,123 @@ def full_MUA_lfp_video(session,tr,epoch=None,fc=250,fsmooth=30,upsample=1,
     times = cgid.data_loader.get_trial_times_ms(session,'M1',tr,epoch)[::skip]
     arraydata = {}
     for a in areas:
-        print 'loading area',a
+        print('loading area',a)
         x = hilbert(zscore(
             get_all_MUA_lfp(session,a,tr,epoch,fc,fsmooth).T).T)[:,::skip]
         x = pack_array_data_interpolate(session,a,x)
         x = dct_cut_antialias(x,cut)
         if upsample>1: x = dctUpsample(x,upsample)
-        arraydata[a]=x    
+        arraydata[a]=x
     figtitle = 'MUA LFP activity <%sHz\n%s trial %s'%(fc,session,tr)
     if not saveas is None:
         saveas += '_%s_%s_%s_%s'%(session,tr,fa,fb)
     arrays_video(times,arraydata,session,skip,canvas_N,saveas=saveas,
         figtitle=figtitle,interp='nearest')
-    
 
 
-
-
-
-
+def phase_plane_animation(session,tr,areas,
+    fa=10,
+    fb=45,
+    epoch=None,
+    skip=1,
+    saveas=None,
+    hook=None,
+    FPS=30,
+    stabilize=True,
+    extension='.pdf',
+    markersize=1.5,
+    figtitle=None,
+    usechannels=None,
+    phaseonly=False,
+    draw_legend=False,
+    draw_vectors=False):
+    '''
+    phase_plane_animation(session,tr)
+    '''
+    areacolors = {'M1':BLACK,'PMv':AZURE,'PMd':OCHRE}
+    print(session, tr)
+    # save current figure so we can return to it
+    ff=gcf()
+    ax=gca()
+    # get time base
+    times = get_trial_times_ms(session,'M1',tr,epoch)[::skip]
+    # retrieve filtered array data
+    data = {}
+    for a in areas:
+        print('loading area',a)
+        x = get_all_analytic_lfp(session,a,tr,epoch,
+            fa,fb,onlygood=True)[:,::skip]
+        if not usechannels is None: # using a subset of channels
+            touse = usechannels[a]
+            x = x[touse,:]
+        if phaseonly: # remove amplitude
+            x = x/abs(x)
+        data[a]=x.T
+    # compute phase velocities for stabilization
+    alldata    = concatenate(data.values(),1)
+    phaseshift = angle(mean(alldata,axis=1))
+    # PREPARE FIGURE
+    if figtitle==None: figtitle = 'Analytic Signal\n%s-%s Hz'%(fa,fb)
+    if not saveas is None: saveas  += '_%s_%s_%s_%s'%(session,tr,fa,fb)
+    figure('Phase Plane')
+    a2 = cla()
+    M = 10
+    if phaseonly: M = 1.0
+    else:
+        for a in areas:
+            M = max(M,int(ceil(np.max(abs(data[a]))/10.))*10)
+    complex_axis(M)
+    if phaseonly:
+        xlabel('')
+        ylabel('')
+    title(figtitle+' t=%dms'%times[0])
+    # prepare output directory if we're going to save this
+    if not saveas is None:
+        savedir = './'+saveas
+        ensuredir(savedir)
+    # initialize points
+    scat={}
+    vectors={}
+    for i,a in en(areas):
+        px,py = c2p(data[a][0])
+        if draw_vectors:
+            print("draw a line from each point to the origin")
+            # second dimension of arguments to plot can be multiple lines.
+            # we have one dimentions x and y coordinates
+            # we need to concatenate them with zeros on the first axis
+            vx = concatenate([0*px[:,None],px[:,None]],axis=1)
+            vy = concatenate([0*py[:,None],py[:,None]],axis=1)
+            vectors[a] = [plot(x,y,lw=1,color=areacolors[a],clip_on=False)[0] for (x,y) in izip(vx,vy)]
+        scat[a] = scatter(px,py,s=markersize**2,color=areacolors[a],label=a,clip_on=False)
+    # Hack for a specific examples
+    arc = None
+    narc = 180
+    if draw_vectors and phaseonly and len(areas)==1 and not usechannels is None and len(usechannels[areas[0]])==1:
+        # single arc
+        arc = plot(arange(narc),arange(narc),lw=1,color='k')[0]
+    if draw_legend: nice_legend()
+    # perform animation
+    st = now()
+    origin = [0,0]
+    for i,t in en|times:
+        stabilizer = exp(-1j*phaseshift[i]) if stabilize else 1
+        for a in areas:
+            points = c2p(stabilizer*data[a][i]).T
+            scat[a].set_offsets(points)
+            if draw_vectors:
+                for il,line in enumerate(vectors[a]):
+                    # line data sorta wants a list of pairs of (x,y) points
+                    line.set_data(array([origin,points[il]]).T)
+                    # awkward, but
+                    if not arc is None:
+                        # update the arc
+                        trace = 0.5*exp(1j*linspace(0,(2*pi+arctan2(*points[il][::-1]))%(2*pi),narc))
+                        arc.set_data(c2p(trace))
+        title(figtitle+' t=%sms'%t)
+        draw()
+        if not saveas is None:
+            savefig(savedir+'/'+saveas+'_%d%s'%(t,extension),transparent=True)
+            savefig(savedir+'/'+saveas+'_%d%s'%(t,'.png'),transparent=True)
+        if not hook is None: hook(t)
+        st=waitfor(st+1000/FPS)
+    if not ff is None: figure(ff.number)

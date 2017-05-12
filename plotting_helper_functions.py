@@ -1,7 +1,21 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-############################################################################
+#####################################################################
 # helper functions
 
 from neurotools.color import *
@@ -12,14 +26,14 @@ from neurotools.stats.modefind import *
 import cgid.spikes
 from cgid.spikes import *
 from cgid.lfp    import *
-
 from neurotools.signal.ppc import pairwise_phase_consistancy
 from scipy.signal.windows import hann
-CMAP = parula
 from neurotools.getfftw import *
+CMAP = parula
 
 
-def specshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
+def specshow(freqs,specdata,start,stop,
+    FS=1000,aspect='auto',cmap=CMAP):
     assert len(shape(specdata))==2
     NF,NT = shape(specdata)
     try:
@@ -31,14 +45,15 @@ def specshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
         vmax=min(np.max(specdata),mean(specdata)+4*std(specdata)))
     ylabel('Hz')
     xlabel('Time (s)')
-    yticks(map(round,ylim()))
+    yticks(list(map(round,ylim())))
     set_cmap(cmap)
     xlim((start+1000)/float(FS),(stop+1000)/float(FS))
     ax = gca()
     add_spectrum_colorbar(specdata,cmap)
     sca(ax)
 
-def waveletshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
+def waveletshow(freqs,specdata,start,stop,
+    FS=1000,aspect='auto',cmap=CMAP):
     '''
     basically specshow -- diffent units for scale bar
     uV^2
@@ -54,7 +69,7 @@ def waveletshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
         vmax=min(np.max(specdata),mean(specdata)+4*std(specdata)))
     ylabel('Hz')
     xlabel('Time (s)')
-    yticks(map(round,ylim()))
+    yticks(list(map(round,ylim())))
     set_cmap(cmap)
     xlim((start+1000)/float(FS),(stop+1000)/float(FS))
     ax = gca()
@@ -89,7 +104,8 @@ def getSTLFP(session,area,unit,start,stop,window=100):
     return snippits
 
 def ppc(session,area,unit,start,stop,
-    window=100,FMAX=250,color='k',label=None,nTapers=None,lw=1.5,linestyle='-'):
+    window=100,FMAX=250,color='k',label=None,nTapers=None,
+    lw=1.5,linestyle='-'):
     if not nTapers is None:
         warn('WARNING: no longer using multitaper, nTapers will be ignored! using Hann window')
     # depricating original code due to inconsistency with matlab PPC code
@@ -105,7 +121,7 @@ def ppc(session,area,unit,start,stop,
     ylim(0,0.5)
     ylabel('PPC',labelpad=-10)
     xlim(0,FMAX)
-    nicelimits()
+    nicexy()
     xticks(linspace(0,FMAX,11),['%d'%x for x in linspace(0,FMAX,11)])
     xlabel('Frequency (Hz)')
     title('Pairwise phase consistency')
@@ -136,18 +152,19 @@ def ppc(session,area,unit,start,stop,
     plot(freqs[use],unbiased [use],linestyle,color=color,label=label,lw=lw)
     #cl = ppc_chance_level(nSamples,10000,.999,nTapers)
     #plot(xlim(),[cl,cl],color=color,label=label+' 99.9% chance level')
-    #print 'chance level is %s'%cl
+    #print('chance level is %s'%cl)
     ylim(0,0.5)
     ylabel('PPC',labelpad=-10)
     xlim(0,FMAX)
-    nicelimits()
+    nicexy()
     xticks(linspace(0,FMAX,6),['%d'%x for x in linspace(0,FMAX,11)])
     xlabel('Frequency (Hz)')
     title('Pairwise phase consistency')
     simpleaxis(gca())
 
 
-def compare_ppc_approaches(session,area,unit,start,stop,window=100,FMAX=250):
+def compare_ppc_approaches(session,area,unit,start,stop,
+    window=100,FMAX=250):
     '''
     Try with
     compare_ppc_approaches('RUS120523','PMv',42,-1000,0,200)
@@ -194,11 +211,11 @@ def compare_ppc_approaches(session,area,unit,start,stop,window=100,FMAX=250):
 
     #cl = ppc_chance_level(nSamples,10000,.999,nTapers)
     #plot(xlim(),[cl,cl],color=color,label=label+' 99.9% chance level')
-    #print 'chance level is %s'%cl
+    #print('chance level is %s'%cl)
     ylim(0,0.5)
     ylabel('PPC',labelpad=-10)
     xlim(0,FMAX)
-    nicelimits()
+    nicexy()
     xticks(linspace(0,FMAX,11),['%d'%x for x in linspace(0,FMAX,11)])
     xlabel('Frequency (Hz)')
     title('Pairwise phase consistency')
@@ -215,14 +232,16 @@ def coherence(session,area,unit,window=100,FMAX=250):
     use   = (freqs>0.)&(freqs<=250.)
     plot(freqs[use],raw2[use],color='r')
     ylim(0,0.5)
-    nicelimits()
+    nicexy()
     ylabel('Coherence',labelpad=-10)
     xlim(0,FMAX)
     xticks(linspace(0,FMAX,11),['%d'%x for x in linspace(0,FMAX,11)])
     xlabel('Frequency (Hz)')
     title('Coherence')
 
-def plotSTA(session,area,unit,start,stop,window=100,texttop=False,color='k',label=None,lw=1.5,linestyle='-'):
+def plotSTA(session,area,unit,start,stop,
+    window=100,texttop=False,color='k',label=None,
+    lw=1.5,linestyle='-'):
     snippits = getSTLFP(session,area,unit,start,stop,window)
     time = arange(-window,window+1)
     sta  = mean(snippits,0)
@@ -232,7 +251,7 @@ def plotSTA(session,area,unit,start,stop,window=100,texttop=False,color='k',labe
     plot(time,sta,linestyle,zorder=5,color=color,label=label,lw=lw)
     title('Spike-triggered LFP average')
     xlabel('Time (ms)')
-    nicelimits()
+    nicexy()
     simpleraxis(gca())
     xlim(-window,window)
     yextreme = max(*abs(array(ylim())))
@@ -243,14 +262,15 @@ def plotSTA(session,area,unit,start,stop,window=100,texttop=False,color='k',labe
     return snippits
 
 def getRaster(session,area,unit,trial):
-    #print 'both unit and trial should be 1 indexed'
+    #print('both unit and trial should be 1 indexed')
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     tsp    = ByTrialSpikesMS[unit-1,trial-1]
     y      = zeros(stop-start,dtype=int32)
     y[tsp] = 1
     return y
 
-def plotAllTrials(session,area,unit,start,stop,FS=1000.0,s=4,clip_on=False):
+def plotAllTrials(session,area,unit,start,stop,
+    FS=1000.0,s=4,clip_on=False):
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     eventsByTrial   = metaloadvariable(session,area,'eventsByTrial')
     cla()
@@ -272,7 +292,7 @@ def plotAllTrials(session,area,unit,start,stop,FS=1000.0,s=4,clip_on=False):
     ylabel('Trial No.')
     ylim(0.5,tally+0.5)
     yticks([1,tally])
-    bareaxis(gca())
+    noaxis(gca())
     xlabel('Time (s)')
 
 def plotLFP(lfp):
@@ -286,7 +306,7 @@ def plotLFP(lfp):
 
 def plotLFPSpikes(lfp,start,stop,spikes,
     zoom=1000,vrange=100,FS=1000.0,SPIKECOLOR=(1,0.5,0),lw=2):
-    print 'caution assumes starting at beginning of trial'
+    print('caution assumes starting at beginning of trial')
     cla()
     plot((arange(stop-start)/FS)[:zoom],lfp[:zoom],
         'k')#,label='%s-%sHz LFP'%(lowf,highf))
@@ -301,7 +321,8 @@ def plotLFPSpikes(lfp,start,stop,spikes,
         if spt>=xlim()[1]:continue
         plot([spt,spt],(c,d),color=SPIKECOLOR,lw=lw)
     if len(spikes):
-        plot([spt,spt],(c,d),color=SPIKECOLOR,lw=lw,label='Spike times')
+        plot([spt,spt],(c,d),
+            color=SPIKECOLOR,lw=lw,label='Spike times')
     yticks([-vrange,0,vrange])
     ylabel('Microvolts')
     xlabel('Time (s)')
@@ -363,8 +384,8 @@ def plotWaveforms(session,area,unit):
     xlim(times[0],times[-1])
     xlabel(u'μs')
     ylabel(u'μV')
-    nicelimits()
-    bareaxis(gca())
+    nicexy()
+    noaxis(gca())
     title('Waveforms')
     gca().yaxis.labelpad = -20
 
@@ -379,9 +400,9 @@ def plotISIhist(session,area,unit,start,stop):
     a,b = ylim()
     plot((modefind(isi),)*2,ylim(),color='r',lw=2)
     ylim(a,b)
-    nicelimits()
+    nicexy()
     xticks(int32([xlim()[0],int(round(modefind(isi))),xlim()[1]]))
-    bareaxis(gca())
+    noaxis(gca())
     xlabel('Time (ms)')
     ylabel('N')
     title('ISI histogram (time)')
@@ -414,7 +435,7 @@ def plotISIhistHz(session,area,unit,start,stop,
         a,b = ylim()
         plot((modefind(isi),)*2,ylim(),color='r',lw=lw)
         ylim(a,b)
-        nicelimits()
+        nicexy()
         isi = isi[~isnan(isi)]
         isi = isi[~isinf(isi)]
         mf = modefind(isi)
@@ -427,7 +448,7 @@ def plotISIhistHz(session,area,unit,start,stop,
         plot(x,h,linestyle,lw=1,color=color,label=label)
     else:
         raise ValueError("Plot style must be line or bar")
-    bareaxis(gca())
+    noaxis(gca())
     xlabel('Frequency (Hz)')
     ylabel('N')
     title('ISI histogram\n(frequency)')
@@ -460,11 +481,12 @@ def plotPPC(unit):
     plot(ppcfreqs,x,color='k')
     ylim(0,0.5)
     xlim(0,400)
-    nicelimits()
+    nicexy()
     xlabel('Frequency (Hz)')
     ylabel('PPC')
 
-def add_wavelet_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=None):
+def add_wavelet_colorbar(data=None,COLORMAP=extended,
+    ax=None,vmin=None,vmax=None):
     # manually add colorbar axes because matplotlib gets it wrong
     if ax is None: ax=gca()
     noaxis()
@@ -480,7 +502,7 @@ def add_wavelet_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=None
     if vmax is None:
         vmax = np.max(data)
         vmax = np.ceil(vmax)
-    print vmin,vmax
+    print(vmin,vmax)
     imshow(array([linspace(vmax,vmin,100)]).T,
         extent=(vmin,vmax,vmin,vmax),
         aspect='auto',
@@ -519,7 +541,7 @@ def add_spectrum_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=Non
     if vmax is None:
         vmax = np.max(data)
         vmax = np.ceil(vmax)
-    print vmin,vmax
+    print(vmin,vmax)
     imshow(array([linspace(vmax,vmin,100)]).T,
         extent=(vmin,vmax,vmin,vmax),
         aspect='auto',
@@ -544,13 +566,13 @@ def add_spectrum_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=Non
 def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
     drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',W=4,H=4):
     if extent!=(0,4,0,4):
-        print 'different size?'
+        print('different size?')
     if vmin is None:
         vmin=np.nanmin(data)
-        print 'vmin=',vmin
+        print('vmin=',vmin)
     if vmax is None:
         vmax=np.nanmax(data)
-        print 'vmax=',vmax
+        print('vmax=',vmax)
     imshow(data,vmin=vmin,vmax=vmax,cmap=cmap,origin=origin,
         interpolation=interpolation,extent=extent)
     if drawlines:
@@ -577,14 +599,14 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     '''
     cla()
     W,H = shape(mean_analytic_signal)
-    print W,H
+    print(W,H)
     Wmm,Hmm = W*0.4, H*0.4
-    print Wmm,Hmm
+    print(Wmm,Hmm)
     upsampled = dct_upsample(dct_cut_antialias(mean_analytic_signal,smooth),UPSAMPLE)
     # upsampling trims the array a bit
     # figure out how to re-center the trimmed array:
     sw,sh  = shape(upsampled)
-    print sw, sh
+    print(sw, sh)
     fw,fh  = float32(shape(mean_analytic_signal)[:2])*UPSAMPLE
     dw,dh  = (fw-sw)/fw*0.5*Wmm,(fh-sh)/fh*0.5*Hmm
     extent = (dh,dh+sh/fh*Hmm,dw,dw+sw/fw*Wmm)
@@ -631,7 +653,8 @@ def unit_ISI_plot(session,area,unit,epoch=((6,-1000,0),(8,-1000,0)),INFOXPOS=70,
     y   = y/(K+x)
     y   = y*len(allisi)*dx
     plot(x,y,color=RUST,lw=1.5)
-    mean_rate           = sum(map(len,spikes))/float(len(get_good_trials(session))*2)
+    mean_rate           = sum(array(list(map(len,spikes))))/\
+        float(len(get_good_trials(session))*2)
     noburst = allisi[allisi>BURST]
     ISI_cv              = std(noburst)/mean(noburst)
     burstiness          = sum(allisi<BURST)/float(len(allisi))*100
@@ -658,9 +681,12 @@ def unit_ISI_plot(session,area,unit,epoch=((6,-1000,0),(8,-1000,0)),INFOXPOS=70,
     simpleaxis()
     title('Monkey %s area %s\nsession %s unit %s'%(session[0],area,session[-2:],unit),loc='center',fontsize=7)
 
-# Add statistical summary printout to the ISI example figures
+
 def do_unit_ISI_plot(session, area, unit,
     INFOXPOS = 70, LABELSIZE=8, NBINS=20, FMAX = 250):
+    '''
+    Add statistical summary printout to the ISI example figures
+    '''
     cla()
     spikes = []
     for trial in get_good_trials(session):
@@ -672,7 +698,8 @@ def do_unit_ISI_plot(session, area, unit,
     SNR        = get_unit_SNR(session,area,unit)
     histc,edges = histogram(ISI_events, bins = linspace(0,FMAX,NBINS+1))
     dx         = diff(edges)[0]
-    bar(edges[:-1]+dx*0.1,histc,width=dx*0.8,color=GATHER[-1],edgecolor=(0,)*4)
+    bar(edges[:-1]+dx*0.1,histc,
+        width=dx*0.8,color=GATHER[-1],edgecolor=(0,)*4)
     allisi = array(ISI_events)
     K   = 20
     x,y = kdepeak(log(K+allisi[allisi>0]))
@@ -680,7 +707,8 @@ def do_unit_ISI_plot(session, area, unit,
     y   = y/(K+x)
     y   = y*len(allisi)*dx
     plot(x,y,color=RUST,lw=1.5)
-    mean_rate           = sum(map(len,spikes))/float(len(get_good_trials(session))*2)
+    mean_rate = sum(array(list(map(len,spikes)))/
+        float(len(get_good_trials(session))*2))
     ISI_cv              = std(allisi)/mean(allisi)
     burstiness          = sum(allisi<5)/float(len(allisi))*100
     ll                  = 1./mean(allisi)
@@ -697,7 +725,8 @@ def do_unit_ISI_plot(session, area, unit,
     text(INFOXPOS,ylim()[1]-pixels_to_yunits(20+LH*2),'SNR = %0.1f'%SNR,
         horizontalalignment='left',
         verticalalignment  ='bottom',fontsize=LABELSIZE)
-    text(INFOXPOS,ylim()[1]-pixels_to_yunits(20+LH*3),'Mode freq. = %0.1f'%mode,
+    text(INFOXPOS,ylim()[1]-pixels_to_yunits(20+LH*3),
+        'Mode = %0.1f ms (%0.1f Hz)'%(mode,1000./mode),
         horizontalalignment='left',
         verticalalignment  ='bottom',fontsize=LABELSIZE)
     axvline(mode,lw=2,color=TURQUOISE)

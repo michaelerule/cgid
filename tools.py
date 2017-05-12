@@ -1,10 +1,20 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 
 from collections import defaultdict
 
@@ -56,8 +66,8 @@ def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,label
 overlay_events = overlay_markers
 
 def channel2index(channel,availableChannels):
-    if dowarn(): print 'NOTE EXPECTING 1 INDEXED CHANNEL'
-    if dowarn(): print 'RETURNING 0 INDEX OF DATA ARRAY'
+    if dowarn(): print('NOTE EXPECTING 1 INDEXED CHANNEL')
+    if dowarn(): print('RETURNING 0 INDEX OF DATA ARRAY')
     availableChannels = squeeze(availableChannels)
     return cumsum(availableChannels)[channel-1]-1
 
@@ -82,7 +92,7 @@ def get_burstiness(session,area,unit,epoch,thr=5):
 
 @memoize
 def get_all_ibi_epoch(session,area,unit,epoch,thr):
-    if dowarn(): print 'note: threshold is in ms, defaults to 5'
+    if dowarn(): print('note: threshold is in ms, defaults to 5')
     all_ibi = []
     if thr==None: thr=5
     for trial in cgid.data_loader.get_valid_trials(session,area):
@@ -99,8 +109,8 @@ def get_all_ibi_epoch(session,area,unit,epoch,thr):
 
 @memoize
 def get_all_ibi_merged_epoch(session,area,unit,epoch,thr):
-    if dowarn(): print 'note: threshold is in ms, defaults to 5'
-    if dowarn(): print 'note: misses burst if starts on 1st spike, TODOFIX'
+    if dowarn(): print('note: threshold is in ms, defaults to 5')
+    if dowarn(): print('note: misses burst if starts on 1st spike, TODOFIX')
     all_ibi = []
     if thr==None: thr=5
     for trial in cgid.data_loader.get_valid_trials(session,area):
@@ -128,7 +138,7 @@ def quicksessions():
 
 def fftppc(snippits):
     M,window = shape(snippits)
-    if M<=window and dowarn(): print 'WARNING SAMPLES SEEM TRANSPOSED?'
+    if M<=window and dowarn(): print('WARNING SAMPLES SEEM TRANSPOSED?')
     assert M>window
     fs = ftw(snippits)
     raw      = abs(sum(fs/abs(fs),0))**2
@@ -258,7 +268,7 @@ def ondatadata(function,session,area,trial,epoch,fa,fb):
     times  = cgid.data_loader.get_trial_times_ms(session,area,trial,epoch)
     N      = len(times)
     if M>N:
-        print M,N,shape(times),shape(result)
+        print(M,N,shape(times),shape(result))
     assert M<=N
     if M<N:
         warn('warning input len %s output len %s assuming cropped'%(N,M))
@@ -283,7 +293,7 @@ def ofrawdata(function,session,area,trial,epoch):
     times  = cgid.data_loader.get_trial_times_ms(session,area,trial,epoch)
     N      = len(times)
     if M>N:
-        print M,N,shape(times),shape(result)
+        print(M,N,shape(times),shape(result))
     assert M<=N
     if M<N:
         warn('warning input len %s output len %s assuming cropped'%(N,M))
@@ -377,7 +387,7 @@ def onsession(statistic,session,area,epoch,fa,fb):
         e,st,sp  = epoch
     debug('!!>>> applying'+' '.join(map(str,(statistic,session,area,epoch,fa,fb))))
     trials  = cgid.data_loader.get_good_trials(session)
-    print trials
+    print(trials)
     results = [overdata(statistic,session,area,tr,epoch,fa,fb) for tr in trials]
     results = arr(results)
     rtimes  = results[0,0,:]

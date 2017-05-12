@@ -1,3 +1,12 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+# more py2/3 compat
+from neurotools.system import *
+
 from os.path import expanduser
 import cgid
 
@@ -5,10 +14,10 @@ import cgid
 # so just hard code it
 import os
 myhost = os.uname()[1]
-if myhost in ('moonbase','basecamp','RobotFortress'):
+if myhost in ('moonbase','basecamp','RobotFortress','petra'):
     archive = expanduser('~/Workspace2/CGID_essential/')
 else:
-    print 'HI WILSON PLEASE ENTER THE PATH TO THE CGID ARCHIVES BELOW'
+    print('HI WILSON PLEASE ENTER THE PATH TO THE CGID ARCHIVES BELOW')
     archive = 'PATH/TO/WILSONS/COPY/OF/THE/CGID/ARCHIVES'
 
 """
@@ -64,4 +73,4 @@ import datetime
 def today():
     return datetime.date.today().strftime('%y%m%d')
 
-print today()
+print(today())

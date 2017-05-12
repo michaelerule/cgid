@@ -1,5 +1,5 @@
-cgid.dependencies module
-========================
+cgid\.dependencies module
+=========================
 
 .. automodule:: cgid.dependencies
     :members:

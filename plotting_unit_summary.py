@@ -1,3 +1,20 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 # execute the main figure script first
 # this is just to check units
 
@@ -75,11 +92,11 @@ def unitsumfig(session,area,unit,savein='./'):
 
 def dumpallunits():
     for s,a in sessions_areas():
-        print s,a
+        print(s,a)
         NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
-        print 'No. Units = ',NUNITS
+        print('No. Units = ',NUNITS)
         for i in range(NUNITS):
-            print '\t',s,a,i
+            print('\t',s,a,i)
             unitsumfig(s,a,i+1,savein='./unit_info_figures/')
     for (s,a),us in allunitsbysession.iteritems():
         for u in us:
@@ -114,16 +131,16 @@ def get_average_rate(session,area,unit,epoch):
     return mean(map(len,spks))/(stop-start)*1000
 
 def printstats(s,a,u):
-    print '\t',s,a,u,
-    print 'OK ' if is_unit_on_good_lfp_channel(s,a,u) else 'BAD',
-    print get_unit_quality(s,a,u),
-    print 'SNR=%0.1f'%get_unit_snr(s,a,u),
-    print '\t','obj count=%04d rate=%0.1f'%(
+    print('\t',s,a,u,end='')
+    print('OK ' if is_unit_on_good_lfp_channel(s,a,u) else 'BAD',end='')
+    print(get_unit_quality(s,a,u),end='')
+    print('SNR=%0.1f'%get_unit_snr(s,a,u),end='')
+    print('\t','obj count=%04d rate=%0.1f'%(
         get_total_spikes(s,a,u,preobject),
-        get_average_rate(s,a,u,preobject)),
-    print '\t','go count=%04d rate=%0.1f'%(
+        get_average_rate(s,a,u,preobject)),end='')
+    print('\t','go count=%04d rate=%0.1f'%(
         get_total_spikes(s,a,u,prego),
-        get_average_rate(s,a,u,prego))
+        get_average_rate(s,a,u,prego)))
 
 def surveyallunits():
     preobject  = 6,-1000,0 # pre-object
@@ -132,9 +149,9 @@ def surveyallunits():
     allcounts = []
     allsnr    = []
     for s,a in sessions_areas():
-        print s,a
+        print(s,a)
         NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
-        print 'No. Units = ',NUNITS
+        print('No. Units = ',NUNITS)
         for u in range(1,1+NUNITS):
             printstats(s,a,u)
             allrates .append(get_average_rate(s,a,u,preobject))
@@ -151,9 +168,9 @@ def filterunits():
     preobject = 6,-1000,0 # pre-object
     prego     = 8,-1000,0 # pre-go
     for s,a in sessions_areas():
-        print s,a
+        print(s,a)
         NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
-        print 'No. Units = ',NUNITS
+        print('No. Units = ',NUNITS)
         for u in range(1,1+NUNITS):
             if not is_unit_on_good_lfp_channel(s,a,u): continue
             if get_unit_quality(s,a,u)<minqual: continue
@@ -186,9 +203,9 @@ def find_very_good_beta_examples():
     preobject = 6,-1000,0 # pre-object
     prego     = 8,-1000,0 # pre-go
     for s,a in sessions_areas():
-        print s,a
+        print(s,a)
         NUNITS = len(metaloadvariable(s,a,'unitIds')[0])
-        print 'No. Units = ',NUNITS
+        print('No. Units = ',NUNITS)
         for u in range(1,1+NUNITS):
             if not is_unit_on_good_lfp_channel(s,a,u): continue
             if get_unit_quality(s,a,u)<minqual: continue

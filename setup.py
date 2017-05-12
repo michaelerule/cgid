@@ -1,3 +1,10 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+
 # this ... might be able to install missing dependencies
 # In the future we'll make this a package so the dependenies are
 # handeled at installation
@@ -44,7 +51,6 @@ from cgid.phasetools                import *
 from cgid.phaseplane                import *
 from cgid.array_mapper              import *
 from cgid.array                     import *
-from cgid.circulardistributions     import *
 from cgid.waveparametrics           import *
 from cgid.plotting_helper_functions import *
 from cgid.plotting_unit_summary     import *
@@ -61,7 +67,7 @@ from cgid.beta                      import *
 # load results from disk
 allresults = load_ppc_results_archives()
 
-print 'warning, defining PPCFREQS globally'
+print('warning, defining PPCFREQS globally')
 try:
     PPCFREQS = abs(np.fft.helper.fftfreq(200,1./1000)[:101])
 except:
@@ -96,5 +102,5 @@ try:
     matplotlib.rcParams['figure.subplot.top'   ]=0.9
     matplotlib.rcParams['figure.subplot.wspace']=0.35
 except:
-    print 'Static configuration of matplotlib failed'
-    print 'Are we inside Sphinx autodoc?'
+    print('Static configuration of matplotlib failed')
+    print('Are we inside Sphinx autodoc?')

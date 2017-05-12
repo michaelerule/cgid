@@ -1,14 +1,24 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 '''
 spiking analysis tools for CGID
 '''
+from matplotlib.mlab import find
 
 from warnings import warn
 from cgid.lfp import get_raw_lfp
@@ -22,7 +32,8 @@ from cgid.unitinfo import allunitsbysession,classification_results
 from cgid.tools    import find_all_extension, sessions_areas, neighbors
 
 import cgid.data_loader
-from cgid.data_loader import *
+#from cgid.data_loader import *
+#from cgid.data_loader import get_good_trials
 
 from   numpy import *
 import numpy as np
@@ -43,7 +54,7 @@ def get_spikes_session(session,area,unit,Fs=1000):
 	    1xNUNITS cell array of spike times in seconds. These are raw spike times
 	    for the whole session and have not been segmented into individual trials.
 	'''
-    if dowarn(): print 'NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
     spikeTimes = cgid.data_loader.metaloadvariable(session,area,'spikeTimes')
     return int32(spikeTimes[0,unit-1][:,0]*Fs)
 
@@ -87,18 +98,18 @@ def get_spikes_session_raster(session,area,unit,start,stop,decimate=1):
 
 @memoize
 def get_spikes(session,area,unit,trial):
-    if dowarn(): print 'NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
+    if dowarn(): print('NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
+    if dowarn(): print('NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
     assert trial>0
     ByTrialSpikesMS = cgid.data_loader.metaloadvariable(session,area,ByTrialSpikesMS)
     return ByTrialSpikesMS[unit-1,trial-1]
 
 @memoize
 def get_spikes_event(session,area,unit,trial,event,start,stop):
-    if dowarn(): print 'NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    if dowarn(): print 'NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
-    if dowarn(): print 'NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS'
+    if dowarn(): print('NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
+    if dowarn(): print('NOTE TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
+    if dowarn(): print('NOTE EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
     assert trial>0
     ByTrialSpikesMS = cgid.data_loader.metaloadvariable(session,area,'ByTrialSpikesMS')
     spikems = ByTrialSpikesMS[unit-1,trial-1]
@@ -445,10 +456,15 @@ def get_unit_SNR(session,area,unit):
     return signal/noise
 
 @memoize
+def get_mean_waveform(s,a,u):
+    wfs = cgid.data_loader.get_waveforms(s,a,u)
+    return np.mean(wfs,1)
+
+@memoize
 def get_spikes_and_lfp_all_trials(session,area,unit,epoch):
     spikes = get_spikes_epoch_all_trials(session,area,unit,epoch)
     ch     = get_unit_channel(session,area,unit)
-    lfps   = np.array([get_raw_lfp(session,area,ch,tr,epoch) for tr in good_trials(session)])
+    lfps   = np.array([get_raw_lfp(session,area,tr,ch,epoch) for tr in cgid.data_loader.get_good_trials(session)])
     return spikes, lfps
 
 
@@ -472,27 +488,27 @@ def unit_class_summary(group,verbose=True):
             number = int(number.split('(')[1][:-1])
             foundunits.append((session,area,number))
         except:
-            print 'found file',u,'is not a unit summary figure.'
+            print('found file',u,'is not a unit summary figure.')
     if verbose:
-        print ''
-        print len(foundunits),'units categorized as',group,'(not all may be useable)'
+        print('')
+        print(len(foundunits),'units categorized as',group,'(not all may be useable)')
     useable = []
-    #print 'Breakdown by session, area, and monkey'
+    #print('Breakdown by session, area, and monkey')
     for s,a in sessions_areas():
         thisarea = [u for (_s,_a,u) in foundunits if (s,a)==(_s,_a)]
         good = set(thisarea)# & set([u for (_s,_a,u) in acceptable if (s,a)==(_s,_a)])
         thin  = [u for u in good if (s,a,u) in thinthick and thinthick[s,a,u]==0]
         thick = [u for u in good if (s,a,u) in thinthick and thinthick[s,a,u]==1]
         miss  = [u for u in good if (s,a,u) not in thinthick]
-        #print '\t',s,a,'\t',
-        #print len(thisarea),'total',
-        #print len(good),'useable',
+        #print('\t',s,a,'\t',)
+        #print(len(thisarea),'total',)
+        #print(len(good),'useable',)
         #if len(good)>0:
-        #    print '%d (%d%%)'%(len(thin),len(thin)*100./len(good)),'thin spike',
-        #    print '%d (%d%%)'%(len(thick),len(thick)*100./len(good)),'thick spike',
+        #    print('%d (%d%%)'%(len(thin),len(thin)*100./len(good)),'thin spike',)
+        #    print('%d (%d%%)'%(len(thick),len(thick)*100./len(good)),'thick spike',)
         #if len(miss)>0:
-        #    print '%d'%len(miss),'missing from thick-thin, check',
-        #print ''
+        #    print('%d'%len(miss),'missing from thick-thin, check',)
+        #print('')
         useable.extend([(s,a,u) for u in good])
     missing = []
     thin  = []
@@ -509,8 +525,6 @@ def unit_class_summary(group,verbose=True):
             missing.append((s,a,u))
     return useable,thin,thick,missing
 
-
-@memoize
 def poisson_KS(allisi):
     '''
     KS statistics for an ISI distribution against the Poisson (Exponential)
@@ -526,7 +540,6 @@ def poisson_KS(allisi):
     return KS
 
 
-@memoize
 def remove_bursts(spikes, duration=5):
     '''
     remove spikes too close together
@@ -551,8 +564,12 @@ def remove_bursts(spikes, duration=5):
         results.append(newtrain)
     return np.array(results)
 
-@memoize
-def get_isi_stats(spikes,epoch,FS=1000,BURST_CUTOFF_MS=10,MIN_NISI=100):
+
+def amap(f,x):
+    return array(list(map(f,x)))
+
+def get_isi_stats(spikes,epoch,
+    FS=1000,BURST_CUTOFF_MS=10,MIN_NISI=100):
     '''
     Computes a statistical summary of an ISI distribution.
     Accepts a list of lists of spike times
@@ -571,21 +588,24 @@ def get_isi_stats(spikes,epoch,FS=1000,BURST_CUTOFF_MS=10,MIN_NISI=100):
     burst_free_spikes     = remove_bursts(spikes, duration=BURST_CUTOFF_MS)
     burst_free_ISI_events = list(flatten(map(diff,burst_free_spikes)))
     burst_free_allisi     = np.array(burst_free_ISI_events)
-    burst_free_mode   = FS/modefind(burst_free_allisi)
-    burst_free_mean_rate = (sum(map(len,burst_free_spikes))) / float(len(burst_free_spikes)) / duration
-    burst_free_ISI_cv    = np.std(burst_free_allisi)/np.mean(burst_free_allisi)
+    burst_free_mode       = FS/modefind(burst_free_allisi)
+    burst_free_mean_rate  = (sum(
+        amap(len,burst_free_spikes))) / float(len(burst_free_spikes)) / duration
+    burst_free_ISI_cv     = np.std(burst_free_allisi)/np.mean(burst_free_allisi)
     return burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode
 
 @memoize
 def get_isi_stats_unit_epoch(session,area,unit,epoch,MIN_NISI):
     '''
-    Computes a statistical summary of an ISI distribution for given unit
-    for all good trials for given epoch
-    return burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode = get_isi_stats_unit_epoch(session,area,unit,epoch)
+    Computes a statistical summary of an ISI distribution for given unit for all good trials for given epoch
+
+    Returns
+    -------
+    burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode 
     '''
     event,start,stop = epoch
     spikes = []
-    for trial in good_trials(session):
+    for trial in cgid.data_loader.get_good_trials(session):
         spikes.append(cgid.spikes.get_spikes_event(session,area,unit,trial,event,start,stop))
     return get_isi_stats(spikes,epoch,MIN_NISI=MIN_NISI)
 
@@ -605,7 +625,7 @@ def get_epoch_firing_rate(session,area,unit,epoch):
     Fs=1000
     spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
     n_total_spikes     = len(spikes)
-    n_total_times      = len(good_trials(session))*(epoch[-1]-epoch[-2])
+    n_total_times      = len(cgid.data_loader.get_good_trials(session))*(epoch[-1]-epoch[-2])
     rate = float(n_total_spikes*Fs)/n_total_times
     return rate
 

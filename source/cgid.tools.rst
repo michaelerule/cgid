@@ -1,5 +1,5 @@
-cgid.tools module
-=================
+cgid\.tools module
+==================
 
 .. automodule:: cgid.tools
     :members:

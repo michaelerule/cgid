@@ -1,5 +1,5 @@
-cgid.data_loader module
-=======================
+cgid\.data\_loader module
+=========================
 
 .. automodule:: cgid.data_loader
     :members:

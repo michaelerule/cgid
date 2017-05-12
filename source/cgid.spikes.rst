@@ -1,5 +1,5 @@
-cgid.spikes module
-==================
+cgid\.spikes module
+===================
 
 .. automodule:: cgid.spikes
     :members:

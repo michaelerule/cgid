@@ -1,5 +1,5 @@
-cgid.phaseplane module
-======================
+cgid\.phaseplane module
+=======================
 
 .. automodule:: cgid.phaseplane
     :members:

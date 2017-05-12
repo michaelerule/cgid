@@ -1,21 +1,26 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
-
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 import os
-
 from numpy                    import *
 from numpy.linalg.linalg      import inv
 from matplotlib.mlab          import find
-
 from neurotools.tools         import memoize
 from neurotools.spatial.array import trim_array,trim_array_as_if
-
 from cgid.config              import CGID_PACKAGE
 from cgid.data_loader         import get_array_map
 
@@ -73,7 +78,7 @@ def getElectrodePositions(session,area):
         row = find([any(r==chi) for r in arrayChannelMap])
         col = find([any(c==chi) for c in arrayChannelMap.T])
         if prod(shape(row))<1 or prod(shape(col))<1:
-            print 'error cannot locate channel %d'%chi
+            print('error cannot locate channel %d'%chi)
             continue
         # The *2+1 accounts for the fact that the electrodes are in 
         # the center of the square patches -- our quadrilateral defines the

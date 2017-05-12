@@ -1,5 +1,5 @@
-cgid.beta module
-================
+cgid\.beta module
+=================
 
 .. automodule:: cgid.beta
     :members:

@@ -11,7 +11,6 @@ Submodules
    cgid.array
    cgid.array_mapper
    cgid.beta
-   cgid.circulardistributions
    cgid.config
    cgid.data_loader
    cgid.dependencies

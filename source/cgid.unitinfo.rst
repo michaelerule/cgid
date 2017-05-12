@@ -1,5 +1,5 @@
-cgid.unitinfo module
-====================
+cgid\.unitinfo module
+=====================
 
 .. automodule:: cgid.unitinfo
     :members:

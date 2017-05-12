@@ -1,3 +1,20 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 from cgid.data_loader  import *
 from cgid.lfp          import *
 from neurotools.ntime  import *
@@ -5,7 +22,7 @@ from neurotools.tools  import memoize,globalize,warn
 from matplotlib.pyplot import *
 from neurotools.plot   import *
 from neurotools.color  import *
-from cgid.circulardistributions import *
+from neurotools.stats.circular import *
 
 def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
     skip=1,saveas=None,hook=None,FPS=30,stabilize=True,extension='.pdf',markersize=1.5,figtitle=None):
@@ -14,7 +31,7 @@ def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
     '''
     warn('Also plots "bad" channels')
     areacolors = [OCHRE,AZURE,RUST]
-    print session, tr
+    print(session, tr)
     # save current figure so we can return to it
     ff=gcf()
     ax=gca()
@@ -23,7 +40,7 @@ def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
     # retrieve filtered array data
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     # compute phase velocities for stabilization
@@ -45,7 +62,7 @@ def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
         M = max(M,int(ceil(np.max(abs(data[a]))/10.))*10)
     complex_axis(M)
     title(figtitle+' t=%dms'%times[0])
-    # prepare output directory if we're going to save this    
+    # prepare output directory if we're going to save this
     if not saveas is None:
         savedir = './'+saveas
         ensuredir(savedir)
@@ -74,7 +91,7 @@ def phase_plane_animation_arraygrid(session,tr,fa=10,fb=45,\
     phase_plane_animation(session,tr)
     '''
     warn('Also plots "bad" channels')
-    print session, tr
+    print(session, tr)
     # save current figure so we can return to it
     ff=gcf()
     ax=gca()
@@ -83,7 +100,7 @@ def phase_plane_animation_arraygrid(session,tr,fa=10,fb=45,\
     # retrieve filtered array data
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     # locate all pairs
@@ -109,7 +126,7 @@ def phase_plane_animation_arraygrid(session,tr,fa=10,fb=45,\
         M = max(M,int(ceil(np.max(abs(data[a]))/10.))*10)
     complex_axis(M)
     title(figtitle+' t=%dms'%times[0])
-    # prepare output directory if we're going to save this    
+    # prepare output directory if we're going to save this
     if not saveas is None:
         savedir = './'+saveas
         ensuredir(savedir)
@@ -118,7 +135,7 @@ def phase_plane_animation_arraygrid(session,tr,fa=10,fb=45,\
     canvas = aa.figure.canvas
     background = canvas.copy_from_bbox(aa.bbox)
     def updateline(time):
-        print '!!! t=',time
+        print('!!! t=',time)
         canvas.restore_region(background)
         aa.draw_artist(line)
         aa.figure.canvas.blit(ax.bbox)
@@ -184,7 +201,7 @@ def phase_animation(phases,skip=1,saveas=None,hook=None,FPS=15,markersize=1.5):
     # perform animation
     st = now()
     for i,t in en|times:
-        print i,t
+        print(i,t)
         for a in areas:
             scat[a].set_offsets(c2p(data[a][i]))
         title(figtitle+' t=%sms'%t)
@@ -221,7 +238,7 @@ def phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,epoch=None,\
     '''
     phase_plane_animation(session,tr)
     '''
-    print session, tr
+    print(session, tr)
     # save current figure so we can return to it
     ff=gcf()
     ax=gca()
@@ -230,7 +247,7 @@ def phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,epoch=None,\
     # retrieve filtered array data
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     # compute phase velocities for stabilization
@@ -253,7 +270,7 @@ def phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,epoch=None,\
     complex_axis(M)
     title(figtitle+' t=%dms'%times[0])
     tight_layout()
-    # prepare output directory if we're going to save this    
+    # prepare output directory if we're going to save this
     if not saveas is None:
         savedir = './'+saveas
         ensuredir(savedir)
@@ -296,13 +313,13 @@ def phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,epoch=None,\
 
 
 if __name__=='__main__':
-    
+
     from cgid.setup import *
     close('all')
     figure('Phase Plane',figsize=(4,4))
     phase_plane_animation('SPK120918',2,areas=['M1','PMv','PMd'],fa=10,fb=45,epoch=(6,120-1000,190-1000),skip=10,saveas='Chapter4Figure10',hook=None,FPS=2,stabilize=False,extension='pdf',markersize=2,figtitle='')
-    
-    
+
+
     """
     session = 'SPK120918'
     area = 'M1'
@@ -316,14 +333,14 @@ if __name__=='__main__':
 
     # pretty animation but it runs forever, skip for now
     #phase_plane_animation(session,2,areas)
-    
+
     # retrieve filtered array data
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb)
         data[a]=x.T
-        
+
     t = 148
 
     frame = []
@@ -348,7 +365,7 @@ if __name__=='__main__':
     cx = x - mx
     cy = y - my
     cm = cov(cx,cy)
-    print mx,my,cm
+    print(mx,my,cm)
     w,v = eig(cm)
     v = v[0,:]+1j*v[1,:]
     origin = mx + 1j*my
@@ -375,15 +392,15 @@ if __name__=='__main__':
     #phase_plane_animation_distribution(session,tr,areas,fa=17,fb=27,FPS=15,M=70)
     #phase_plane_animation_distribution(session,tr,areas,fa=10,fb=45,FPS=Inf,
     #    M=70,skip=2,extension='pdf',saveas='allmethods')
-    
+
     skip = 10
-    
+
     times = get_trial_times_ms(session,'M1',tr,epoch)[::skip]
-    
+
     # retrieve filtered array data
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     ccs=[]
@@ -394,7 +411,7 @@ if __name__=='__main__':
             frame.extend(x)
         frame = arr(frame)
         concent = sqrt(-2*log(abs(mean(frame))/mean(abs(frame))))* mean(abs(frame))
-        print i,t,concent
+        print(i,t,concent)
         ccs.append(concent)
     ccs = arr(ccs)
     '''
@@ -461,7 +478,7 @@ if __name__=='__main__':
     fb = 45
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     #i=423
@@ -493,7 +510,7 @@ if __name__=='__main__':
     abspolar_stats(frame,doplot=1)
     '''
     """
-    
+
     # quadratic exploration -- is strange, do not use
     """
     close('all')
@@ -503,7 +520,7 @@ if __name__=='__main__':
     fb = 45
     data = {}
     for a in areas:
-        print 'loading area',a 
+        print('loading area',a)
         x = get_all_analytic_lfp(session,a,tr,epoch,fa,fb,onlygood=True)[:,::skip]
         data[a]=x.T
     #i=423

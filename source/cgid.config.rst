@@ -1,5 +1,5 @@
-cgid.config module
-==================
+cgid\.config module
+===================
 
 .. automodule:: cgid.config
     :members:

@@ -1,5 +1,5 @@
-cgid.waveparametrics module
-===========================
+cgid\.waveparametrics module
+============================
 
 .. automodule:: cgid.waveparametrics
     :members:

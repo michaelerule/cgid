@@ -1,5 +1,5 @@
-cgid.lfp module
-===============
+cgid\.lfp module
+================
 
 .. automodule:: cgid.lfp
     :members:

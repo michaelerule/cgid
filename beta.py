@@ -1,3 +1,21 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
+
 '''
 Routines related to extracting and processing beta
 '''
@@ -46,8 +64,8 @@ def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
     '''
     return betapeak-0.5*bw,betapeak+0.5*bw
     '''
-    print 'THIS IS NOT THE ONE YOU WANT TO USE'
-    print 'IT IS EXPERIMENTAL COHERENCE BASED IDENTIFICATION OF BETA'
+    print('THIS IS NOT THE ONE YOU WANT TO USE')
+    print('IT IS EXPERIMENTAL COHERENCE BASED IDENTIFICATION OF BETA')
     assert 0
     if epoch is None: epoch = (6,-1000,3000)
     allco = []
@@ -97,8 +115,8 @@ def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
 def get_stored_beta_peak(session,area,epoch):
     epochs = [(6, -1000, 0),(8, -1000, 0)]
     if epoch not in epochs:
-        print 'supporting onle the 1s pre-obj and pre go'
-        print 'epoch',epoch,'not available'
+        print('supporting onle the 1s pre-obj and pre go')
+        print('epoch',epoch,'not available')
         assert 0
     beta_peaks = {\
      ('RUS120518', 'M1' , (6, -1000, 0)): 16.0,
@@ -185,7 +203,7 @@ def get_high_beta_events(session,area,channel,epoch,
     # esimate threshold for beta events
     beta_trials = [get_filtered_lfp(session,area,channel,t,(6,-1000,0),lowf,highf) for t in get_good_trials(session)]
     threshold   = np.std(beta_trials)*THSCALE
-    print 'threshold=',threshold
+    print('threshold=',threshold)
 
     N = len(signal)
     event,start,stop = epoch
@@ -205,7 +223,7 @@ def get_high_beta_events(session,area,channel,epoch,
         E = E[:,(diff(E,1,0)[0]>=MINLEN)
                 & (E[0,:]<epochstop )
                 & (E[1,:]>epochstart)]
-        if audit: print E
+        if audit: print(E)
         if clip:
             E[0,:] = np.maximum(E[0,:],epochstart)
             E[1,:] = np.minimum(E[1,:],epochstop )
@@ -239,7 +257,7 @@ def get_high_and_low_beta_spikes(session,area,unit,epoch,fa,fb):
     n_total_times      = len(get_good_trials(session))*(epoch[-1]-epoch[-2])
     events = array(events)
     if shape(events)[0]==0:
-        print 'NO EVENTS!!!!!!!'
+        print('NO EVENTS!!!!!!!')
         return threshold, NaN, Fs*float(n_total_spikes)/n_total_times
     event_spikes = (events[:,1][:,None]>=spikes[None,:])\
                   &(events[:,0][:,None]<=spikes[None,:])
@@ -283,7 +301,7 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
 
     events = array(events)
     if shape(events)[0]==0:
-        print 'NO EVENTS!!!!!!!'
+        print('NO EVENTS!!!!!!!')
         return threshold, NaN, Fs*float(n_total_spikes)/n_total_times
     # linear time solution exists but quadratic time solution is quicker to code.
     n_event_spikes     = sum((events[:,1][:,None]>=spikes[None,:])
@@ -293,5 +311,5 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     n_nonevent_times   = n_total_times - n_event_times
     event_rate         = Fs*float(n_event_spikes)/n_event_times
     nonevent_rate      = Fs*float(n_nonevent_spikes)/n_nonevent_times
-    print session,area,unit,epoch,event_rate,nonevent_rate, threshold
+    print(session,area,unit,epoch,event_rate,nonevent_rate, threshold)
     return threshold, event_rate, nonevent_rate

@@ -1,5 +1,5 @@
-cgid.results module
-===================
+cgid\.results module
+====================
 
 .. automodule:: cgid.results
     :members:

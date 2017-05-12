@@ -23,8 +23,11 @@ def get_raw_lfp_session(session,area,ch):
         warn('%a is not available channel for %s %s',(ch,session,area))
     if not ch in cgid.data_loader.get_good_channels(session,area):
         warn('%a is not a good channel for %s %s',(ch,session,area))
-    return cgid.data_loader.metaloadvariable(
-        session,area,'UnsegmentedLFP1KHz')[ch-1,0][:,0]
+    lfp = cgid.data_loader.metaloadvariable(
+        session,area,'UnsegmentedLFP1KHz')[ch-1,0]
+    if lfp.shape==(0,0):
+        raise ValueError('Requested LFP from nonexistent channel')
+    return lfp[:,0]
 
 @memoize
 def get_raw_lfp(session,area,trial,channel,epoch,pad=0):

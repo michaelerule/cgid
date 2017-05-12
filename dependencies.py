@@ -1,3 +1,13 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import print_function
+# more py2/3 compat
+from neurotools.system import *
+
+
 '''
 Dependency check for neurotools.
 '''
@@ -9,22 +19,22 @@ try:
     builtins = sys.builtin_module_names
     python_version = sys.version.split('\n')[0].split()[0]
 except:
-    print 'Somehow the sys package is missing'
-    print 'Very funny, are we even in a python interpreter?'
+    print('Somehow the sys package is missing')
+    print('Very funny, are we even in a python interpreter?')
     builtins = []
     python_version = 'UNKNOWN'
 
 try:
     import os.path
 except:
-    print 'Somehow the os.path package is missing'
-    print 'This is part of the standard library and it should be here'
+    print('Somehow the os.path package is missing')
+    print('This is part of the standard library and it should be here')
 
 try:
     import glob
 except:
-    print 'Somehow the glob package is missing'
-    print 'This is part of the standard library and it should be here'
+    print('Somehow the glob package is missing')
+    print('This is part of the standard library and it should be here')
 
 
 
@@ -37,8 +47,8 @@ try:
     for path in glob.glob(sys.prefix + "/lib/python%d.%d" % (sys.version_info[0:2]) + "/*.py"):
         stdlib.append(os.path.basename(path)[:-3])
 except:
-    print 'I tried to inspect the standard library installation but failed'
-    print 'This is alarming. Nonstandard installation or environment?'
+    print('I tried to inspect the standard library installation but failed')
+    print('This is alarming. Nonstandard installation or environment?')
     stdlib = []
 
 
@@ -47,9 +57,9 @@ except:
 try:
     import pkg_resources
 except:
-    print 'Somehow the pkg_resources package is missing'
-    print 'We need this to robustly check versions for compatibility'
-    print "I'll do my best without it..."
+    print('Somehow the pkg_resources package is missing')
+    print('We need this to robustly check versions for compatibility')
+    print("I'll do my best without it...")
 
 
 
@@ -61,13 +71,13 @@ try:
     for package in pip.get_installed_distributions():
         installed_via_pip[package.key]=package
 except:
-    print 'The pip package is missing.'
-    print 'Pip is used to manage and inspect installed packages.'
-    print "Python packages may also be installed manually, via easy_install, or via various system package managers, so it's not essential."
-    print "Please see https://pip.pypa.io/en/stable/installing/ to install pip"
-    print "Alternatively, an installer script should be available at https://bootstrap.pypa.io/get-pip.py"
-    print "Note that pip does not work with OS X 10.8 or older"
-    # print "Would you like me to try to install pip for you?"
+    print('The pip package is missing.')
+    print('Pip is used to manage and inspect installed packages.')
+    print("Python packages may also be installed manually, via easy_install, or via various system package managers, so it's not essential.")
+    print("Please see https://pip.pypa.io/en/stable/installing/ to install pip")
+    print("Alternatively, an installer script should be available at https://bootstrap.pypa.io/get-pip.py")
+    print("Note that pip does not work with OS X 10.8 or older")
+    # print("Would you like me to try to install pip for you?"
 
 
 
@@ -114,16 +124,16 @@ for entry in DEPENDENCIES:
     elif len(entry)==3:
         package,version,note = entry
 
-    print 'depends on',package
+    print('depends on',package)
     if package in builtins:
-        print '\tthis is a builtin, it should never be missing'
+        print('\tthis is a builtin, it should never be missing')
     elif package in stdlib:
-        print '\tthis is part of the standard library'
+        print('\tthis is part of the standard library')
     try:
         mod = __import__(package)
-        print '\tis installed'
+        print('\tis installed')
     except:
-        print '\timport failed, %s may not be installed or python path may not me correctly configured'%package
+        print('\timport failed, %s may not be installed or python path may not me correctly configured'%package)
         missing.append(package)
         continue # move on to next dependency
 
@@ -160,11 +170,11 @@ for entry in DEPENDENCIES:
             loaded_version = python_version
         # if a version number was reported, sanity check that it matches
         elif loaded_version != python_version:
-            print '\tA builtin is reporting a version number (unusual)'
-            print '\t\tthat differs from the Python version.'
-            print '\t\tThis is unexpected'
-            print '\t\tmodule reported',loaded_version
-            print '\t\tPython version is',python_version
+            print('\tA builtin is reporting a version number (unusual)')
+            print('\t\tthat differs from the Python version.')
+            print('\t\tThis is unexpected')
+            print('\t\tmodule reported',loaded_version)
+            print('\t\tPython version is',python_version)
             loaded_version = python_version
 
     if package in stdlib:
@@ -173,21 +183,21 @@ for entry in DEPENDENCIES:
             loaded_version = python_version
         # if a version number was reported, sanity check that it matches
         elif loaded_version != python_version:
-            print '\tA standard library module is reporting a version number that differs from the Python version.'
-            print '\t\tmodule reported',loaded_version
-            print '\t\tPython version is',python_version
+            print('\tA standard library module is reporting a version number that differs from the Python version.')
+            print('\t\tmodule reported',loaded_version)
+            print('\t\tPython version is',python_version)
             loaded_version = python_version
 
     if loaded_version is None:
-        print '\tNo version information found.'
+        print('\tNo version information found.')
     else:
         loaded_version = loaded_version.split('\n')[0]
-        print '\tVersion',loaded_version
+        print('\tVersion',loaded_version)
         if loaded_version < version:
-            print '\tThe loaded version differs from the dependency version'
-            print '\t\tThe loaded version is',loaded_version
-            print '\t\tThe required version is',version
-            print '\t\tThis is usually OK, but it may cause instability and surprising crashes'
+            print('\tThe loaded version differs from the dependency version')
+            print('\t\tThe loaded version is',loaded_version)
+            print('\t\tThe required version is',version)
+            print('\t\tThis is usually OK, but it may cause instability and surprising crashes')
 
     intalled_summary.append((package,loaded_version))
 
@@ -204,8 +214,8 @@ def ask(msg,default=True):
         if var in 'yn':
             answer = var=='y'
             break
-        if default: print "please type n(o), or press enter for y(es)"
-        else:       print "please type y(es), or press enter for n(o)"
+        if default: print("please type n(o), or press enter for y(es)")
+        else:       print("please type y(es), or press enter for n(o)")
     return answer
 
 
@@ -240,33 +250,34 @@ def which(program):
 useconda = which('conda')!=None
 
 if easy_install==None and pip==None:
-    print 'Neither pip nor easy_install is available, so I will not try to install missing packages.'
-    print 'Please install the following packages manually'
-    print '\t'+'\n\t'.join(missing)
+    print('Neither pip nor easy_install is available, so I will not try to install missing packages.')
+    print('Please install the following packages manually')
+    print('\t'+'\n\t'.join(missing))
+
 else:
     # we can try to install things automatically
     for package in missing:
         if package in builtins:
-            print 'This is a bug, %s is a builtin, it is not missing'%package
+            print('This is a bug, %s is a builtin, it is not missing'%package)
             continue
         if package in stdlib:
-            print 'This is a bug, %s is in the standard library, it is not missing'%package
-            print "This might happen if you've configured a very unusual environment, but I'm not going to try to fix it"
+            print('This is a bug, %s is in the standard library, it is not missing'%package)
+            print("This might happen if you've configured a very unusual environment, but I'm not going to) try to fix it")
             continue
         if package in ['numpy','scipy']:
-            print 'Package %s is missing, but automatic installation may be problematic.'
-            print 'Please search online and follow installation instructions for your platform'
+            print('Package %s is missing, but automatic installation may be problematic.')
+            print('Please search online and follow installation instructions for your platform')
             continue
         if ask('Package %s is missing, should I try to install it'%package):
             if useconda:
-                print "Using conda"
+                print("Using conda")
                 os.system('conda install '+package)
             elif not pip==None:
-                print "Using pip"
+                print("Using pip")
                 if package=='statsmodels':
                     pip.main(['install', 'six'])
                     pip.main(['install', 'patsy'])
                 pip.main(['install','--user',package])
             else:
-                print "Using easy_install"
+                print("Using easy_install")
                 easy_install.main( ["-U",package] )

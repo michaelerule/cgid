@@ -1,5 +1,5 @@
-cgid.array module
-=================
+cgid\.array module
+==================
 
 .. automodule:: cgid.array
     :members:

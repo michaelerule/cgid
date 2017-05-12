@@ -1,5 +1,5 @@
-cgid.array_mapper module
-========================
+cgid\.array\_mapper module
+==========================
 
 .. automodule:: cgid.array_mapper
     :members:

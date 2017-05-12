@@ -1,5 +1,5 @@
-cgid.phase_plots module
-=======================
+cgid\.phase\_plots module
+=========================
 
 .. automodule:: cgid.phase_plots
     :members:

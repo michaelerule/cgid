@@ -1,5 +1,5 @@
-cgid.phasetools module
-======================
+cgid\.phasetools module
+=======================
 
 .. automodule:: cgid.phasetools
     :members:

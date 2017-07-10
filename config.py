@@ -3,16 +3,19 @@
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
-# more py2/3 compat
 from neurotools.system import *
 
 from os.path import expanduser
 import cgid
+import datetime
+import os
 
 # These need to be reconfigured per system. Only two users right now
 # so just hard code it
-import os
 myhost = os.uname()[1]
 if myhost in ('moonbase','basecamp','RobotFortress','petra'):
     archive = expanduser('~/Workspace2/CGID_essential/')
@@ -67,10 +70,8 @@ sessionnames   = (rusty_sessions,spike_sessions)
 session_name_map = dict([(name,'Monkey %s Session %d'%(name[0],i+1)) for names in sessionnames for (i,name) in enumerate(names)])
 
 
-
-import datetime
-
 def today():
     return datetime.date.today().strftime('%y%m%d')
-
 print(today())
+
+

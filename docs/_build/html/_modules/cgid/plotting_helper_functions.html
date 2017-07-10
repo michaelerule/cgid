@@ -1,0 +1,959 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.plotting_helper_functions &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cgid.plotting_helper_functions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cgid.plotting_helper_functions</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+
+<span class="c1">#####################################################################</span>
+<span class="c1"># helper functions</span>
+
+<span class="c1"># TODO repair imports</span>
+<span class="kn">from</span> <span class="nn">neurotools.color</span> <span class="k">import</span> <span class="n">parula</span><span class="p">,</span><span class="n">extended</span><span class="p">,</span><span class="n">isolum</span>
+<span class="c1"># from pylab import *</span>
+<span class="c1"># from cgid.data_loader import *</span>
+<span class="c1"># from neurotools.plot  import *</span>
+<span class="c1"># from neurotools.stats.modefind import *</span>
+<span class="c1"># from cgid.spikes import *</span>
+<span class="c1"># from cgid.lfp    import *</span>
+<span class="c1"># from neurotools.getfftw import *</span>
+
+<span class="kn">import</span> <span class="nn">cgid.spikes</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal.ppc</span> <span class="k">import</span> <span class="n">pairwise_phase_consistancy</span>
+<span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">hann</span>
+<span class="n">CMAP</span> <span class="o">=</span> <span class="n">parula</span>
+
+<div class="viewcode-block" id="specshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.specshow">[docs]</a><span class="k">def</span> <span class="nf">specshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span>
+    <span class="n">NF</span><span class="p">,</span><span class="n">NT</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">aspect</span> <span class="o">=</span> <span class="n">aspect</span> <span class="o">/</span> <span class="n">FS</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+    <span class="k">assert</span> <span class="n">NF</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">specdata</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="n">aspect</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">NT</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">,</span><span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">specdata</span><span class="p">),</span><span class="n">mean</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">specdata</span><span class="p">)),</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">specdata</span><span class="p">),</span><span class="n">mean</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">specdata</span><span class="p">)))</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="n">ylim</span><span class="p">())))</span>
+    <span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">((</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">),(</span><span class="n">stop</span><span class="o">+</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">gca</span><span class="p">()</span>
+    <span class="n">add_spectrum_colorbar</span><span class="p">(</span><span class="n">specdata</span><span class="p">,</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="waveletshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.waveletshow">[docs]</a><span class="k">def</span> <span class="nf">waveletshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    basically specshow -- diffent units for scale bar</span>
+<span class="sd">    uV^2</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span>
+    <span class="n">NF</span><span class="p">,</span><span class="n">NT</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">aspect</span> <span class="o">=</span> <span class="n">aspect</span> <span class="o">/</span> <span class="n">FS</span>
+    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+    <span class="k">assert</span> <span class="n">NF</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">imshow</span><span class="p">(</span><span class="n">specdata</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="n">aspect</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">float</span><span class="p">(</span><span class="n">NT</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">,</span><span class="n">freqs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">freqs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">specdata</span><span class="p">),</span><span class="n">mean</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">specdata</span><span class="p">)),</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">specdata</span><span class="p">),</span><span class="n">mean</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">std</span><span class="p">(</span><span class="n">specdata</span><span class="p">)))</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="n">ylim</span><span class="p">())))</span>
+    <span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">((</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">),(</span><span class="n">stop</span><span class="o">+</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">))</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">gca</span><span class="p">()</span>
+    <span class="n">add_wavelet_colorbar</span><span class="p">(</span><span class="n">specdata</span><span class="p">,</span><span class="n">cmap</span><span class="p">)</span>
+    <span class="c1">#gca().yaxis.labelpad = 50</span>
+    <span class="n">cbax</span> <span class="o">=</span> <span class="n">gca</span><span class="p">()</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ax</span><span class="p">,</span><span class="n">cbax</span></div>
+
+<div class="viewcode-block" id="getTrial"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getTrial">[docs]</a><span class="k">def</span> <span class="nf">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">trial</span><span class="p">):</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">tsp</span> <span class="o">=</span> <span class="n">ByTrialSpikesMS</span><span class="p">[</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">trial</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">tsp</span> <span class="o">=</span> <span class="n">tsp</span><span class="p">[</span><span class="n">tsp</span><span class="o">&gt;=</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="p">]</span>
+    <span class="n">tsp</span> <span class="o">=</span> <span class="n">tsp</span><span class="p">[</span><span class="n">tsp</span><span class="o">&lt;</span><span class="n">stop</span><span class="o">+</span><span class="mi">1000</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">tsp</span></div>
+
+<div class="viewcode-block" id="getSTLFP"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getSTLFP">[docs]</a><span class="k">def</span> <span class="nf">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">ByTrialLFP1KHz</span>  <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialLFP1KHz&#39;</span><span class="p">)</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">channelIds</span>      <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;channelIds&#39;</span><span class="p">)</span>
+    <span class="n">channel</span>         <span class="o">=</span> <span class="n">channelIds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># channels are also 1 indexed</span>
+    <span class="n">channeldata</span>     <span class="o">=</span> <span class="n">ByTrialLFP1KHz</span><span class="p">[</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
+    <span class="n">snippits</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTRIALS</span><span class="p">):</span>
+        <span class="n">tsp</span> <span class="o">=</span> <span class="n">ByTrialSpikesMS</span><span class="p">[</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">it</span><span class="p">]</span>
+        <span class="n">tsp</span> <span class="o">=</span> <span class="n">tsp</span><span class="p">[</span><span class="n">tsp</span><span class="o">&gt;=</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="o">+</span><span class="n">window</span><span class="p">]</span>
+        <span class="n">tsp</span> <span class="o">=</span> <span class="n">tsp</span><span class="p">[</span><span class="n">tsp</span><span class="o">&lt;</span><span class="n">stop</span><span class="o">+</span><span class="mi">1000</span><span class="o">-</span><span class="n">window</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">tsp</span><span class="p">:</span>
+            <span class="n">snippits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channeldata</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="n">sp</span><span class="o">-</span><span class="n">window</span><span class="p">:</span><span class="n">sp</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">window</span><span class="p">])</span>
+    <span class="n">snippits</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">snippits</span></div>
+
+<div class="viewcode-block" id="ppc"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.ppc">[docs]</a><span class="k">def</span> <span class="nf">ppc</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nTapers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nTapers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING: no longer using multitaper, nTapers will be ignored! using Hann window&#39;</span><span class="p">)</span>
+    <span class="c1"># depricating original code due to inconsistency with matlab PPC code</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    snippits = getSTLFP(session,area,unit,start,stop,window)</span>
+<span class="sd">    M        = shape(snippits)[0]</span>
+<span class="sd">    fs       = fft(snippits)</span>
+<span class="sd">    raw      = abs(sum(fs/abs(fs),0))**2</span>
+<span class="sd">    unbiased = (raw-M)/(M**2-M)</span>
+<span class="sd">    freqs = fftfreq(window*2+1,1./FS)</span>
+<span class="sd">    use = (freqs&gt;0.)&amp;(freqs&lt;=250.)</span>
+<span class="sd">    plot(freqs[use],unbiased [use],color=color,label=label)</span>
+<span class="sd">    ylim(0,0.5)</span>
+<span class="sd">    ylabel(&#39;PPC&#39;,labelpad=-10)</span>
+<span class="sd">    xlim(0,FMAX)</span>
+<span class="sd">    nicexy()</span>
+<span class="sd">    xticks(linspace(0,FMAX,11),[&#39;%d&#39;%x for x in linspace(0,FMAX,11)])</span>
+<span class="sd">    xlabel(&#39;Frequency (Hz)&#39;)</span>
+<span class="sd">    title(&#39;Pairwise phase consistency&#39;)</span>
+<span class="sd">    simpleaxis(gca())</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">get_unit_channel</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    # formerly getting signals from each block. we need to pull the data</span>
+<span class="sd">    # from the raw LFP though, so that we can grab some LFP outside the</span>
+<span class="sd">    # blocks in order to analyze spikes close to the edge of block. We</span>
+<span class="sd">    # need those spikes for statistical power</span>
+<span class="sd">    signal  = get_good_trial_lfp_data(session,area,channel)</span>
+<span class="sd">    times   = get_all_good_trial_spike_times(session,area,unit,(6,start,stop))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">)</span>
+    <span class="n">times</span>  <span class="o">=</span> <span class="n">get_spikes_session_filtered_by_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">))</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">,</span><span class="n">phases</span><span class="p">),</span><span class="n">snippits</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span>
+        <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">taper</span><span class="o">=</span><span class="n">hann</span><span class="p">)</span>
+    <span class="c1"># function does not return anything,</span>
+    <span class="c1"># just plots (below)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">linestyle</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="c1">#cl = ppc_chance_level(nSamples,10000,.999,nTapers)</span>
+    <span class="c1">#plot(xlim(),[cl,cl],color=color,label=label+&#39; 99.9% chance level&#39;)</span>
+    <span class="c1">#print(&#39;chance level is %s&#39;%cl)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PPC&#39;</span><span class="p">,</span><span class="n">labelpad</span><span class="o">=-</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">xticks</span><span class="p">(</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">6</span><span class="p">),[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">11</span><span class="p">)])</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Pairwise phase consistency&#39;</span><span class="p">)</span>
+    <span class="n">simpleaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="compare_ppc_approaches"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.compare_ppc_approaches">[docs]</a><span class="k">def</span> <span class="nf">compare_ppc_approaches</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Try with</span>
+<span class="sd">    compare_ppc_approaches(&#39;RUS120523&#39;,&#39;PMv&#39;,42,-1000,0,200)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">get_unit_channel</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">)</span>
+    <span class="n">times</span>  <span class="o">=</span> <span class="n">get_spikes_session_filtered_by_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">))</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">hann</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hann unbiased&#39;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">hann</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Hann biased&#39;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Multitaper 1 taper unbiased&#39;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Multitaper 2 taper unbiased&#39;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Multitaper 3 taper unbiased&#39;</span><span class="p">)</span>
+
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">unbiased</span><span class="p">),</span><span class="n">nSamples</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span><span class="n">times</span><span class="p">,</span>
+        <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">multitaper</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">use</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">unbiased</span> <span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Multitaper 4 taper unbiased&#39;</span><span class="p">)</span>
+
+    <span class="c1">#cl = ppc_chance_level(nSamples,10000,.999,nTapers)</span>
+    <span class="c1">#plot(xlim(),[cl,cl],color=color,label=label+&#39; 99.9% chance level&#39;)</span>
+    <span class="c1">#print(&#39;chance level is %s&#39;%cl)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PPC&#39;</span><span class="p">,</span><span class="n">labelpad</span><span class="o">=-</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">xticks</span><span class="p">(</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">11</span><span class="p">),[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">11</span><span class="p">)])</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Pairwise phase consistency&#39;</span><span class="p">)</span>
+    <span class="n">simpleaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="coherence"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.coherence">[docs]</a><span class="k">def</span> <span class="nf">coherence</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="kc">False</span>
+    <span class="c1"># this is untested, don&#39;t use it</span>
+    <span class="n">snippits</span>  <span class="o">=</span> <span class="n">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">M</span>         <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fs</span>        <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">raw2</span>  <span class="o">=</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fs</span><span class="p">),</span><span class="mi">0</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">window</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">FS</span><span class="p">)</span>
+    <span class="n">use</span>   <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span><span class="o">&gt;</span><span class="mf">0.</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">freqs</span><span class="o">&lt;=</span><span class="mf">250.</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">raw2</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Coherence&#39;</span><span class="p">,</span><span class="n">labelpad</span><span class="o">=-</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">)</span>
+    <span class="n">xticks</span><span class="p">(</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">11</span><span class="p">),[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">11</span><span class="p">)])</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Coherence&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plotSTA"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotSTA">[docs]</a><span class="k">def</span> <span class="nf">plotSTA</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">texttop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+    <span class="n">snippits</span> <span class="o">=</span> <span class="n">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">,</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">sta</span>  <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sts</span>  <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">N</span>    <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sem</span>  <span class="o">=</span> <span class="mf">1.96</span><span class="o">*</span><span class="n">sts</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">sta</span><span class="p">,</span><span class="n">linestyle</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Spike-triggered LFP average&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">simpleraxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
+    <span class="n">yextreme</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">ylim</span><span class="p">())))</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="n">yextreme</span><span class="p">,</span><span class="n">yextreme</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="o">-</span><span class="n">yextreme</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">yextreme</span><span class="p">])</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;STA (µV)&#39;</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span>
+    <span class="k">return</span> <span class="n">snippits</span></div>
+
+<div class="viewcode-block" id="getRaster"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getRaster">[docs]</a><span class="k">def</span> <span class="nf">getRaster</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">):</span>
+    <span class="c1">#print(&#39;both unit and trial should be 1 indexed&#39;)</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">tsp</span>    <span class="o">=</span> <span class="n">ByTrialSpikesMS</span><span class="p">[</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">trial</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">y</span>      <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">tsp</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="plotAllTrials"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotAllTrials">[docs]</a><span class="k">def</span> <span class="nf">plotAllTrials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">eventsByTrial</span>   <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;eventsByTrial&#39;</span><span class="p">)</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">isgood</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">eventsByTrial</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span>
+    <span class="n">NT</span> <span class="o">=</span> <span class="n">stop</span><span class="o">-</span><span class="n">start</span>
+    <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
+    <span class="n">isgood</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">eventsByTrial</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># note 0 indexed deviating from convention</span>
+    <span class="n">tally</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">xpoints</span><span class="p">,</span> <span class="n">ypoints</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTRIALS</span><span class="p">):</span> <span class="c1"># also here</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">it</span> <span class="ow">in</span> <span class="n">isgood</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">spikes</span> <span class="o">=</span> <span class="n">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">it</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">tally</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">xpoints</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">spikes</span><span class="o">/</span><span class="n">FS</span><span class="p">)</span>
+        <span class="n">ypoints</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spikes</span><span class="p">))</span><span class="o">*</span><span class="n">tally</span><span class="p">)</span>
+    <span class="n">scatter</span><span class="p">(</span><span class="n">xpoints</span><span class="p">,</span><span class="n">ypoints</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">start</span><span class="o">/</span><span class="n">FS</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">stop</span><span class="o">/</span><span class="n">FS</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Trial No.&#39;</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="n">tally</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="n">tally</span><span class="p">])</span>
+    <span class="n">noaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plotLFP"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotLFP">[docs]</a><span class="k">def</span> <span class="nf">plotLFP</span><span class="p">(</span><span class="n">lfp</span><span class="p">):</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span><span class="mi">150</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">150</span><span class="p">])</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Microvolts&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+    <span class="n">simpleraxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="plotLFPSpikes"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotLFPSpikes">[docs]</a><span class="k">def</span> <span class="nf">plotLFPSpikes</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span>
+    <span class="n">zoom</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">vrange</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">SPIKECOLOR</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;caution assumes starting at beginning of trial&#39;</span><span class="p">)</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">plot</span><span class="p">((</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">)[:</span><span class="n">zoom</span><span class="p">],</span><span class="n">lfp</span><span class="p">[:</span><span class="n">zoom</span><span class="p">],</span>
+        <span class="s1">&#39;k&#39;</span><span class="p">)</span><span class="c1">#,label=&#39;%s-%sHz LFP&#39;%(lowf,highf))</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ylim</span><span class="p">()</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ylim</span><span class="p">()</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span>
+    <span class="n">mm</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">mm</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="o">+</span><span class="n">mm</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="k">for</span> <span class="n">spt</span> <span class="ow">in</span> <span class="n">spikes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">spt</span><span class="o">&gt;=</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]:</span><span class="k">continue</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">spt</span><span class="p">,</span><span class="n">spt</span><span class="p">],(</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">),</span><span class="n">color</span><span class="o">=</span><span class="n">SPIKECOLOR</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spikes</span><span class="p">):</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">spt</span><span class="p">,</span><span class="n">spt</span><span class="p">],(</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">),</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">SPIKECOLOR</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spike times&#39;</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="o">-</span><span class="n">vrange</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">vrange</span><span class="p">])</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Microvolts&#39;</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">((</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">),(</span><span class="n">zoom</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">FS</span><span class="p">))</span>
+    <span class="n">simpleraxis</span><span class="p">()</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;µV&#39;</span><span class="p">)</span>
+    <span class="c1"># nice_legend()</span>
+    <span class="n">legend</span><span class="p">(</span><span class="n">frameon</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">borderpad</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="time_upsample"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.time_upsample">[docs]</a><span class="k">def</span> <span class="nf">time_upsample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Uses fourier transform to upsample x by some factor</span>
+<span class="sd">    Will detrend, then mirror signal, then FFT,</span>
+<span class="sd">    then add padding zeros to FFT, then iFFT, then crop, etc, etc</span>
+<span class="sd">    factor should be an integer (default is 4)</span>
+<span class="sd">    data is converted to float64</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span>
+    <span class="k">assert</span> <span class="n">factor</span><span class="o">&gt;</span><span class="mi">1</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">dc</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">-=</span> <span class="n">dc</span>
+    <span class="n">dx</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">-=</span> <span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">[:</span><span class="n">N</span><span class="p">]</span><span class="o">=</span><span class="n">x</span>
+    <span class="n">y</span><span class="p">[</span><span class="n">N</span><span class="p">:]</span><span class="o">=</span><span class="n">x</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ft</span> <span class="o">=</span> <span class="n">fft</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># note</span>
+    <span class="c1"># if N is even we have 1 DC and one nyquist coefficient</span>
+    <span class="c1"># if N is odd we have 1 DC and two nyquist coefficients</span>
+    <span class="c1"># If there is only one nyquist coefficient, it will be real-values,</span>
+    <span class="c1"># so it will be it&#39;s own complex conjugate, so it&#39;s fine if we</span>
+    <span class="c1"># double it.</span>
+    <span class="n">up</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">factor</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">up</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">ft</span><span class="p">[:</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">up</span><span class="p">[</span><span class="o">-</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span> <span class="o">=</span><span class="n">ft</span><span class="p">[</span><span class="o">-</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">ifft</span><span class="p">(</span><span class="n">up</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)[:</span><span class="n">N</span><span class="o">*</span><span class="n">factor</span><span class="p">]</span><span class="o">*</span><span class="n">factor</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="n">dx</span><span class="o">*</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">factor</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="n">dc</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="plotWaveforms"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotWaveforms">[docs]</a><span class="k">def</span> <span class="nf">plotWaveforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">):</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">waveForms</span> <span class="o">=</span> <span class="n">get_waveforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">wfs</span> <span class="o">=</span> <span class="n">waveForms</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">48</span><span class="p">)</span><span class="o">/</span><span class="mf">30000.</span><span class="o">*</span><span class="mi">1000</span><span class="o">*</span><span class="mi">1000</span> <span class="c1"># in uS</span>
+    <span class="n">toshow</span> <span class="o">=</span> <span class="n">wfs</span><span class="p">[:,:</span><span class="mi">100</span><span class="p">:]</span>
+    <span class="n">nshow</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">toshow</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nshow</span><span class="p">):</span>
+        <span class="n">wf</span> <span class="o">=</span> <span class="n">toshow</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">wf</span> <span class="o">=</span> <span class="n">time_upsample</span><span class="p">(</span><span class="n">wf</span><span class="p">)</span>
+        <span class="n">t</span>  <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mi">48</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="mf">4.</span><span class="o">/</span><span class="mf">30000.</span><span class="o">*</span><span class="mi">1000000</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">argmin</span><span class="p">(</span><span class="n">wf</span><span class="p">)]</span><span class="o">-</span><span class="mi">400</span>
+        <span class="n">t</span> <span class="o">-=</span> <span class="n">dt</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">wf</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.1</span><span class="p">),</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;μs&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;μV&#39;</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Waveforms&#39;</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
+
+<div class="viewcode-block" id="plotISIhist"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotISIhist">[docs]</a><span class="k">def</span> <span class="nf">plotISIhist</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">):</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTRIALS</span><span class="p">):</span>
+        <span class="n">isi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">it</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">hist</span><span class="p">(</span><span class="n">isi</span><span class="p">,</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">120</span><span class="p">,</span><span class="mi">31</span><span class="p">),</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ylim</span><span class="p">()</span>
+    <span class="n">plot</span><span class="p">((</span><span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">xticks</span><span class="p">(</span><span class="n">int32</span><span class="p">([</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">))),</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="n">noaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;ISI histogram (time)&#39;</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
+
+<div class="viewcode-block" id="isimodefreq"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.isimodefreq">[docs]</a><span class="k">def</span> <span class="nf">isimodefreq</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTRIALS</span><span class="p">):</span>
+        <span class="n">isi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">it</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="n">FS</span><span class="o">/</span><span class="n">array</span><span class="p">(</span><span class="n">isi</span><span class="p">)</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="n">isi</span><span class="p">[</span><span class="o">~</span><span class="n">isnan</span><span class="p">(</span><span class="n">isi</span><span class="p">)]</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="n">isi</span><span class="p">[</span><span class="o">~</span><span class="n">isinf</span><span class="p">(</span><span class="n">isi</span><span class="p">)]</span>
+    <span class="n">mf</span> <span class="o">=</span> <span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mf</span></div>
+
+<div class="viewcode-block" id="plotISIhistHz"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotISIhistHz">[docs]</a><span class="k">def</span> <span class="nf">plotISIhistHz</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
+    <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">fmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+    <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
+    <span class="n">NUNITS</span><span class="p">,</span> <span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">it</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NTRIALS</span><span class="p">):</span>
+        <span class="n">isi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">it</span><span class="o">+</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="n">FS</span><span class="o">/</span><span class="n">array</span><span class="p">(</span><span class="n">isi</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">style</span><span class="o">==</span><span class="s1">&#39;bar&#39;</span><span class="p">:</span>
+        <span class="n">hist</span><span class="p">(</span><span class="n">isi</span><span class="p">,</span><span class="n">linspace</span><span class="p">(</span><span class="n">fmin</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="n">rwidth</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ylim</span><span class="p">()</span>
+        <span class="n">plot</span><span class="p">((</span><span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">),)</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="n">lw</span><span class="p">)</span>
+        <span class="n">ylim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">nicexy</span><span class="p">()</span>
+        <span class="n">isi</span> <span class="o">=</span> <span class="n">isi</span><span class="p">[</span><span class="o">~</span><span class="n">isnan</span><span class="p">(</span><span class="n">isi</span><span class="p">)]</span>
+        <span class="n">isi</span> <span class="o">=</span> <span class="n">isi</span><span class="p">[</span><span class="o">~</span><span class="n">isinf</span><span class="p">(</span><span class="n">isi</span><span class="p">)]</span>
+        <span class="n">mf</span> <span class="o">=</span> <span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">isnan</span><span class="p">(</span><span class="n">mf</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">isinf</span><span class="p">(</span><span class="n">mf</span><span class="p">)):</span>
+            <span class="n">xticks</span><span class="p">(</span><span class="n">int32</span><span class="p">([</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">modefind</span><span class="p">(</span><span class="n">isi</span><span class="p">))),</span><span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]]))</span>
+    <span class="k">elif</span> <span class="n">style</span><span class="o">==</span><span class="s1">&#39;line&#39;</span><span class="p">:</span>
+        <span class="n">h</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">isi</span><span class="p">,</span><span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">fmin</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="mi">1</span><span class="o">+</span><span class="n">nbins</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">linestyle</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Plot style must be line or bar&quot;</span><span class="p">)</span>
+    <span class="n">noaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;ISI histogram</span><span class="se">\n</span><span class="s1">(frequency)&#39;</span><span class="p">)</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
+
+<div class="viewcode-block" id="getSpec"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getSpec">[docs]</a><span class="k">def</span> <span class="nf">getSpec</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">):</span>
+    <span class="c1">#times,xys,data,availableChannels = get_data(session,area,trial,event,start,stop,lowf,highf,params)</span>
+    <span class="c1">#channel        = channelIds[0,unit-1] # channels are also 1 indexed</span>
+    <span class="c1">#chix           = channel2index(channel,availableChannels)</span>
+    <span class="c1">#channeldata    = data[:,chix]</span>
+    <span class="c1">#return channeldata,fft_cwt(channeldata,lowf,highf)</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">get_channel_id</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">channeldata</span> <span class="o">=</span> <span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">betadata</span>    <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">betadata</span><span class="p">,</span>\
+        <span class="n">neurotools</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">morlet</span><span class="o">.</span><span class="n">fft_cwt</span><span class="p">(</span><span class="n">channeldata</span><span class="p">,</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plotPPC"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotPPC">[docs]</a><span class="k">def</span> <span class="nf">plotPPC</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+    <span class="c1"># PPC is 1 indexed by unit</span>
+    <span class="n">fftopt</span>    <span class="o">=</span> <span class="mi">100</span><span class="p">,</span><span class="mi">10</span>    <span class="c1">#(window,bandWidth)</span>
+    <span class="n">ch</span>        <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">perminfo</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">50</span>    <span class="c1">#(perm,permstrategy,jitter)</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span><span class="mi">3</span>       <span class="c1">#(obj,grp)</span>
+    <span class="n">epoch</span>     <span class="o">=</span> <span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span> <span class="c1">#(event,start,stop)</span>
+    <span class="n">basekey</span>   <span class="o">=</span> <span class="n">condition</span><span class="o">+</span><span class="n">epoch</span><span class="o">+</span><span class="n">ch</span><span class="o">+</span><span class="n">perminfo</span><span class="o">+</span><span class="n">fftopt</span>
+    <span class="n">keys</span><span class="p">,</span><span class="n">ppcs</span> <span class="o">=</span> <span class="n">allresults</span><span class="p">[</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">]</span>
+    <span class="n">match1</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">keys</span><span class="o">==</span><span class="n">int32</span><span class="p">((</span><span class="n">unit</span><span class="p">,)</span><span class="o">+</span><span class="n">basekey</span><span class="o">+</span><span class="p">(</span><span class="mi">0</span><span class="p">,)),</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">ppcs</span><span class="p">[</span><span class="n">match1</span><span class="p">])</span>
+    <span class="c1">#cla()</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">ppcfreqs</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Frequency (Hz)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;PPC&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="add_wavelet_colorbar"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.add_wavelet_colorbar">[docs]</a><span class="k">def</span> <span class="nf">add_wavelet_colorbar</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">COLORMAP</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># manually add colorbar axes because matplotlib gets it wrong</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span><span class="o">=</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">()</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">right</span><span class="p">,</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">xmin</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">ymin</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">height</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">xmax</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">ymax</span>
+    <span class="n">spacing</span>   <span class="o">=</span> <span class="n">pixels_to_xfigureunits</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">cbarwidth</span> <span class="o">=</span> <span class="n">pixels_to_xfigureunits</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">((</span><span class="n">right</span><span class="o">-</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">bottom</span><span class="o">-</span><span class="n">h</span><span class="p">,</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">h</span><span class="p">),</span><span class="n">axisbg</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span><span class="n">vmin</span><span class="p">,</span><span class="mi">100</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">COLORMAP</span><span class="p">)</span>
+    <span class="n">nox</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+    <span class="n">text</span><span class="p">(</span>
+        <span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">diff</span><span class="p">(</span><span class="n">xlim</span><span class="p">())</span><span class="o">*</span><span class="mf">2.5</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">(</span><span class="n">ylim</span><span class="p">()),</span>
+        <span class="sa">u</span><span class="s1">&#39;µV²&#39;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">11</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="n">spacing</span><span class="o">-</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">h</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="add_spectrum_colorbar"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.add_spectrum_colorbar">[docs]</a><span class="k">def</span> <span class="nf">add_spectrum_colorbar</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">COLORMAP</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># manually add colorbar axes because matplotlib gets it wrong</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span><span class="o">=</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">()</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">right</span><span class="p">,</span><span class="n">bottom</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">xmin</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">ymin</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">height</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">xmax</span><span class="p">,</span><span class="n">bb</span><span class="o">.</span><span class="n">ymax</span>
+    <span class="n">spacing</span>   <span class="o">=</span> <span class="n">pixels_to_xfigureunits</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">cbarwidth</span> <span class="o">=</span> <span class="n">pixels_to_xfigureunits</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">((</span><span class="n">right</span><span class="o">-</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">bottom</span><span class="o">-</span><span class="n">h</span><span class="p">,</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">h</span><span class="p">),</span><span class="n">axisbg</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">frameon</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">vmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="n">linspace</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span><span class="n">vmin</span><span class="p">,</span><span class="mi">100</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">),</span>
+        <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">COLORMAP</span><span class="p">)</span>
+    <span class="n">nox</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">tick_right</span><span class="p">()</span>
+    <span class="n">text</span><span class="p">(</span>
+        <span class="n">xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">diff</span><span class="p">(</span><span class="n">xlim</span><span class="p">())</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">(</span><span class="n">ylim</span><span class="p">()),</span>
+        <span class="sa">u</span><span class="s1">&#39;µV²/Hz&#39;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">11</span>
+    <span class="n">cax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_label_position</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">w</span><span class="o">-</span><span class="n">spacing</span><span class="o">-</span><span class="n">cbarwidth</span><span class="p">,</span><span class="n">h</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="array_imshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.array_imshow">[docs]</a><span class="k">def</span> <span class="nf">array_imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+    <span class="n">drawlines</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">W</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">extent</span><span class="o">!=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;different size?&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmin=&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmax=&#39;</span><span class="p">,</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">drawlines</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
+            <span class="n">axvline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">axhline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">H</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">W</span><span class="p">)</span>
+    <span class="n">nicex</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">fudgex</span><span class="p">()</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="n">cax</span><span class="o">=</span><span class="n">good_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="p">,</span><span class="n">ctitle</span><span class="p">,</span><span class="n">sideways</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cax</span></div>
+
+<div class="viewcode-block" id="phase_delay_plot"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.phase_delay_plot">[docs]</a><span class="k">def</span> <span class="nf">phase_delay_plot</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">,</span><span class="n">cm</span><span class="o">=</span><span class="n">isolum</span><span class="p">,</span><span class="n">UPSAMPLE</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">smooth</span><span class="o">=</span><span class="mf">2.3</span><span class="p">,</span><span class="n">NLINE</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Accepts an analytic signal map, upsamples it, and plots in the current</span>
+<span class="sd">    axis the phases. For now, expects a 10x10 array 4x4mm is size.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">W</span><span class="p">,</span><span class="n">H</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">W</span><span class="p">,</span><span class="n">H</span><span class="p">)</span>
+    <span class="n">Wmm</span><span class="p">,</span><span class="n">Hmm</span> <span class="o">=</span> <span class="n">W</span><span class="o">*</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">H</span><span class="o">*</span><span class="mf">0.4</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">Wmm</span><span class="p">,</span><span class="n">Hmm</span><span class="p">)</span>
+    <span class="n">upsampled</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">dct_cut_antialias</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">,</span><span class="n">smooth</span><span class="p">),</span><span class="n">UPSAMPLE</span><span class="p">)</span>
+    <span class="c1"># upsampling trims the array a bit</span>
+    <span class="c1"># figure out how to re-center the trimmed array:</span>
+    <span class="n">sw</span><span class="p">,</span><span class="n">sh</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">upsampled</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">sh</span><span class="p">)</span>
+    <span class="n">fw</span><span class="p">,</span><span class="n">fh</span>  <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">UPSAMPLE</span>
+    <span class="n">dw</span><span class="p">,</span><span class="n">dh</span>  <span class="o">=</span> <span class="p">(</span><span class="n">fw</span><span class="o">-</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Wmm</span><span class="p">,(</span><span class="n">fh</span><span class="o">-</span><span class="n">sh</span><span class="p">)</span><span class="o">/</span><span class="n">fh</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="n">Hmm</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">dh</span><span class="p">,</span><span class="n">dh</span><span class="o">+</span><span class="n">sh</span><span class="o">/</span><span class="n">fh</span><span class="o">*</span><span class="n">Hmm</span><span class="p">,</span><span class="n">dw</span><span class="p">,</span><span class="n">dw</span><span class="o">+</span><span class="n">sw</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="n">Wmm</span><span class="p">)</span>
+
+    <span class="c1"># extract angles</span>
+    <span class="n">amean</span>  <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">upsampled</span><span class="p">))</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">upsampled</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">amean</span><span class="p">))</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">+</span><span class="n">pi</span><span class="o">+</span><span class="mf">1.75</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+    <span class="c1"># plot phase angles</span>
+    <span class="n">cax</span>    <span class="o">=</span> <span class="n">array_imshow</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span><span class="n">cm</span><span class="p">,</span><span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;Phase (radians)&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span><span class="n">W</span><span class="o">=</span><span class="n">Wmm</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="n">Hmm</span><span class="p">)</span>
+    <span class="c1"># add countours</span>
+    <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="n">NLINE</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">contour</span><span class="p">((</span><span class="n">angles</span><span class="o">+</span><span class="n">phi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">),[</span><span class="n">pi</span><span class="p">],</span><span class="n">linewidths</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="c1"># Add title</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Average phase delay&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+    <span class="c1"># fix up colorbar axis labels</span>
+    <span class="n">oldax</span> <span class="o">=</span> <span class="n">gca</span><span class="p">()</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+    <span class="n">yticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">],[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;$2\pi$&#39;</span><span class="p">])</span>
+    <span class="c1"># redraw the plot</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="n">sca</span><span class="p">(</span><span class="n">oldax</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cax</span></div>
+
+<div class="viewcode-block" id="unit_ISI_plot"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.unit_ISI_plot">[docs]</a><span class="k">def</span> <span class="nf">unit_ISI_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span><span class="n">INFOXPOS</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span><span class="n">LABELSIZE</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">NBINS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">TMAX</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">INFOYSTART</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">BURST</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">e</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">epoch</span>
+            <span class="n">spikes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">spikes</span><span class="o">.</span><span class="n">get_spikes_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">e</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">epoch</span><span class="p">:</span>
+                <span class="n">spikes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">spikes</span><span class="o">.</span><span class="n">get_spikes_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">))</span>
+    <span class="n">ISI_events</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">spikes</span><span class="p">))))</span>
+    <span class="n">SNR</span>        <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">spikes</span><span class="o">.</span><span class="n">get_unit_SNR</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">histc</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">ISI_events</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">TMAX</span><span class="p">,</span><span class="n">NBINS</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">dx</span>         <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">edges</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">bar</span><span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">dx</span><span class="o">*</span><span class="mf">0.1</span><span class="p">,</span><span class="n">histc</span><span class="p">,</span><span class="n">width</span><span class="o">=</span><span class="n">dx</span><span class="o">*</span><span class="mf">0.8</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">GATHER</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">allisi</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">ISI_events</span><span class="p">)</span>
+    <span class="n">K</span>   <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">kdepeak</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="n">allisi</span><span class="p">[</span><span class="n">allisi</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">x</span>   <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">K</span>
+    <span class="n">y</span>   <span class="o">=</span> <span class="n">y</span><span class="o">/</span><span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span>   <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">RUST</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">mean_rate</span>           <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">spikes</span><span class="p">))))</span><span class="o">/</span>\
+        <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">noburst</span> <span class="o">=</span> <span class="n">allisi</span><span class="p">[</span><span class="n">allisi</span><span class="o">&gt;</span><span class="n">BURST</span><span class="p">]</span>
+    <span class="n">ISI_cv</span>              <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">noburst</span><span class="p">)</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="n">noburst</span><span class="p">)</span>
+    <span class="n">burstiness</span>          <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">allisi</span><span class="o">&lt;</span><span class="n">BURST</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allisi</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">ll</span>                  <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span>
+    <span class="n">expected_short_isi</span>  <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">ll</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">residual_burstiness</span> <span class="o">=</span> <span class="n">burstiness</span><span class="o">-</span><span class="n">expected_short_isi</span>
+    <span class="n">LH</span> <span class="o">=</span> <span class="n">LABELSIZE</span><span class="o">+</span><span class="mi">4</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="n">INFOYSTART</span>   <span class="p">),</span><span class="s1">&#39;Mean rate = </span><span class="si">%d</span><span class="s1"> Hz&#39;</span><span class="o">%</span><span class="n">mean_rate</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="n">INFOYSTART</span><span class="o">+</span><span class="n">LH</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;ISI CV = </span><span class="si">%0.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">ISI_cv</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="n">INFOYSTART</span><span class="o">+</span><span class="n">LH</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;SNR = </span><span class="si">%0.1f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">SNR</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;No. Events&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">fudgex</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">TMAX</span><span class="p">)</span>
+    <span class="n">nicex</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">simpleaxis</span><span class="p">()</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Monkey </span><span class="si">%s</span><span class="s1"> area </span><span class="si">%s</span><span class="se">\n</span><span class="s1">session </span><span class="si">%s</span><span class="s1"> unit </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">area</span><span class="p">,</span><span class="n">session</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span><span class="n">unit</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="do_unit_ISI_plot"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.do_unit_ISI_plot">[docs]</a><span class="k">def</span> <span class="nf">do_unit_ISI_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span>
+    <span class="n">INFOXPOS</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">LABELSIZE</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">NBINS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">FMAX</span> <span class="o">=</span> <span class="mi">250</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Add statistical summary printout to the ISI example figures</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">spikes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">spikes</span><span class="o">.</span><span class="n">get_spikes_event</span><span class="p">(</span>
+            <span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">spikes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">spikes</span><span class="o">.</span><span class="n">get_spikes_event</span><span class="p">(</span>
+            <span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">ISI_events</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">flatten</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span><span class="n">spikes</span><span class="p">))))</span>
+    <span class="n">SNR</span>        <span class="o">=</span> <span class="n">get_unit_SNR</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
+    <span class="n">histc</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">ISI_events</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">,</span><span class="n">NBINS</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">dx</span>         <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">edges</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">bar</span><span class="p">(</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">dx</span><span class="o">*</span><span class="mf">0.1</span><span class="p">,</span><span class="n">histc</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="n">dx</span><span class="o">*</span><span class="mf">0.8</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">GATHER</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">allisi</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">ISI_events</span><span class="p">)</span>
+    <span class="n">K</span>   <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">kdepeak</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="n">allisi</span><span class="p">[</span><span class="n">allisi</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">x</span>   <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">K</span>
+    <span class="n">y</span>   <span class="o">=</span> <span class="n">y</span><span class="o">/</span><span class="p">(</span><span class="n">K</span><span class="o">+</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span>   <span class="o">=</span> <span class="n">y</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">RUST</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">mean_rate</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span><span class="n">spikes</span><span class="p">)))</span><span class="o">/</span>
+        <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">ISI_cv</span>              <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span>
+    <span class="n">burstiness</span>          <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">allisi</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allisi</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">ll</span>                  <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span>
+    <span class="n">expected_short_isi</span>  <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">ll</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+    <span class="n">mode</span>                <span class="o">=</span> <span class="n">modefind</span><span class="p">(</span><span class="n">allisi</span><span class="p">)</span>
+    <span class="n">residual_burstiness</span> <span class="o">=</span> <span class="n">burstiness</span><span class="o">-</span><span class="n">expected_short_isi</span>
+    <span class="n">LH</span> <span class="o">=</span> <span class="n">LABELSIZE</span><span class="o">+</span><span class="mi">4</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="mi">20</span>   <span class="p">),</span><span class="s1">&#39;Mean rate = </span><span class="si">%d</span><span class="s1"> Hz&#39;</span><span class="o">%</span><span class="n">mean_rate</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="mi">20</span><span class="o">+</span><span class="n">LH</span><span class="o">*</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;ISI CV = </span><span class="si">%0.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">ISI_cv</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="mi">20</span><span class="o">+</span><span class="n">LH</span><span class="o">*</span><span class="mi">2</span><span class="p">),</span><span class="s1">&#39;SNR = </span><span class="si">%0.1f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">SNR</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">(</span><span class="n">INFOXPOS</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">pixels_to_yunits</span><span class="p">(</span><span class="mi">20</span><span class="o">+</span><span class="n">LH</span><span class="o">*</span><span class="mi">3</span><span class="p">),</span>
+        <span class="s1">&#39;Mode = </span><span class="si">%0.1f</span><span class="s1"> ms (</span><span class="si">%0.1f</span><span class="s1"> Hz)&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="mf">1000.</span><span class="o">/</span><span class="n">mode</span><span class="p">),</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">verticalalignment</span>  <span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">axvline</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">TURQUOISE</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;No. Events&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">LABELSIZE</span><span class="p">)</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">fudgex</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="p">)</span>
+    <span class="n">nicex</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Monkey </span><span class="si">%s</span><span class="s1"> area </span><span class="si">%s</span><span class="se">\n</span><span class="s1">session </span><span class="si">%s</span><span class="s1"> unit </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">session</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">area</span><span class="p">,</span><span class="n">session</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span><span class="n">unit</span><span class="p">),</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mean_rate</span><span class="p">,</span><span class="n">ISI_cv</span><span class="p">,</span><span class="n">SNR</span><span class="p">,</span><span class="n">mode</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

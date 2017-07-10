@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.beta &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cgid.beta</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cgid.beta</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># more py2/3 compat</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">imap</span> <span class="k">as</span> <span class="nb">map</span>
+<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Routines related to extracting and processing beta</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1">#def compare_high_low_beta_amplitude_spikes_ppc_5050(session,area,unit,epoch):</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.plot</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.core.numeric</span>       <span class="k">import</span> <span class="n">convolve</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.function_base</span>  <span class="k">import</span> <span class="n">diff</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span>        <span class="k">import</span> <span class="n">clf</span><span class="p">,</span><span class="n">axvspan</span><span class="p">,</span><span class="n">plot</span><span class="p">,</span><span class="n">ylim</span><span class="p">,</span><span class="n">axhline</span><span class="p">,</span><span class="n">draw</span>
+<span class="kn">from</span> <span class="nn">scipy.signal.signaltools</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.signal.signal</span> <span class="k">import</span> <span class="n">bandfilter</span><span class="p">,</span> <span class="n">get_edges</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span>         <span class="k">import</span> <span class="n">wait</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span>         <span class="k">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">neurotools.signal.ppc</span>    <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">cgid.setup</span>               <span class="k">import</span> <span class="n">areas</span>
+<span class="kn">from</span> <span class="nn">cgid.lfp</span>                 <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">cgid.spikes</span>              <span class="k">import</span> <span class="n">get_spikes_session_filtered_by_epoch</span><span class="p">,</span><span class="n">get_unit_channel</span>
+<span class="kn">from</span> <span class="nn">cgid.data_loader</span>         <span class="k">import</span> <span class="n">get_trial_event</span><span class="p">,</span><span class="n">get_good_trials</span><span class="p">,</span><span class="n">get_good_channels</span>
+
+<div class="viewcode-block" id="get_beta_peak"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_beta_peak">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="c1"># determine beta peak</span>
+    <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="n">allspec</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">,</span><span class="n">mts</span> <span class="o">=</span> <span class="n">multitaper_spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span>
+        <span class="n">allspec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mts</span><span class="p">)</span>
+    <span class="n">allspec</span>     <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">allspec</span><span class="p">)</span>
+    <span class="n">Ntr</span><span class="p">,</span><span class="n">Nch</span><span class="p">,</span><span class="n">Nti</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">allspec</span><span class="p">)</span>
+    <span class="n">meanspec</span>    <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">allspec</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">peaks</span><span class="p">,</span><span class="n">vals</span>  <span class="o">=</span> <span class="n">local_maxima</span><span class="p">(</span><span class="n">meanspec</span><span class="p">)</span>
+    <span class="n">betapeaks</span>   <span class="o">=</span> <span class="n">peaks</span><span class="p">[(</span><span class="n">f</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span><span class="o">&gt;</span><span class="n">fa</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">peaks</span><span class="p">]</span><span class="o">&lt;</span><span class="n">fb</span><span class="p">)]</span>
+    <span class="n">betapeak</span>    <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">betapeaks</span><span class="p">][</span><span class="n">argmax</span><span class="p">(</span><span class="n">meanspec</span><span class="p">[</span><span class="n">betapeaks</span><span class="p">])]</span>
+    <span class="k">return</span> <span class="n">betapeak</span></div>
+
+
+<div class="viewcode-block" id="estimate_beta_band"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.estimate_beta_band">[docs]</a><span class="k">def</span> <span class="nf">estimate_beta_band</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">bw</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">doplot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    return betapeak-0.5*bw,betapeak+0.5*bw</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;THIS IS NOT THE ONE YOU WANT TO USE&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;IT IS EXPERIMENTAL COHERENCE BASED IDENTIFICATION OF BETA&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">3000</span><span class="p">)</span>
+    <span class="n">allco</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">area</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">chs</span> <span class="o">=</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">chs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">chs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="p">:</span> <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+                    <span class="n">co</span><span class="p">,</span><span class="n">fr</span> <span class="o">=</span> <span class="n">cohere</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">NFFT</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+                    <span class="n">allco</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">co</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+            <span class="n">chs</span> <span class="o">=</span> <span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">chs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">chs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="o">==</span><span class="n">b</span><span class="p">:</span> <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="mi">300</span><span class="p">)</span>
+                        <span class="n">co</span><span class="p">,</span><span class="n">fr</span> <span class="o">=</span> <span class="n">cohere</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">NFFT</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+                        <span class="n">allco</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">co</span><span class="p">)</span>
+    <span class="n">allco</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">allco</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">allco</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sem</span> <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">allco</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">allco</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># temporary in lieu of multitaper</span>
+    <span class="n">smooth</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">bw</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">fr</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">smoothed</span> <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">ones</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span><span class="o">/</span><span class="n">smooth</span><span class="p">,</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+    <span class="n">use</span>    <span class="o">=</span> <span class="p">(</span><span class="n">fr</span><span class="o">&lt;=</span><span class="mi">56</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">fr</span><span class="o">&gt;=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">betafr</span> <span class="o">=</span> <span class="p">(</span><span class="n">fr</span><span class="o">&lt;=</span><span class="mi">30</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">fr</span><span class="o">&gt;=</span><span class="mi">15</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span><span class="p">)</span>
+    <span class="n">betapeak</span> <span class="o">=</span> <span class="n">fr</span><span class="p">[</span><span class="n">betafr</span><span class="p">][</span><span class="n">argmax</span><span class="p">(</span><span class="n">smoothed</span><span class="p">[</span><span class="n">betafr</span><span class="p">])]</span>
+    <span class="k">if</span> <span class="n">doplot</span><span class="p">:</span>
+        <span class="n">clf</span><span class="p">()</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">fr</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">fr</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">smoothed</span><span class="p">[</span><span class="n">use</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">fr</span><span class="p">[</span><span class="n">use</span><span class="p">],(</span><span class="n">m</span><span class="o">+</span><span class="n">sem</span><span class="p">)[</span><span class="n">use</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">(</span><span class="n">fr</span><span class="p">[</span><span class="n">use</span><span class="p">],(</span><span class="n">m</span><span class="o">-</span><span class="n">sem</span><span class="p">)[</span><span class="n">use</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">positivey</span><span class="p">()</span>
+        <span class="n">xlim</span><span class="p">(</span><span class="o">*</span><span class="n">rangeover</span><span class="p">(</span><span class="n">fr</span><span class="p">[</span><span class="n">use</span><span class="p">]))</span>
+        <span class="n">shade</span><span class="p">([[</span><span class="n">betapeak</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span><span class="p">],[</span><span class="n">betapeak</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span><span class="p">]])</span>
+        <span class="n">draw</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">betapeak</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span><span class="p">,</span><span class="n">betapeak</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">bw</span></div>
+
+
+<div class="viewcode-block" id="get_stored_beta_peak"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_stored_beta_peak">[docs]</a><span class="k">def</span> <span class="nf">get_stored_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">),(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">epochs</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;supporting onle the 1s pre-obj and pre go&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;epoch&#39;</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="s1">&#39;not available&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span>
+    <span class="n">beta_peaks</span> <span class="o">=</span> <span class="p">{</span>\
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">16.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">19.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span> <span class="c1"># changed 26 to 18</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">19.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120518&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">19.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">16.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span> <span class="c1"># changed 24 to 18</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120521&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">16.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span> <span class="c1"># changed 23 to 18</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">19.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;RUS120523&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">18.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">20.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">23.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">20.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">23.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">21.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120918&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">24.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">21.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">22.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">21.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">23.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">20.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120924&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">25.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">20.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;M1&#39;</span> <span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">24.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">20.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">24.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">21.0</span><span class="p">,</span>
+     <span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span> <span class="s1">&#39;PMv&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span> <span class="mf">24.0</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">beta_peaks</span><span class="p">[</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_mean_beta_peak"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_mean_beta_peak">[docs]</a><span class="k">def</span> <span class="nf">get_mean_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_stored_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="get_mean_beta_peak_full_trial"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_mean_beta_peak_full_trial">[docs]</a><span class="k">def</span> <span class="nf">get_mean_beta_peak_full_trial</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_stored_beta_peak</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span> <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">)]])</span></div>
+
+
+
+<div class="viewcode-block" id="get_high_beta_events"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_high_beta_events">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_high_beta_events</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span>
+    <span class="n">MINLEN</span>  <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>   <span class="c1"># ms</span>
+    <span class="n">BOXLEN</span>  <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>   <span class="c1"># ms</span>
+    <span class="n">THSCALE</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>  <span class="c1"># sigma (standard deviations)</span>
+    <span class="n">lowf</span>    <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="c1"># Hz</span>
+    <span class="n">highf</span>   <span class="o">=</span> <span class="mf">45.0</span><span class="p">,</span> <span class="c1"># Hz</span>
+    <span class="n">pad</span>     <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>  <span class="c1"># ms</span>
+    <span class="n">clip</span>    <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">audit</span>   <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    get_high_beta_events(session,area,channel,epoch) will identify periods of</span>
+<span class="sd">    elevated beta-frequency power for the given channel.</span>
+
+<span class="sd">    Thresholds are selected per-channel based on all available trials.</span>
+<span class="sd">    The entire trial time is used when estimating the average beta power.</span>
+<span class="sd">    To avoid recomputing, we extract beta events for all trials at once.</span>
+
+<span class="sd">    By default events that extend past the edge of the specified epoch will</span>
+<span class="sd">    be clipped. Passing clip=False will discard these events.</span>
+
+<span class="sd">    returns the event threshold, and a list of event start and stop</span>
+<span class="sd">    times relative to session time (not per-trial or epoch time)</span>
+
+<span class="sd">    passing audit=True will enable previewing each trial and the isolated</span>
+<span class="sd">    beta events.</span>
+
+<span class="sd">    &gt;&gt;&gt; thr,events = get_high_beta_events(&#39;SPK120925&#39;,&#39;PMd&#39;,50,(6,-1000,0))</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># get LFP data</span>
+    <span class="n">signal</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">)</span>
+
+    <span class="c1"># esimate threshold for beta events</span>
+    <span class="n">beta_trials</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">t</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)]</span>
+    <span class="n">threshold</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">beta_trials</span><span class="p">)</span><span class="o">*</span><span class="n">THSCALE</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;threshold=&#39;</span><span class="p">,</span><span class="n">threshold</span><span class="p">)</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span>
+    <span class="n">event</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span> <span class="o">=</span> <span class="n">epoch</span>
+    <span class="n">all_events</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_high_beta_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+        <span class="n">evt</span>        <span class="o">=</span> <span class="n">get_trial_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">event</span><span class="p">)</span>
+        <span class="n">trialstart</span> <span class="o">=</span> <span class="n">get_trial_event</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">epochstart</span> <span class="o">=</span> <span class="n">evt</span> <span class="o">+</span> <span class="n">start</span> <span class="o">+</span> <span class="n">trialstart</span>
+        <span class="n">epochstop</span>  <span class="o">=</span> <span class="n">evt</span> <span class="o">+</span> <span class="n">stop</span>  <span class="o">+</span> <span class="n">trialstart</span>
+        <span class="n">tstart</span>     <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">epochstart</span><span class="o">-</span><span class="n">pad</span><span class="p">)</span>
+        <span class="n">tstop</span>      <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">epochstop</span> <span class="o">+</span><span class="n">pad</span><span class="p">)</span>
+        <span class="n">filtered</span>   <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">signal</span><span class="p">[</span><span class="n">tstart</span><span class="p">:</span><span class="n">tstop</span><span class="p">],</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">)</span>
+        <span class="n">envelope</span>   <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">filtered</span><span class="p">))</span>
+        <span class="n">smoothed</span>   <span class="o">=</span> <span class="n">convolve</span><span class="p">(</span><span class="n">envelope</span><span class="p">,</span><span class="n">ones</span><span class="p">(</span><span class="n">BOXLEN</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">BOXLEN</span><span class="p">),</span><span class="s1">&#39;same&#39;</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">get_edges</span><span class="p">(</span><span class="n">smoothed</span><span class="o">&gt;</span><span class="n">threshold</span><span class="p">))</span><span class="o">+</span><span class="n">tstart</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="p">[:,(</span><span class="n">diff</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">MINLEN</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">&lt;</span><span class="n">epochstop</span> <span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">&gt;</span><span class="n">epochstart</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">audit</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clip</span><span class="p">:</span>
+            <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">epochstart</span><span class="p">)</span>
+            <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span><span class="n">epochstop</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="p">[:,(</span><span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">&lt;=</span><span class="n">epochstop</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">&gt;=</span><span class="n">epochstart</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">audit</span><span class="p">:</span>
+            <span class="n">clf</span><span class="p">()</span>
+            <span class="n">axvspan</span><span class="p">(</span><span class="n">epochstart</span><span class="p">,</span><span class="n">epochstop</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.25</span><span class="p">))</span>
+            <span class="n">plot</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">),</span><span class="n">filtered</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+            <span class="n">plot</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">),</span><span class="n">envelope</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">plot</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">),</span><span class="n">smoothed</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+            <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span><span class="mi">80</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="n">E</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+                <span class="n">axvspan</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">axhline</span><span class="p">(</span><span class="n">threshold</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+            <span class="n">xlim</span><span class="p">(</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">)</span>
+            <span class="n">draw</span><span class="p">()</span>
+            <span class="n">wait</span><span class="p">()</span>
+        <span class="n">all_events</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">MINLEN</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">all_events</span></div>
+
+<div class="viewcode-block" id="get_high_and_low_beta_spikes"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_high_and_low_beta_spikes">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_high_and_low_beta_spikes</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    threshold, event_spikes, nonevent_spikes = get_high_and_low_beta_spikes(session,area,unit,epoch,ishighbeta)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">threshold</span><span class="p">,</span><span class="n">events</span> <span class="o">=</span> <span class="n">get_high_beta_events</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">get_unit_channel</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">),</span><span class="n">epoch</span><span class="p">,</span><span class="n">lowf</span><span class="o">=</span><span class="n">fa</span><span class="p">,</span><span class="n">highf</span><span class="o">=</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="n">get_spikes_session_filtered_by_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">n_total_spikes</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">n_total_times</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">epoch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">epoch</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape</span><span class="p">(</span><span class="n">events</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO EVENTS!!!!!!!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">NaN</span><span class="p">,</span> <span class="n">Fs</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">n_total_spikes</span><span class="p">)</span><span class="o">/</span><span class="n">n_total_times</span>
+    <span class="n">event_spikes</span> <span class="o">=</span> <span class="p">(</span><span class="n">events</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">spikes</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>\
+                  <span class="o">&amp;</span><span class="p">(</span><span class="n">events</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">spikes</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
+    <span class="n">is_in_event</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">event_spikes</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">spikes</span><span class="p">[</span><span class="n">is_in_event</span><span class="o">==</span><span class="mi">1</span><span class="p">],</span> <span class="n">spikes</span><span class="p">[</span><span class="n">is_in_event</span><span class="o">==</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="get_high_low_ppc_unit"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_high_low_ppc_unit">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_high_low_ppc_unit</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    High/low beta PPC for a given band.</span>
+<span class="sd">    The band is used only to identify beta events,</span>
+<span class="sd">    PPC itself is broad-band.</span>
+<span class="sd">    freqs, event_ppc, nonevent_ppc, threshold = get_high_low_ppc_unit(s,a,u,e,fa,fb)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># get beta LFP.</span>
+    <span class="c1"># No need to restrict this to high or low beta,</span>
+    <span class="c1"># restricting the spikes will accomplish that</span>
+    <span class="n">ch</span> <span class="o">=</span> <span class="n">get_channel</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">u</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
+    <span class="c1"># get beta events around peak (bottleneck)</span>
+    <span class="c1"># get spikes separated into high and low beta groups</span>
+    <span class="n">threshold</span><span class="p">,</span> <span class="n">event_spikes</span><span class="p">,</span> <span class="n">nonevent_spikes</span> <span class="o">=</span> <span class="n">get_high_and_low_beta_spikes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">event_ppc</span>   <span class="p">,</span><span class="n">_</span><span class="p">),</span><span class="n">_</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">event_spikes</span>   <span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">multitaper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">hanning</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">nonevent_ppc</span><span class="p">,</span><span class="n">_</span><span class="p">),</span><span class="n">_</span> <span class="o">=</span> <span class="n">pairwise_phase_consistancy</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">nonevent_spikes</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">multitaper</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">biased</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span><span class="n">taper</span><span class="o">=</span><span class="n">hanning</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">event_ppc</span><span class="p">,</span> <span class="n">nonevent_ppc</span><span class="p">,</span> <span class="n">threshold</span></div>
+
+
+<div class="viewcode-block" id="get_high_low_beta_firing_rates"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_high_low_beta_firing_rates">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_high_low_beta_firing_rates</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Computes the unit firing rates during high and low beta events for</span>
+<span class="sd">    the given task epoch. Good trials only. Defaults to Fs = 1000</span>
+<span class="sd">    returns threshold, event_rate, nonevent_rate</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">threshold</span><span class="p">,</span><span class="n">events</span> <span class="o">=</span> <span class="n">get_high_beta_events</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">get_unit_channel</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">),</span><span class="n">epoch</span><span class="p">,</span><span class="n">lowf</span><span class="o">=</span><span class="n">fa</span><span class="p">,</span><span class="n">highf</span><span class="o">=</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">spikes</span> <span class="o">=</span> <span class="n">get_spikes_session_filtered_by_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+
+    <span class="n">n_total_spikes</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spikes</span><span class="p">)</span>
+    <span class="n">n_total_times</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">epoch</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">epoch</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">events</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shape</span><span class="p">(</span><span class="n">events</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NO EVENTS!!!!!!!&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">NaN</span><span class="p">,</span> <span class="n">Fs</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">n_total_spikes</span><span class="p">)</span><span class="o">/</span><span class="n">n_total_times</span>
+    <span class="c1"># linear time solution exists but quadratic time solution is quicker to code.</span>
+    <span class="n">n_event_spikes</span>     <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">events</span><span class="p">[:,</span><span class="mi">1</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">spikes</span><span class="p">[</span><span class="kc">None</span><span class="p">,:])</span>
+                            <span class="o">&amp;</span><span class="p">(</span><span class="n">events</span><span class="p">[:,</span><span class="mi">0</span><span class="p">][:,</span><span class="kc">None</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">spikes</span><span class="p">[</span><span class="kc">None</span><span class="p">,:]))</span>
+    <span class="n">n_nonevent_spikes</span>  <span class="o">=</span> <span class="n">n_total_spikes</span><span class="o">-</span><span class="n">n_event_spikes</span>
+    <span class="n">n_event_times</span>      <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">events</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">events</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">n_nonevent_times</span>   <span class="o">=</span> <span class="n">n_total_times</span> <span class="o">-</span> <span class="n">n_event_times</span>
+    <span class="n">event_rate</span>         <span class="o">=</span> <span class="n">Fs</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">n_event_spikes</span><span class="p">)</span><span class="o">/</span><span class="n">n_event_times</span>
+    <span class="n">nonevent_rate</span>      <span class="o">=</span> <span class="n">Fs</span><span class="o">*</span><span class="nb">float</span><span class="p">(</span><span class="n">n_nonevent_spikes</span><span class="p">)</span><span class="o">/</span><span class="n">n_nonevent_times</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">event_rate</span><span class="p">,</span><span class="n">nonevent_rate</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">event_rate</span><span class="p">,</span> <span class="n">nonevent_rate</span></div>
+
+<div class="viewcode-block" id="get_amplitude_noise_cutoff"><a class="viewcode-back" href="../../cgid.beta.html#cgid.beta.get_amplitude_noise_cutoff">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_amplitude_noise_cutoff</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">SKIP</span><span class="p">):</span>
+    <span class="c1"># get amplitude noise cutoff</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_array_packed_lfp_analytic</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)[</span><span class="o">...</span><span class="p">,::</span><span class="n">SKIP</span><span class="p">]</span> \
+         <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">arr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

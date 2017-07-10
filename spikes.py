@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,43 +7,30 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 '''
 spiking analysis tools for CGID
 '''
+import cgid.lfp
+import cgid.data_loader
+import cgid.tools
+import numpy as np
+
 from matplotlib.mlab import find
-
 from warnings import warn
-from cgid.lfp import get_raw_lfp
-
 from neurotools.stats.modefind  import modefind
 from neurotools.signal.signal   import box_filter
 from neurotools.jobs.cache      import memoize
 from neurotools.tools           import dowarn
-
 from cgid.unitinfo import allunitsbysession,classification_results
-from cgid.tools    import find_all_extension, sessions_areas, neighbors
-
-import cgid.data_loader
-#from cgid.data_loader import *
-#from cgid.data_loader import get_good_trials
-
-from   numpy import *
-import numpy as np
-
-from  matplotlib.cbook import flatten
+from matplotlib.cbook import flatten
 
 def get_all_units(session,area):
     '''
     Reports all sorted units (even if they are noise or multiunit)
     '''
-    spikeTimes = squeeze(etaloadvariable(session,area,'unitIds'))
+    spikeTimes = np.squeeze(etaloadvariable(session,area,'unitIds'))
     return range(1,len(spikeTimes)+1)
 
 @memoize
@@ -56,7 +42,7 @@ def get_spikes_session(session,area,unit,Fs=1000):
 	'''
     if dowarn(): print('NOTE UNIT  IS 1 INDEXED FOR MATLAB COMPATIBILITY CONVENTIONS')
     spikeTimes = cgid.data_loader.metaloadvariable(session,area,'spikeTimes')
-    return int32(spikeTimes[0,unit-1][:,0]*Fs)
+    return np.int32(spikeTimes[0,unit-1][:,0]*Fs)
 
 @memoize
 def get_spikes_session_time(session,area,unit,start,stop):
@@ -81,7 +67,7 @@ def get_spikes_session_filtered_by_epoch(session,area,unit,epoch):
         stop  = t+te+esp
         sp = get_spikes_session_time(session,area,unit,start,stop)
         allspikes.append(sp)
-    return np.array(list(flatten(allspikes)),dtype=int32)
+    return np.array(list(flatten(allspikes)),dtype=np.int32)
 
 @memoize
 def get_spikes_session_raster(session,area,unit,start,stop,decimate=1):
@@ -343,7 +329,6 @@ def get_MUA_spikes(session,area,tr,epoch,ch=None,fsmooth=None,Fs=1000):
 get_good_MUA_spikes = get_MUA_spikes
 get_MUA_good_spikes = get_MUA_spikes
 
-
 @memoize
 def get_all_MUA_spikes(s,a,tr,epoch,fsmooth=5):
     return np.array([get_MUA_spikes(s,a,tr,epoch,ch,fsmooth) for ch in get_available_channels(s,a)])
@@ -464,7 +449,7 @@ def get_mean_waveform(s,a,u):
 def get_spikes_and_lfp_all_trials(session,area,unit,epoch):
     spikes = get_spikes_epoch_all_trials(session,area,unit,epoch)
     ch     = get_unit_channel(session,area,unit)
-    lfps   = np.array([get_raw_lfp(session,area,tr,ch,epoch) for tr in cgid.data_loader.get_good_trials(session)])
+    lfps   = np.array([cgid.lfp.get_raw_lfp(session,area,tr,ch,epoch) for tr in cgid.data_loader.get_good_trials(session)])
     return spikes, lfps
 
 
@@ -479,7 +464,7 @@ def unit_class_summary(group,verbose=True):
     thinthick = classification_results()
     manual_class_dir = '/home/mrule/Desktop/Workspace2/CGID_unit_classification/20141106 manually sort isi wf acorr isolated units/'
     # Units have been manually sorted, locate them based on which directory they were sorted into
-    found = find_all_extension(manual_class_dir+group)
+    found = cgid.tools.find_all_extension(manual_class_dir+group)
     foundunits = []
     # Extract information about units from the file names of the manually sorted directories
     for u in found:
@@ -494,7 +479,7 @@ def unit_class_summary(group,verbose=True):
         print(len(foundunits),'units categorized as',group,'(not all may be useable)')
     useable = []
     #print('Breakdown by session, area, and monkey')
-    for s,a in sessions_areas():
+    for s,a in cgid.tools.sessions_areas():
         thisarea = [u for (_s,_a,u) in foundunits if (s,a)==(_s,_a)]
         good = set(thisarea)# & set([u for (_s,_a,u) in acceptable if (s,a)==(_s,_a)])
         thin  = [u for u in good if (s,a,u) in thinthick and thinthick[s,a,u]==0]
@@ -721,5 +706,5 @@ def get_neighbor_MUA(session,area,unit,trial,epoch):
     Version 0.2
     '''
     channel = get_channel(session,area,unit)
-    nn = neighbors(session,area,False)[channel]
+    nn = cgid.tools.neighbors(session,area,False)[channel]
     return sum([get_all_spikes_on_channel(session,area,trial,channel,epoch) for channel in nn],0)

@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.phase_plots &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cgid.phase_plots</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cgid.phase_plots</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># more py2/3 compat</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="o">&lt;</span><span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">imap</span> <span class="k">as</span> <span class="nb">map</span>
+<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Utility functions for making nicely upsampled plots of phase delays and</span>
+<span class="sd">phase gradients for the 10x10 Utah arrays.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">neurotools.color</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">neurotools.nlab</span> <span class="k">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="array_imshow"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.array_imshow">[docs]</a><span class="k">def</span> <span class="nf">array_imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+    <span class="n">drawlines</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">draw_colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">extent</span><span class="o">!=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;different size?&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmin=&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmax=&#39;</span><span class="p">,</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">drawlines</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
+            <span class="n">axvline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">axhline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">nicexy</span><span class="p">()</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">fudgex</span><span class="p">()</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">draw_colorbar</span><span class="p">:</span>
+        <span class="n">cax</span><span class="o">=</span><span class="n">good_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="p">,</span><span class="n">ctitle</span><span class="p">,</span>
+            <span class="n">sideways</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">)</span>
+        <span class="n">fudgey</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">cax</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">cax</span></div>
+
+<div class="viewcode-block" id="array_plot_upsampled"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.array_plot_upsampled">[docs]</a><span class="k">def</span> <span class="nf">array_plot_upsampled</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">factor</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span>
+    <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
+    <span class="n">drawlines</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span>
+    <span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Upsamples data by factor when plotting. Currently only set up for</span>
+<span class="sd">    4x4mm 10x10 electrode MEAs.</span>
+
+<span class="sd">    Handy because upsampling leaves strangely sized images, since you can</span>
+<span class="sd">    only interpolate and not extrapolate -- and this hadles automatically</span>
+<span class="sd">    placing the image at the correct location</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">upsampled</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">factor</span><span class="p">)</span>
+    <span class="c1"># upsampling trims the array a bit</span>
+    <span class="c1"># figure out how to re-center the trimmed array:</span>
+    <span class="n">sw</span><span class="p">,</span><span class="n">sh</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">upsampled</span><span class="p">)</span>
+    <span class="n">fw</span><span class="p">,</span><span class="n">fh</span>  <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">factor</span>
+    <span class="n">dw</span><span class="p">,</span><span class="n">dh</span>  <span class="o">=</span> <span class="p">(</span><span class="n">fw</span><span class="o">-</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span><span class="p">,(</span><span class="n">fh</span><span class="o">-</span><span class="n">sh</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="n">dw</span><span class="o">+</span><span class="n">sw</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">dh</span><span class="p">,</span><span class="n">dh</span><span class="o">+</span><span class="n">sh</span><span class="o">/</span><span class="n">fh</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;extent=&#39;</span><span class="p">,</span><span class="n">extent</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmin=&#39;</span><span class="p">,</span><span class="n">vmin</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vmax=&#39;</span><span class="p">,</span><span class="n">vmax</span><span class="p">)</span>
+    <span class="c1">#data[where(M&lt;=0)]=NaN</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="c1">#crossbad(M)</span>
+    <span class="k">if</span> <span class="n">drawlines</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">):</span>
+            <span class="n">axvline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">axhline</span><span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="mf">4.0</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">nicex</span><span class="p">()</span>
+    <span class="n">nicey</span><span class="p">()</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">)</span>
+    <span class="n">fudgex</span><span class="p">()</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="n">cax</span><span class="o">=</span><span class="n">good_colorbar</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span><span class="n">vmax</span><span class="p">,</span><span class="n">cmap</span><span class="p">,</span><span class="n">ctitle</span><span class="p">,</span><span class="n">sideways</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fudgey</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="n">cax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cax</span></div>
+
+<div class="viewcode-block" id="overlay_gradient"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.overlay_gradient">[docs]</a><span class="k">def</span> <span class="nf">overlay_gradient</span><span class="p">(</span><span class="n">phase_gradient</span><span class="p">):</span>
+    <span class="n">NH</span><span class="p">,</span><span class="n">NW</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">phase_gradient</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">NW</span><span class="p">,</span><span class="n">NH</span><span class="p">))</span><span class="o">+</span><span class="mf">0.5</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NH</span><span class="p">):</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">row</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NW</span><span class="p">):</span>
+            <span class="n">dz</span> <span class="o">=</span> <span class="n">phase_gradient</span><span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">]</span><span class="o">*</span><span class="mf">0.25</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">dz</span><span class="o">*.</span><span class="mi">7</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span> <span class="o">.</span><span class="mi">5</span><span class="n">j</span><span class="p">);</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">dz</span><span class="o">*.</span><span class="mi">7</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-.</span><span class="mi">5</span><span class="n">j</span><span class="p">);</span>
+            <span class="n">px</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">col</span><span class="p">]</span>
+            <span class="n">plot</span><span class="p">([</span><span class="n">px</span><span class="p">,</span><span class="n">px</span><span class="o">+</span><span class="n">real</span><span class="p">(</span><span class="n">dz</span><span class="p">)],[</span><span class="n">py</span><span class="p">,</span><span class="n">py</span><span class="o">+</span><span class="n">imag</span><span class="p">(</span><span class="n">dz</span><span class="p">)],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">plot</span><span class="p">([</span><span class="n">px</span><span class="p">,</span><span class="n">px</span><span class="o">-</span><span class="n">real</span><span class="p">(</span><span class="n">dz</span><span class="p">)],[</span><span class="n">py</span><span class="p">,</span><span class="n">py</span><span class="o">-</span><span class="n">imag</span><span class="p">(</span><span class="n">dz</span><span class="p">)],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">plot</span><span class="p">([</span><span class="n">px</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">px</span><span class="o">-</span><span class="n">real</span><span class="p">(</span><span class="n">dz</span><span class="p">),</span><span class="n">px</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">real</span><span class="p">],</span>
+                 <span class="p">[</span><span class="n">py</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">py</span><span class="o">-</span><span class="n">imag</span><span class="p">(</span><span class="n">dz</span><span class="p">),</span><span class="n">py</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">imag</span><span class="p">],</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_upsampled_extent"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.get_upsampled_extent">[docs]</a><span class="k">def</span> <span class="nf">get_upsampled_extent</span><span class="p">(</span><span class="n">upsampled_shape</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="c1"># not implemented</span>
+    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;assuming 10x10?&#39;</span><span class="p">)</span>
+    <span class="c1"># upsampling trims the array a bit</span>
+    <span class="c1"># figure out how to re-center the trimmed array:</span>
+    <span class="n">sw</span><span class="p">,</span><span class="n">sh</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">upsampled</span><span class="p">)</span>
+    <span class="n">fw</span><span class="p">,</span><span class="n">fh</span>  <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">UPSAMPLE</span>
+    <span class="n">dw</span><span class="p">,</span><span class="n">dh</span>  <span class="o">=</span> <span class="p">(</span><span class="n">fw</span><span class="o">-</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span><span class="p">,(</span><span class="n">fh</span><span class="o">-</span><span class="n">sh</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="n">dw</span><span class="o">+</span><span class="n">sw</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">dh</span><span class="p">,</span><span class="n">dh</span><span class="o">+</span><span class="n">sh</span><span class="o">/</span><span class="n">fh</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="phase_delay_plot"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.phase_delay_plot">[docs]</a><span class="k">def</span> <span class="nf">phase_delay_plot</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">,</span>
+    <span class="n">cm</span><span class="o">=</span><span class="n">isolum</span><span class="p">,</span><span class="n">UPSAMPLE</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">smooth</span><span class="o">=</span><span class="mf">2.3</span><span class="p">,</span><span class="n">NLINE</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+    <span class="n">recenter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">draw_colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Accepts an analytic signal map, upsamples it, and plots in the current</span>
+<span class="sd">    axis the phases. For now, expects a 10x10 array 4x4mm is size.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">upsampled</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">dct_cut_antialias</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">,</span><span class="n">smooth</span><span class="p">),</span><span class="n">UPSAMPLE</span><span class="p">)</span>
+    <span class="c1"># upsampling trims the array a bit</span>
+    <span class="c1"># figure out how to re-center the trimmed array:</span>
+    <span class="n">sw</span><span class="p">,</span><span class="n">sh</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">upsampled</span><span class="p">)</span>
+    <span class="n">fw</span><span class="p">,</span><span class="n">fh</span>  <span class="o">=</span> <span class="n">float32</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">)[:</span><span class="mi">2</span><span class="p">])</span><span class="o">*</span><span class="n">UPSAMPLE</span>
+    <span class="n">dw</span><span class="p">,</span><span class="n">dh</span>  <span class="o">=</span> <span class="p">(</span><span class="n">fw</span><span class="o">-</span><span class="n">sw</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span><span class="p">,(</span><span class="n">fh</span><span class="o">-</span><span class="n">sh</span><span class="p">)</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="mi">4</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="n">dw</span><span class="o">+</span><span class="n">sw</span><span class="o">/</span><span class="n">fw</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">dh</span><span class="p">,</span><span class="n">dh</span><span class="o">+</span><span class="n">sh</span><span class="o">/</span><span class="n">fh</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># extract angles</span>
+    <span class="k">if</span> <span class="n">recenter</span><span class="p">:</span>
+        <span class="n">amean</span>  <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">upsampled</span><span class="p">))</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">upsampled</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">amean</span><span class="p">))</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">+</span><span class="n">pi</span><span class="o">+</span><span class="mf">1.75</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">angle</span><span class="p">(</span><span class="n">upsampled</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="o">+</span><span class="n">pi</span><span class="o">+</span><span class="mf">1.75</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">)</span>
+    <span class="c1"># plot phase angles</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">array_imshow</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="p">,</span>
+        <span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span>
+        <span class="n">draw_colorbar</span><span class="o">=</span><span class="n">draw_colorbar</span><span class="p">)</span>
+    <span class="c1"># add countours</span>
+    <span class="k">for</span> <span class="n">phi</span> <span class="ow">in</span> <span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="n">NLINE</span><span class="o">+</span><span class="mi">1</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">c</span><span class="o">=</span><span class="n">contour</span><span class="p">((</span><span class="n">angles</span><span class="o">+</span><span class="n">phi</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">),[</span><span class="n">pi</span><span class="p">],</span><span class="n">linewidths</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">)</span>
+    <span class="c1"># Add title</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;Average phase delay&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">)</span>
+    <span class="c1"># fix up colorbar axis labels</span>
+    <span class="n">oldax</span> <span class="o">=</span> <span class="n">gca</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">draw_colorbar</span><span class="p">:</span>
+        <span class="n">sca</span><span class="p">(</span><span class="n">cax</span><span class="p">)</span>
+        <span class="n">noaxis</span><span class="p">()</span>
+        <span class="n">cax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="sa">u</span><span class="s1">&#39;both&#39;</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">labelleft</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="n">labelright</span><span class="o">=</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+        <span class="n">yticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span><span class="p">],[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;$2\pi$&#39;</span><span class="p">])</span>
+        <span class="c1"># redraw the plot</span>
+        <span class="n">sca</span><span class="p">(</span><span class="n">oldax</span><span class="p">)</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cax</span><span class="p">,</span><span class="n">extent</span></div>
+
+
+<div class="viewcode-block" id="vector_summary_plot_subroutine"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.vector_summary_plot_subroutine">[docs]</a><span class="k">def</span> <span class="nf">vector_summary_plot_subroutine</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Plotting subroutine. Takes order parameter R and a list of vectors</span>
+<span class="sd">    that has been standardiszed.</span>
+
+<span class="sd">    TODO: circular gaussian plot is a little off here</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+    <span class="c1"># draw the vectors</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">:</span>
+        <span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span><span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=.</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># draw some axis lines</span>
+    <span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],[</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">],</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">)</span>
+    <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="n">limit</span><span class="p">,</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="c1"># plot the phase distribution as if circular gaussian (?correct?)</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="n">pi</span><span class="p">,</span><span class="n">pi</span><span class="p">,</span><span class="mi">361</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="mf">1.2</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="n">sin</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">npdf</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">sigma</span><span class="p">,</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="mf">0.4</span> <span class="o">+</span> <span class="mf">1.2</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="n">sin</span><span class="p">(</span><span class="n">h</span><span class="o">+</span><span class="n">mu</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+    <span class="c1"># clean up the plot</span>
+    <span class="n">force_aspect</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+    <span class="n">noaxis</span><span class="p">()</span>
+    <span class="n">nox</span><span class="p">()</span>
+    <span class="n">noy</span><span class="p">()</span>
+
+    <span class="c1"># draw a mean vector</span>
+    <span class="n">mv</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+    <span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">mv</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">mv</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span><span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mf">1e9</span><span class="p">)</span>
+    <span class="n">arrow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">mv</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">mv</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">head_width</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span><span class="n">head_length</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">fc</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mf">1e10</span><span class="p">)</span></div>
+
+    <span class="c1"># draw annotation for circular standard deviation</span>
+    <span class="c1">#plot([1.2,1.2],[0,sigma],lw=1,color=&#39;k&#39;)</span>
+    <span class="c1">#text(1.2+pixels_to_xunits(3),sigma/2,&#39;$S$&#39;,</span>
+    <span class="c1">#    horizontalalignment=&#39;left&#39;,</span>
+    <span class="c1">#    verticalalignment=&#39;center&#39;,</span>
+    <span class="c1">#    fontsize=16)</span>
+
+<div class="viewcode-block" id="vector_summary_plot"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.vector_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">vector_summary_plot</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Does a summary plot of the phases of the vectors provided.</span>
+<span class="sd">    vectors should be an array of complex numners</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+    <span class="n">R</span>  <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>
+    <span class="n">S</span>  <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>
+    <span class="n">vector_summary_plot_subroutine</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">vectors</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="weighted_vector_summary_plot"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.weighted_vector_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">weighted_vector_summary_plot</span><span class="p">(</span><span class="n">vectors</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Does a summary plot of the phases of the vectors provided.</span>
+<span class="sd">    vectors should be an array of complex numners</span>
+<span class="sd">    Does a weighted average of direction by the vector magnitudes.</span>
+<span class="sd">    CAUTION: Normalized vectors by squared mag for plotting,</span>
+<span class="sd">    need to check that this is OK</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">R</span>  <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>
+    <span class="n">S</span>  <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">log</span><span class="p">(</span><span class="n">R</span><span class="p">))</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">angle</span><span class="p">(</span><span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">/</span><span class="n">mean</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**.</span><span class="mi">5</span>
+    <span class="n">vector_summary_plot_subroutine</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">S</span><span class="p">,</span><span class="n">vectors</span><span class="p">)</span></div>
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

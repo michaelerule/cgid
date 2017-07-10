@@ -1,3 +1,14 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+from neurotools.system import *
+
 ############################################################################
 # Gather usable unit info 
 # 1 INDEXED UNIT IDS
@@ -11,9 +22,10 @@ import collections
 import itertools
 import sys
 import os
+from collections import defaultdict
 
-print 'identifying units'
-print 'WARNING: REMEMBER UNITS ARE 1 INDEXED'
+print('identifying units')
+print('WARNING: REMEMBER UNITS ARE 1 INDEXED')
 allfiles=[]
 allannotated=[]
 
@@ -34,7 +46,7 @@ for file in allfiles:
         nmonkey  = 2
         nsession = 1+rusty_sessions.index(session)
     else:
-        print 'no'
+        print('no')
     narea = areas.index(area)+1
     units.append((session,area,uid))
 
@@ -42,7 +54,6 @@ allunitsbysession = defaultdict(list)
 
 for session,area,uid in units:
     allunitsbysession[session,area].append(uid)
-    
 
 acceptable = {('RUS120518', 'M1', 1),
  ('RUS120518', 'M1', 65),

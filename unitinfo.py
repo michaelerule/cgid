@@ -477,6 +477,9 @@ beta_rhythmic = {('RUS120518','M1',65),
  ('SPK120925','PMv',178),
  ('SPK120925','PMv',190),
  ('SPK120925','PMv',195)}
+'''
+Variable storing all units exhibiting β-LFP rhythmicity
+'''
 
 
 '''

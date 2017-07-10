@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,12 +7,7 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 import os
 from numpy                    import *
@@ -108,6 +102,8 @@ def get_electrode_positions(session, area, outline=None,
     
     Note: Array wire bundle exits to the right
     
+    ::
+    
      0mm                                     4mm
      0   1   2   3   4   5   6   7   8   9  10
      ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
@@ -185,32 +181,34 @@ def get_interelectrode_positions(session, area, outline=None,
      So I guess they are located at arange(1,10)/10.
      
      Note: Array wire bundle exits to the right
-    
-     0mm                                     4mm
-     0   1   2   3   4   5   6   7   8   9  10
-     ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
-     +---+---+---+---+---+---+---+---+---+---+ 0
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---x---x---x---x---x---x---x---x---x---+
-     | o | o | o | o | o | o | o | o | o | o |
-     +---+---+---+---+---+---+---+---+---+---+
-     0                                         1
+     
+     ::
+     
+         0mm                                     4mm
+         0   1   2   3   4   5   6   7   8   9  10
+         ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
+         +---+---+---+---+---+---+---+---+---+---+ 0
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---x---x---x---x---x---x---x---x---x---+
+         | o | o | o | o | o | o | o | o | o | o |
+         +---+---+---+---+---+---+---+---+---+---+
+         0                                         1
     '''
     positions,dx,dy = get_electrode_positions(session, area, outline)
     positions = 0.25*(

@@ -313,3 +313,11 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     nonevent_rate      = Fs*float(n_nonevent_spikes)/n_nonevent_times
     print(session,area,unit,epoch,event_rate,nonevent_rate, threshold)
     return threshold, event_rate, nonevent_rate
+
+@memoize
+def get_amplitude_noise_cutoff(session,area,epoch,fa,fb,SKIP):
+    # get amplitude noise cutoff
+    x = [get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb)[...,::SKIP] \
+         for trial in get_good_trials(session)]
+    s = std(arr(x).real)
+    return s

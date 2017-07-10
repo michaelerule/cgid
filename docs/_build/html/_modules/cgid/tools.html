@@ -1,0 +1,782 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.tools &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>cgid.tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for cgid.tools</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/python</span>
+<span class="c1"># -*- coding: UTF-8 -*-</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">nested_scopes</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">matplotlib.cbook</span>   <span class="k">import</span> <span class="n">flatten</span>
+<span class="kn">from</span> <span class="nn">neurotools.tools</span>   <span class="k">import</span> <span class="n">memoize</span>
+<span class="kn">from</span> <span class="nn">neurotools.spatial.array</span> <span class="k">import</span> <span class="n">trim_array</span><span class="p">,</span> <span class="n">pack_array_data</span>
+
+<span class="kn">import</span> <span class="nn">cgid.lfp</span>
+<span class="kn">import</span> <span class="nn">cgid.array</span>
+
+<span class="c1"># TODO fix imports</span>
+<span class="c1">#from scipy.stats.stats  import *</span>
+<span class="c1">#from matplotlib.pyplot  import *</span>
+<span class="c1">#from neurotools.getfftw import *</span>
+<span class="c1">#from neurotools.plot    import *</span>
+<span class="c1">#from cgid.config        import *</span>
+<span class="c1">#from cgid.data_loader   import *</span>
+
+<div class="viewcode-block" id="overlay_markers"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.overlay_markers">[docs]</a><span class="k">def</span> <span class="nf">overlay_markers</span><span class="p">(</span><span class="n">c1</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">c2</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span><span class="n">nevents</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span><span class="n">npad</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        labels: default none. Can be</span>
+<span class="sd">            &quot;markers&quot; for symbols or</span>
+<span class="sd">            &quot;names&quot; for [&#39;Object presented&#39;,&#39;Grip cued&#39;,&#39;Go cue&#39;]</span>
+<span class="sd">            &quot;short&quot; for [&#39;Object&#39;,&#39;Grip&#39;,&#39;Go cue&#39;]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">xlim</span><span class="p">()</span>
+    <span class="n">dx</span><span class="p">,</span><span class="n">dy</span> <span class="o">=</span> <span class="n">get_ax_pixel</span><span class="p">()</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;dx,dy=</span><span class="si">%s</span><span class="s1">,</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span><span class="n">dy</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="o">==</span><span class="s1">&#39;markers&#39;</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;$\circ$&#39;</span><span class="p">,</span><span class="s1">&#39;$\diamond$&#39;</span><span class="p">,</span><span class="s1">&#39;$\star$&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">labels</span><span class="o">==</span><span class="s1">&#39;names&#39;</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Object presented&#39;</span><span class="p">,</span><span class="s1">&#39;Grip cued&#39;</span><span class="p">,</span><span class="s1">&#39;Go cue&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">labels</span><span class="o">==</span><span class="s1">&#39;short&#39;</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Object&#39;</span><span class="p">,</span><span class="s1">&#39;Grip&#39;</span><span class="p">,</span><span class="s1">&#39;Go cue&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span><span class="o">*</span><span class="mi">3</span>
+    <span class="n">locations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mi">4000</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">time</span><span class="p">,</span><span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">locations</span><span class="p">,</span><span class="n">names</span><span class="p">)[:</span><span class="n">nevents</span><span class="p">]:</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span>
+        <span class="k">if</span> <span class="n">time</span><span class="o">&lt;=</span><span class="n">a</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">time</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c2</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">dy</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">label</span><span class="p">,</span>
+                <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span></div>
+
+<span class="n">overlay_events</span> <span class="o">=</span> <span class="n">overlay_markers</span>
+
+<div class="viewcode-block" id="channel2index"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.channel2index">[docs]</a><span class="k">def</span> <span class="nf">channel2index</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span><span class="n">availableChannels</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE EXPECTING 1 INDEXED CHANNEL&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RETURNING 0 INDEX OF DATA ARRAY&#39;</span><span class="p">)</span>
+    <span class="n">availableChannels</span> <span class="o">=</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">availableChannels</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cumsum</span><span class="p">(</span><span class="n">availableChannels</span><span class="p">)[</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="unit_channel_as_index"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.unit_channel_as_index">[docs]</a><span class="k">def</span> <span class="nf">unit_channel_as_index</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">channel2index</span><span class="p">(</span><span class="n">channelIds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">availableChannels</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_all_isi_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_isi_epoch">[docs]</a><span class="k">def</span> <span class="nf">get_all_isi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Returns the durations of all ISI intervals from the given session, area,</span>
+<span class="sd">    unit, and epoch</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">all_isi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_valid_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+        <span class="n">spk</span> <span class="o">=</span> <span class="n">get_spikes_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+        <span class="n">isi</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">spk</span><span class="p">)</span>
+        <span class="n">all_isi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">isi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">all_isi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_burstiness"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_burstiness">[docs]</a><span class="k">def</span> <span class="nf">get_burstiness</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">isi</span> <span class="o">=</span> <span class="n">get_all_isi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">isi</span><span class="o">&lt;</span><span class="n">thr</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">isi</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="get_all_ibi_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_ibi_epoch">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_all_ibi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: threshold is in ms, defaults to 5&#39;</span><span class="p">)</span>
+    <span class="n">all_ibi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">thr</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span> <span class="n">thr</span><span class="o">=</span><span class="mi">5</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_valid_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+        <span class="n">spk</span>   <span class="o">=</span> <span class="n">get_spikes_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spk</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;ERROR </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spk</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">isi</span>   <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">spk</span><span class="p">)</span>
+        <span class="n">burst</span> <span class="o">=</span> <span class="n">spk</span><span class="p">[</span><span class="n">find</span><span class="p">(</span><span class="n">isi</span><span class="o">&lt;=</span><span class="n">thr</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">burst</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">all_ibi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">burst</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">all_ibi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_all_ibi_merged_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_ibi_merged_epoch">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">get_all_ibi_merged_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: threshold is in ms, defaults to 5&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: misses burst if starts on 1st spike, TODOFIX&#39;</span><span class="p">)</span>
+    <span class="n">all_ibi</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">thr</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span> <span class="n">thr</span><span class="o">=</span><span class="mi">5</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_valid_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+        <span class="n">spk</span>   <span class="o">=</span> <span class="n">get_spikes_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">spk</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;ERROR </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">))</span>
+            <span class="k">assert</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spk</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">isi</span>   <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">spk</span><span class="p">)</span>
+        <span class="n">short</span> <span class="o">=</span> <span class="n">isi</span><span class="o">&lt;</span><span class="n">thr</span>
+        <span class="n">burst</span> <span class="o">=</span> <span class="n">spk</span><span class="p">[</span><span class="n">find</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">int32</span><span class="p">(</span><span class="n">short</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">burst</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">all_ibi</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">burst</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">all_ibi</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="sessions_areas"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.sessions_areas">[docs]</a><span class="k">def</span> <span class="nf">sessions_areas</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">sessionnames</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">s</span><span class="p">,</span><span class="n">a</span></div>
+
+<div class="viewcode-block" id="quicksessions"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.quicksessions">[docs]</a><span class="k">def</span> <span class="nf">quicksessions</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sessionnames</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">s</span><span class="p">,</span><span class="n">a</span></div>
+
+<div class="viewcode-block" id="fftppc"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.fftppc">[docs]</a><span class="k">def</span> <span class="nf">fftppc</span><span class="p">(</span><span class="n">snippits</span><span class="p">):</span>
+    <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">window</span> <span class="ow">and</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING SAMPLES SEEM TRANSPOSED?&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">M</span><span class="o">&gt;</span><span class="n">window</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="n">ftw</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
+    <span class="n">raw</span>      <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">fs</span><span class="o">/</span><span class="nb">abs</span><span class="p">(</span><span class="n">fs</span><span class="p">),</span><span class="mi">0</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">unbiased</span> <span class="o">=</span> <span class="p">(</span><span class="n">raw</span><span class="o">/</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">M</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">freqs</span>    <span class="o">=</span> <span class="n">fftfreq</span><span class="p">(</span><span class="n">window</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">FS</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">freqs</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">],</span> <span class="n">unbiased</span><span class="p">[:(</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ch2chi"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ch2chi">[docs]</a><span class="k">def</span> <span class="nf">ch2chi</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Some electrode banks are split over two arrays.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">ch</span><span class="o">&gt;</span><span class="mi">0</span>
+    <span class="n">all_available</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">all_available</span><span class="o">==</span><span class="n">ch</span><span class="p">)</span> <span class="c1"># note zero indexing!</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">chi</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;unusual&#39;</span><span class="p">,(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">all_available</span><span class="p">,</span><span class="n">chi</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">chi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="pack_array_data_interpolate"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.pack_array_data_interpolate">[docs]</a><span class="k">def</span> <span class="nf">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Accepts a collection of signals from array channels, as well as</span>
+<span class="sd">    an array map containing indecies (1-indexed for backwards compatibility</span>
+<span class="sd">    with matlab) into that list of channel data.</span>
+
+<span class="sd">    This will interpolate missing channels as an average of nearest</span>
+<span class="sd">    neighbors.</span>
+
+<span class="sd">    :param data: should be a NChannel x Ntimes array</span>
+<span class="sd">    :param session: the session corresponding to data, needed for array map</span>
+<span class="sd">    :param area: the area corresponding to the data, needed to get array map</span>
+<span class="sd">    :return: returns LxKxNtimes 3D array of the interpolated channel data</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_array_map</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">pack_array_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">arrayMap</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Accepts a collection of signals from array channels, as well as</span>
+<span class="sd">        an array map containing indecies (1-indexed for backwards compatibility</span>
+<span class="sd">        with matlab) into that list of channel data.</span>
+
+<span class="sd">        This will interpolate missing channels as an average of nearest</span>
+<span class="sd">        neighbors.</span>
+
+<span class="sd">        :param data: NChannel x Ntimes array</span>
+<span class="sd">        :param arrayMap: array map, 1-indexed, 0 for missing electrodes</span>
+<span class="sd">        :return: returns LxKxNtimes 3D array of the interpolated channel data</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># first, trim off any empty rows or columns from the arrayMap</span>
+        <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">trim_array</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">)</span>
+        <span class="c1"># prepare array into which to pack data</span>
+        <span class="n">L</span><span class="p">,</span><span class="n">K</span>   <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">)</span>
+        <span class="n">NCH</span><span class="p">,</span><span class="n">N</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="n">L</span><span class="p">,</span><span class="n">K</span><span class="p">,</span><span class="n">N</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">complex64</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">arrayMap</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">J</span><span class="o">!=</span><span class="n">M</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;bad: data dimension differs from number of array electrodes&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;data </span><span class="si">%s</span><span class="s1"> array&#39;</span><span class="o">%</span><span class="p">((</span><span class="n">J</span><span class="p">,</span><span class="n">M</span><span class="p">),))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this may just be because some array channels are removed&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="c1"># need to convert channel to channel index</span>
+                <span class="k">if</span> <span class="n">ch</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># we will need to interpolate from nearest neighbors</span>
+                    <span class="n">ip</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span>  <span class="p">:</span> <span class="n">ip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">j</span><span class="o">&gt;</span><span class="mi">0</span>  <span class="p">:</span> <span class="n">ip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">L</span><span class="p">:</span> <span class="n">ip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">K</span><span class="p">:</span> <span class="n">ip</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arrayMap</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">ip</span> <span class="o">=</span> <span class="p">[</span><span class="n">ch</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">ip</span> <span class="k">if</span> <span class="n">ch</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span>
+                    <span class="k">for</span> <span class="n">chii</span> <span class="ow">in</span> <span class="n">ip</span><span class="p">:</span>
+                        <span class="n">qi</span> <span class="o">=</span> <span class="n">ch2chi</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">chii</span><span class="p">)</span>
+                        <span class="n">packed</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">qi</span><span class="p">,:]</span>
+                    <span class="n">packed</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="n">ch</span><span class="o">&gt;</span><span class="mi">0</span>
+                    <span class="n">packed</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ch2chi</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">),:]</span>
+        <span class="k">return</span> <span class="n">packed</span>
+    <span class="k">return</span> <span class="n">pack_array_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">arrayMap</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="onarraydata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.onarraydata">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">onarraydata</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Applies functions that accept AxBxN data where AxB are array indecies.</span>
+<span class="sd">    and N is timepoints over the specified section of data.</span>
+
+<span class="sd">    Note: array interp routines take array map from get_array_map.</span>
+<span class="sd">    Bad channels can be removed by removing them in this function.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">get_analytic_frames</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">N</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">b</span><span class="p">:</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">M</span>     <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_trial_times_ms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">T</span>     <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">T</span><span class="o">==</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&gt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="n">debug</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,(</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">T</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;warning input len </span><span class="si">%s</span><span class="s1"> output len </span><span class="si">%s</span><span class="s1"> assuming cropped&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span>
+        <span class="n">startcrop</span> <span class="o">=</span> <span class="n">difference</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">stopcrop</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">difference</span><span class="o">-</span><span class="n">startcrop</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">startcrop</span><span class="p">:</span><span class="n">stopcrop</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">times</span><span class="p">,</span><span class="n">result</span></div>
+
+<div class="viewcode-block" id="ondatadata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ondatadata">[docs]</a><span class="k">def</span> <span class="nf">ondatadata</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># just a temp hack no time no time for better</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">trial</span><span class="p">)</span>
+    <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="o">+</span><span class="mi">0</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;&gt;&gt;&gt; calling </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">b</span><span class="p">:</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">M</span>      <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">times</span>  <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_trial_times_ms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">N</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&gt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">shape</span><span class="p">(</span><span class="n">times</span><span class="p">),</span><span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;warning input len </span><span class="si">%s</span><span class="s1"> output len </span><span class="si">%s</span><span class="s1"> assuming cropped&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span>
+        <span class="n">startcrop</span> <span class="o">=</span> <span class="n">difference</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">stopcrop</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">difference</span><span class="o">-</span><span class="n">startcrop</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">startcrop</span><span class="p">:</span><span class="n">stopcrop</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">times</span><span class="p">,</span><span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ofrawdata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ofrawdata">[docs]</a><span class="k">def</span> <span class="nf">ofrawdata</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="c1"># just a temp hack no time no time for better</span>
+    <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">trial</span><span class="p">)</span>
+    <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="o">+</span><span class="mi">0</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;&gt;&gt;&gt; calling </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span><span class="o">&lt;</span><span class="n">b</span><span class="p">:</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">M</span>      <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">times</span>  <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_trial_times_ms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">N</span>      <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&gt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">shape</span><span class="p">(</span><span class="n">times</span><span class="p">),</span><span class="n">shape</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;warning input len </span><span class="si">%s</span><span class="s1"> output len </span><span class="si">%s</span><span class="s1"> assuming cropped&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span>
+        <span class="n">startcrop</span> <span class="o">=</span> <span class="n">difference</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">stopcrop</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">difference</span><span class="o">-</span><span class="n">startcrop</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">startcrop</span><span class="p">:</span><span class="n">stopcrop</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">times</span><span class="p">,</span><span class="n">result</span></div>
+
+<div class="viewcode-block" id="onpopdata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.onpopdata">[docs]</a><span class="k">def</span> <span class="nf">onpopdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Extracts data and applies provided function &#39;statistic&#39; to it.</span>
+<span class="sd">    Returns time base and statistic over time.</span>
+<span class="sd">    Times may vary as some statistics clip or truncate the data.</span>
+
+<span class="sd">    Statistic must accept one argument &quot;data&quot; which is a K channel by N time</span>
+<span class="sd">    complex matrix of analytic signals.</span>
+
+<span class="sd">    Statistic must return a length M&lt;=N vector. If M&lt;N, this function assumes</span>
+<span class="sd">    that the data were truncated symmetrically to generate a cropped time</span>
+<span class="sd">    base.</span>
+
+<span class="sd">    If not provided, session, area, and trial will be taken from </span>
+<span class="sd">    globals ( if they are not present in globals it will crash )</span>
+<span class="sd">    </span>
+<span class="sd">    If not provided, epoch is 6,-1000,6000 ( the whole trial )</span>
+
+<span class="sd">    TODO: support functions that returnmultiple values</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">    &gt;&gt;&gt; x = onpopdata(sliding_population_signal_coherence)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;&gt;&gt;&gt; epoch is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="p">,))</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">lfp</span><span class="o">.</span><span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">K</span><span class="p">,</span><span class="n">N</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="n">statistic</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">processed</span><span class="p">))</span><span class="o">==</span><span class="mi">1</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">processed</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">et_trial_times_ms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">T</span><span class="o">==</span><span class="n">N</span>
+    <span class="k">assert</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">N</span>
+    <span class="k">if</span> <span class="n">M</span><span class="o">&lt;</span><span class="n">N</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;warning input len </span><span class="si">%s</span><span class="s1"> output len </span><span class="si">%s</span><span class="s1"> assuming cropped&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span>
+        <span class="n">startcrop</span> <span class="o">=</span> <span class="n">difference</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">stopcrop</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">difference</span><span class="o">-</span><span class="n">startcrop</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">startcrop</span><span class="p">:</span><span class="n">stopcrop</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">times</span><span class="p">,</span><span class="n">processed</span></div>
+
+<div class="viewcode-block" id="overdata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.overdata">[docs]</a><span class="k">def</span> <span class="nf">overdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This applies the routine &quot;statistic&quot; over data. Statistic can either</span>
+<span class="sd">    take a K x N array of population analytic signal data, or an A x B x N</span>
+<span class="sd">    of array-positioned data. This function inspects the provided</span>
+<span class="sd">    &quot;statistic&quot; function. if it starts with &quot;array\_&quot; it applies the function</span>
+<span class="sd">    to the array packed data. if it starts with &quot;population\_&quot; it applies</span>
+<span class="sd">    the function to population vector data. otherwise, an error is thrown.</span>
+
+<span class="sd">    note: static typing and pattern matching to array dimension signatures</span>
+<span class="sd">    could render this necessray. sadly a language feature python lacks,</span>
+<span class="sd">    afaik.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">trial</span> <span class="o">+=</span> <span class="mi">0</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">tag</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;&gt;&gt;&gt; tag is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">tag</span><span class="p">)</span>
+    <span class="n">debug</span><span class="p">(</span> <span class="s1">&#39;&gt;&gt;&gt; epoch is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">epoch</span><span class="p">,))</span>
+    <span class="k">if</span> <span class="n">tag</span><span class="o">==</span><span class="s1">&#39;array&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">onarraydata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">tag</span><span class="o">==</span><span class="s1">&#39;population&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">onpopdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">tag</span><span class="o">==</span><span class="s1">&#39;data&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ondatadata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">tag</span><span class="o">==</span><span class="s1">&#39;get&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ofrawdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="onsession"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.onsession">[docs]</a><span class="nd">@memoize</span>
+<span class="k">def</span> <span class="nf">onsession</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    applies statistic over all trials in the session.</span>
+<span class="sd">    doesn&#39;t return exact times since events have different timings on each</span>
+<span class="sd">    trial. instead returns an event-relative time base.</span>
+<span class="sd">    times,res=onsession(array_average_ampltiude)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span>  <span class="o">=</span> <span class="n">epoch</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span>
+        <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span>  <span class="o">=</span> <span class="n">epoch</span>
+    <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;!!&gt;&gt;&gt; applying&#39;</span><span class="o">+</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">))))</span>
+    <span class="n">trials</span>  <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">trials</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">overdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">trials</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">arr</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">rtimes</span>  <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,:]</span>
+    <span class="n">data</span>    <span class="o">=</span> <span class="n">results</span><span class="p">[:,</span><span class="mi">1</span><span class="p">,:]</span>
+    <span class="n">times</span>   <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rtimes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">N</span><span class="o">&gt;</span><span class="n">M</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;warning input len </span><span class="si">%s</span><span class="s1"> output len </span><span class="si">%s</span><span class="s1"> assuming cropped&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">))</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="n">N</span><span class="o">-</span><span class="n">M</span>
+        <span class="n">startcrop</span> <span class="o">=</span> <span class="n">difference</span><span class="o">//</span><span class="mi">2</span>
+        <span class="n">stopcrop</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">difference</span><span class="o">-</span><span class="n">startcrop</span><span class="p">)</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">startcrop</span><span class="p">:</span><span class="n">stopcrop</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">times</span><span class="p">,</span><span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="onsession_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.onsession_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">onsession_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">color1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">drawCues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">smoothat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dolegend</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    onsession_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
+    <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;!&gt;&gt;&gt; applying&#39;</span><span class="p">,</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">times</span><span class="p">,</span><span class="n">res</span><span class="o">=</span><span class="n">onsession</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">cla</span><span class="p">()</span>
+
+    <span class="n">filter_function</span> <span class="o">=</span> <span class="n">box_filter</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">smoothat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">arr</span><span class="p">([</span><span class="n">filter_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res</span><span class="p">])</span>
+
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">+</span><span class="n">offset</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">sort</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">10</span><span class="o">/</span><span class="mi">100</span><span class="o">+.</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">p9</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">90</span><span class="o">/</span><span class="mi">100</span><span class="o">+.</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mi">4</span>
+    <span class="n">q3</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span>
+    <span class="n">Q1</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">q1</span><span class="p">,:]</span>
+    <span class="n">Q2</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">q3</span><span class="p">,:]</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">p0</span><span class="p">,:]</span>
+    <span class="n">P9</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">p9</span><span class="p">,:]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">median</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sem</span> <span class="o">=</span> <span class="mf">1.96</span><span class="o">*</span><span class="n">s</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">smoothat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">M</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">s</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">sem</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">sem</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">Q1</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">Q2</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">Q2</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">P0</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">P9</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">P9</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+
+    <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Interquartile range&#39;</span><span class="p">)</span>
+    <span class="n">fill_between</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">Q1</span><span class="p">,</span><span class="n">Q2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Median&#39;</span><span class="p">)</span> <span class="c1">#color2</span>
+
+    <span class="k">if</span> <span class="n">dolegend</span><span class="p">:</span> <span class="n">nicelegend</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">Hz, </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">drawCues</span><span class="p">:</span>
+        <span class="n">overlayEvents</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="allsession_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.allsession_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">allsession_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">monkey</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">color1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">drawCues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">smoothat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dolegend</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    allsession_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">filter_function</span> <span class="o">=</span> <span class="n">box_filter</span>
+    <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
+    <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;!&gt;&gt;&gt; applying&#39;</span><span class="p">,</span><span class="n">statistic</span><span class="p">,</span><span class="n">monkey</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">all_res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_s</span><span class="p">,</span><span class="n">_a</span> <span class="ow">in</span> <span class="n">sessions_areas</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">_s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="n">monkey</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">_a</span><span class="o">!=</span> <span class="n">area</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">times</span><span class="p">,</span><span class="n">res</span><span class="o">=</span><span class="n">onsession</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">_s</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">smoothat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">arr</span><span class="p">([</span><span class="n">filter_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res</span><span class="p">])</span>
+        <span class="n">all_res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+    <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="mi">7000</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">))</span><span class="o">+</span><span class="n">offset</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">sort</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">10</span><span class="o">/</span><span class="mi">100</span><span class="o">+.</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">p9</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="mi">90</span><span class="o">/</span><span class="mi">100</span><span class="o">+.</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">N</span><span class="o">/</span><span class="mi">4</span>
+    <span class="n">q3</span> <span class="o">=</span> <span class="n">N</span><span class="o">*</span><span class="mi">3</span><span class="o">/</span><span class="mi">4</span>
+    <span class="n">Q1</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">q1</span><span class="p">,:]</span>
+    <span class="n">Q2</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">q3</span><span class="p">,:]</span>
+    <span class="n">P0</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">p0</span><span class="p">,:]</span>
+    <span class="n">P9</span> <span class="o">=</span> <span class="n">ss</span><span class="p">[</span><span class="n">p9</span><span class="p">,:]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">median</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">std</span><span class="p">(</span><span class="n">res</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sem</span> <span class="o">=</span> <span class="mf">1.96</span><span class="o">*</span><span class="n">s</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">smoothat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">m</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">M</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">s</span>   <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">sem</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">sem</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">Q1</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">Q2</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">Q2</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">P0</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">P0</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+        <span class="n">P9</span> <span class="o">=</span> <span class="n">filter_function</span><span class="p">(</span><span class="n">P9</span><span class="p">,</span><span class="n">smoothat</span><span class="p">)</span>
+
+    <span class="c1">#plot(times,M,color=color1,lw=5,zorder=0,label=&#39;Interquartile range&#39;)</span>
+    <span class="n">fill_between</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">Q1</span><span class="p">,</span><span class="n">Q2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">color2</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Median&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dolegend</span><span class="p">:</span> <span class="n">nicelegend</span><span class="p">()</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">Hz, </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">monkey</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">drawCues</span><span class="p">:</span>
+        <span class="n">overlayEvents</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">draw</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">m</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">sem</span><span class="p">,</span><span class="n">M</span><span class="p">,</span><span class="n">Q1</span><span class="p">,</span><span class="n">Q2</span><span class="p">,</span><span class="n">P0</span><span class="p">,</span><span class="n">P9</span></div>
+
+
+<div class="viewcode-block" id="ontrial_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ontrial_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">ontrial_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    ontrial_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="n">times</span><span class="p">,</span><span class="n">res</span><span class="o">=</span><span class="n">overdata</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
+    <span class="n">cla</span><span class="p">()</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">randint</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">lighthues</span><span class="p">(</span><span class="mi">100</span><span class="p">)[</span><span class="n">N</span><span class="p">]</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">darkhues</span><span class="p">(</span><span class="mi">100</span><span class="p">)[</span><span class="n">N</span><span class="p">]</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">res</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="n">c2</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">Hz, </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (ms)&#39;</span><span class="p">)</span>
+    <span class="n">ylabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">xlim</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">overlayEvents</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#tight_layout()</span>
+    <span class="n">draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="neighbors"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.neighbors">[docs]</a><span class="k">def</span> <span class="nf">neighbors</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">onlygood</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Constructs an adjacency graph for a given array. Each channel</span>
+<span class="sd">    number is mapped to a list of the up to 4 channels immediately</span>
+<span class="sd">    adjacent to it. If argument &quot;onlygood&quot; is true, then bad channels</span>
+<span class="sd">    are excluded from this map.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">am</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_array_map</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">removebad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
+        <span class="n">goodch</span>   <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+        <span class="n">maskedam</span> <span class="o">=</span> <span class="o">-</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">am</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">goodch</span><span class="p">:</span> <span class="n">maskedam</span><span class="p">[</span><span class="n">am</span><span class="o">==</span><span class="n">c</span><span class="p">]</span><span class="o">=</span><span class="n">c</span>
+        <span class="n">am</span> <span class="o">=</span> <span class="n">maskedam</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">goodch</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
+    <span class="n">N</span><span class="p">,</span><span class="n">M</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">am</span><span class="p">)</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">goodch</span><span class="p">:</span>
+        <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">where</span><span class="p">(</span><span class="n">am</span><span class="o">==</span><span class="n">c</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">N</span>  <span class="ow">and</span> <span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">&lt;</span><span class="n">M</span>  <span class="ow">and</span> <span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">!=-</span><span class="mi">1</span><span class="p">:</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">am</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">neighbors</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

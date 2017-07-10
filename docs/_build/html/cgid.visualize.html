@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.visualize module &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>cgid.visualize module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cgid.visualize.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cgid.visualize">
+<span id="cgid-visualize-module"></span><h1>cgid.visualize module<a class="headerlink" href="#module-cgid.visualize" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="cgid.visualize.activity_preview">
+<code class="descclassname">cgid.visualize.</code><code class="descname">activity_preview</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>s</em>, <em>upsample=6</em>, <em>cut=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#activity_preview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.activity_preview" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.arrays_video_gradient">
+<code class="descclassname">cgid.visualize.</code><code class="descname">arrays_video_gradient</code><span class="sig-paren">(</span><em>times</em>, <em>arraydata</em>, <em>phase_gradients</em>, <em>session</em>, <em>skip=3</em>, <em>figtitle=None</em>, <em>hook=None</em>, <em>FPS=20</em>, <em>areas=None</em>, <em>saveas=None</em>, <em>plot_gradient=True</em>, <em>draw_wire=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#arrays_video_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.arrays_video_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Animation function. Units are millimeters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>times</strong> – list of timepoints for each frame</li>
+<li><strong>arraydata</strong> – array data to show. This needs to be a dictionary mapping
+area names to array-packed Nrows x Ncols lists of frames. The
+data may be (is required to be?) complex.</li>
+<li><strong>phase_gradients</strong> – Vector field info. Also a dictionary.</li>
+<li><strong>session</strong> – </li>
+<li><strong>skip=3</strong> – only render every skip frames</li>
+<li><strong>figtitle</strong> – Optionally, a figure title may be specified. Defaults to
+the name of the session.</li>
+<li><strong>interp</strong> – ‘bicubic’,</li>
+<li><strong>hook</strong> – None,</li>
+<li><strong>FPS</strong> – Frames per second. Defaults to 20</li>
+<li><strong>areas</strong> – None,</li>
+<li><strong>canvas_N</strong> – None,</li>
+<li><strong>saveas</strong> – None,</li>
+<li><strong>plot_gradient</strong> – True</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.create_multiunit_canvas">
+<code class="descclassname">cgid.visualize.</code><code class="descname">create_multiunit_canvas</code><span class="sig-paren">(</span><em>canvas_w_px</em>, <em>canvas_h_px</em>, <em>session</em>, <em>shapes</em>, <em>starts</em>, <em>areas=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#create_multiunit_canvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.create_multiunit_canvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an image buffer for rendering array data to screen in
+anatomical coordinates.</p>
+<p>This code is really complicated.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.draw_array_outlines">
+<code class="descclassname">cgid.visualize.</code><code class="descname">draw_array_outlines</code><span class="sig-paren">(</span><em>session=None</em>, <em>anatomy=None</em>, <em>color=u'K'</em>, <em>lw=1.5</em>, <em>areas=None</em>, <em>draw_wire=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#draw_array_outlines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.draw_array_outlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws outlines of the array locations in anatomical coordinates.</p>
+<p>Either session or anatomy must be not None.</p>
+<p>If session is specified (is not None), this will plot the array
+annotation in the current axis with units of mm</p>
+<p>If anatomy is specified (is not None), it should be a dictionary that
+maps array names to quadrilateral outlines for the array perimeter, in
+the order top_left, bottom_left, bottom_right, top_right</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.event_preview">
+<code class="descclassname">cgid.visualize.</code><code class="descname">event_preview</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>event</em>, <em>upsample=6</em>, <em>cut=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#event_preview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.event_preview" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.full_MUA_lfp_video">
+<code class="descclassname">cgid.visualize.</code><code class="descname">full_MUA_lfp_video</code><span class="sig-paren">(</span><em>session</em>, <em>tr</em>, <em>epoch=None</em>, <em>fc=250</em>, <em>fsmooth=30</em>, <em>upsample=1</em>, <em>cut=0.4</em>, <em>skip=3</em>, <em>canvas_N=None</em>, <em>saveas=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#full_MUA_lfp_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.full_MUA_lfp_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to visualize the multiunit activity.
+&gt;&gt;&gt; close(‘all’)
+&gt;&gt;&gt; figure(figsize=(6,6))
+&gt;&gt;&gt; session = ‘SPK120918’
+&gt;&gt;&gt; session = ‘RUS120518’
+&gt;&gt;&gt; for tr in get_good_trials(session):
+&gt;&gt;&gt;     full_MUA_lfp_video(session,tr,upsample=6,cut=0.1,fsmooth=30)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.full_analytic_lfp_video">
+<code class="descclassname">cgid.visualize.</code><code class="descname">full_analytic_lfp_video</code><span class="sig-paren">(</span><em>session</em>, <em>tr</em>, <em>fa=10</em>, <em>fb=45</em>, <em>epoch=None</em>, <em>upsample=None</em>, <em>cut=0.4</em>, <em>skip=3</em>, <em>canvas_N=None</em>, <em>saveas=None</em>, <em>interp=u'nearest'</em>, <em>hook=None</em>, <em>FPS=20</em>, <em>plot_gradient=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#full_analytic_lfp_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.full_analytic_lfp_video" title="Permalink to this definition">¶</a></dt>
+<dd><p>TEST CODE
+&gt;&gt;&gt; # play an animation
+&gt;&gt;&gt; session = ‘RUS120518’
+&gt;&gt;&gt; for tr in get_good_trials(session):
+&gt;&gt;&gt;     full_analytic_lfp_video(session,tr,fa=18,fb=23)
+&gt;&gt;&gt; # Render 1 trial from Rusty 18 in both broad and narrow band
+&gt;&gt;&gt; close(‘all’)
+&gt;&gt;&gt; figure(figsize=(5,5))
+&gt;&gt;&gt; tr = get_good_trials(session,area)[0]
+&gt;&gt;&gt; lfp = get_all_lfp(session,area,tr)
+&gt;&gt;&gt; full_analytic_lfp_video(session,tr,fa=10,fb=45,saveas=’broadbeta’)
+&gt;&gt;&gt; full_analytic_lfp_video(session,tr,fa=15,fb=25,saveas=’beta’)
+&gt;&gt;&gt; full_analytic_lfp_video(session,tr,fa=18,fb=22,saveas=’narrowbeta’)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.get_phase_gradients_for_animation">
+<code class="descclassname">cgid.visualize.</code><code class="descname">get_phase_gradients_for_animation</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>areas=None</em>, <em>fa=10</em>, <em>fb=45</em>, <em>epoch=None</em>, <em>cut=1.7</em>, <em>skip=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#get_phase_gradients_for_animation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.get_phase_gradients_for_animation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.lookat">
+<code class="descclassname">cgid.visualize.</code><code class="descname">lookat</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>time=0</em>, <em>tafter=None</em>, <em>fa=10</em>, <em>fb=45</em>, <em>upsample=1</em>, <em>cut=0.4</em>, <em>FPS=20</em>, <em>timebar=False</em>, <em>plot_gradient=True</em>, <em>skip=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#lookat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.lookat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preview / visualize analytic signals over the array</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.permutation">
+<code class="descclassname">cgid.visualize.</code><code class="descname">permutation</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#cgid.visualize.permutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly permute a sequence, or return a permuted range.</p>
+<p>If <cite>x</cite> is a multi-dimensional array, it is only shuffled along its
+first index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>int</em><em> or </em><em>array_like</em>) – If <cite>x</cite> is an integer, randomly permute <code class="docutils literal"><span class="pre">np.arange(x)</span></code>.
+If <cite>x</cite> is an array, make a copy and shuffle the elements
+randomly.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>out</strong> – Permuted sequence or array range.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">array([1, 7, 4, 3, 0, 9, 2, 5, 8, 6])</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+<span class="go">array([15,  1,  9,  4, 12])</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+<span class="go">array([[6, 7, 8],</span>
+<span class="go">       [0, 1, 2],</span>
+<span class="go">       [3, 4, 5]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.phase_plane_animation">
+<code class="descclassname">cgid.visualize.</code><code class="descname">phase_plane_animation</code><span class="sig-paren">(</span><em>session</em>, <em>tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#phase_plane_animation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.phase_plane_animation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.play_session">
+<code class="descclassname">cgid.visualize.</code><code class="descname">play_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>fa=10</em>, <em>fb=45</em>, <em>skip=5</em>, <em>upsample=6</em>, <em>cut=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#play_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.play_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.plot_derivative_anatomical">
+<code class="descclassname">cgid.visualize.</code><code class="descname">plot_derivative_anatomical</code><span class="sig-paren">(</span><em>gradient_data</em>, <em>positions_dx_dy</em>, <em>lines=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#plot_derivative_anatomical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.plot_derivative_anatomical" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.visualize.spiking_preview">
+<code class="descclassname">cgid.visualize.</code><code class="descname">spiking_preview</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/visualize.html#spiking_preview"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.visualize.spiking_preview" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

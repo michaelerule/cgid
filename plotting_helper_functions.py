@@ -8,29 +8,26 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
 # END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 #####################################################################
 # helper functions
 
-from neurotools.color import *
-from pylab import *
-from cgid.data_loader import *
-from neurotools.plot  import *
-from neurotools.stats.modefind import *
+# TODO repair imports
+from neurotools.color import parula,extended,isolum
+# from pylab import *
+# from cgid.data_loader import *
+# from neurotools.plot  import *
+# from neurotools.stats.modefind import *
+# from cgid.spikes import *
+# from cgid.lfp    import *
+# from neurotools.getfftw import *
+
 import cgid.spikes
-from cgid.spikes import *
-from cgid.lfp    import *
 from neurotools.signal.ppc import pairwise_phase_consistancy
 from scipy.signal.windows import hann
-from neurotools.getfftw import *
 CMAP = parula
-
 
 def specshow(freqs,specdata,start,stop,
     FS=1000,aspect='auto',cmap=CMAP):

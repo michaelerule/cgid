@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.lfp module &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>cgid.lfp module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cgid.lfp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cgid.lfp">
+<span id="cgid-lfp-module"></span><h1>cgid.lfp module<a class="headerlink" href="#module-cgid.lfp" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="cgid.lfp.beta_suppression_summary_plot">
+<code class="descclassname">cgid.lfp.</code><code class="descname">beta_suppression_summary_plot</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#beta_suppression_summary_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.beta_suppression_summary_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plot_beta_suppression</span> <span class="o">=</span> <span class="n">beta_suppression_summary_plot</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
+    <span class="n">plot_beta_suppression</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
+    <span class="n">wait</span><span class="p">()</span>
+    <span class="n">clf</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MEP">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MEP_average">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP_average</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fb=7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP_average" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MEP_envelope">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP_envelope</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fb=2</em>, <em>fsmooth=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP_envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP_envelope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MUA_PSD_from_high_frequency_power">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_PSD_from_high_frequency_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_PSD_from_high_frequency_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_PSD_from_high_frequency_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MUA_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fc=250</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MUA_lfp_cached">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_lfp_cached</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fc</em>, <em>fsmooth</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_lfp_cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_lfp_cached" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_MUA_squared_PSD_from_high_frequency_power">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_squared_PSD_from_high_frequency_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_squared_PSD_from_high_frequency_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_squared_PSD_from_high_frequency_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_MUA_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_MUA_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fc=250</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_MUA_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_MUA_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_analytic_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_analytic_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>onlygood=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_analytic_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_analytic_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_filtered_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_filtered_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>onlygood</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_filtered_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_filtered_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_good_MUA_unfiltered">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_good_MUA_unfiltered</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_good_MUA_unfiltered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_good_MUA_unfiltered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_raw_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>onlygood=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_raw_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_all_raw_lfp_all_areas">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_all_raw_lfp_all_areas</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em>, <em>onlygood=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_raw_lfp_all_areas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_raw_lfp_all_areas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_analytic_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_analytic_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_analytic_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_analytic_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_array_packed_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves LFP signals and packs them as they are arranged in the
+array. Missing channels are interpolated from nearest neighbors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_array_packed_lfp_analytic">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp_analytic</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp_analytic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp_analytic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves LFP signals and packs them as they are arranged in the
+array. Missing channels are interpolated from nearest neighbors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_array_packed_lfp_filtered">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp_filtered</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp_filtered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp_filtered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves LFP signals and packs them as they are arranged in the
+array. Missing channels are interpolated from nearest neighbors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_average_band_power_session">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_average_band_power_session</code><span class="sig-paren">(</span><em>session</em>, <em>fa</em>, <em>fb</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_average_band_power_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_average_band_power_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes whole session LFP, filtered, gets the Hilbert amplitude per
+channel, returns average over channels.
+function is too slow don’t use it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_band_envelope">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_band_envelope</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_band_envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_band_envelope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Amplitude envelope for a specified band.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_beta_power">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_beta_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_beta_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_beta_power" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_beta_suppression">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_beta_suppression</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fc=2</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_beta_suppression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_beta_suppression" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_filtered_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_filtered_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_filtered_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_filtered_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_filtered_lfp_session">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_filtered_lfp_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_filtered_lfp_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_filtered_lfp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_good_trial_lfp_data">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_good_trial_lfp_data</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_good_trial_lfp_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_good_trial_lfp_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_mean_bandfiltered_session">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_bandfiltered_session</code><span class="sig-paren">(</span><em>session</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_bandfiltered_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_bandfiltered_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_mean_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_mean_raw_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_raw_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_nearest_neighbor_average_referenced_LFP">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_nearest_neighbor_average_referenced_LFP</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_nearest_neighbor_average_referenced_LFP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_nearest_neighbor_average_referenced_LFP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_nearest_neighbor_average_referenced_LFP_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_nearest_neighbor_average_referenced_LFP_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_raw_lfp">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>channel</em>, <em>epoch</em>, <em>pad=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_raw_lfp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_raw_lfp_session">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_raw_lfp_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_raw_lfp_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_raw_lfp_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.get_wavelet_transforms">
+<code class="descclassname">cgid.lfp.</code><code class="descname">get_wavelet_transforms</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>fa=1</em>, <em>fb=55</em>, <em>resolution=1</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_wavelet_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_wavelet_transforms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.signal_history_features">
+<code class="descclassname">cgid.lfp.</code><code class="descname">signal_history_features</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#signal_history_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.signal_history_features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

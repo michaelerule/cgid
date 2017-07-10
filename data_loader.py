@@ -1,9 +1,20 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+import sys
+# more py2/3 compat
+from neurotools.system import *
+if sys.version_info<(3,):
+    from itertools import imap as map
+# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
+
 
 """
 The documentation for the CGID archive format is important
@@ -426,7 +437,7 @@ def get_bad_channels_and_trials(rule='liberal'):
 
 def get_bad_channels(session,area,rule='liberal'):
     x = get_bad_channels_and_trials(rule=rule)
-    for (s,a,c),v in x.iteritems():
+    for (s,a,c),v in x.items():
         if (s,a)==(session,area) and c=='ch':
             return v
     return []
@@ -438,7 +449,7 @@ def get_bad_trials(session,area=None,rule='liberal'):
     '''
     x = get_bad_channels_and_trials(rule=rule)
     bad = set()
-    for (s,a,c),v in x.iteritems():
+    for (s,a,c),v in x.items():
         if s==session and c=='tr':
             bad|=set(v)
     return sorted(list(set(bad)))
@@ -540,25 +551,9 @@ def get_all_pairs_ordered_as_channel_indecies(session,area):
 
 def get_data(session,area,trial,event,start,stop,lowf,highf,params):
     """
-    Need to abstract loading on neural data from the CGID arrays -- this is
-    getting too complicated.
+    Loads neural data from the CGID arrays
 
-    Interface
-    request:
-        session
-        area
-        trial
-        reference event
-        start time offset
-        stop time offset
-        filter start frequency
-        filter stop frequency
-        filter parameter codes
-    returns:
-        times: len nt trial times in ms for the data relative to reference marker
-        xys:   nelectrode-x-2 x,y positions of electrodes in array map space
-        data:  a nt-x-nelectrode filtered neural data snippit
-    To do this, we will need to
+    Pseudocode of procedure
     -- identify and locate relevant data archive
     -- import data archive
     -- locate relevant trial, possibly in the raw LFP if we need to use padding
@@ -568,24 +563,43 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
 
     Note: trial, event, start, stop are using the matlab convention, 1-index
 
-    Extracting the cortical locations of the electrodes is very very very
-    tricky. We will use the same coordinate system as in the videos, where Y is
-    the distance from ventral to dorsal along central sulcus from M1 array in
-    mm. and X is the distance from caudal to rostral from M1 implant in mm
+    Note:
+
+    To extract cortical locations of the electrodes, use the same coordinate 
+    system as in the videos, where Y is the distance from ventral to dorsal 
+    along central sulcus from M1 array in mm. and X is the distance from 
+    caudal to rostral from M1 implant in mm.
+
+    Args:
+        session (str): session name
+        area (str): area name
+        trial (int): 1-indexed trial number
+        event (int): experimental event number
+        start (int): time offset
+        stop (int): time offset
+        lowf (float): filter start frequency; data is in 1KHz
+        highf (float): filter stop frequency; data is in 1KHz
+        params (??): filter parameter codes
+
+    Returns:
+        times: len nt trial times in ms for the data relative to reference marker
+        xys:   nelectrode-x-2 x,y positions of electrodes in array map space
+        data:  a nt-x-nelectrode filtered neural data snippit
+
+    Example:
+    ::
+    
+        session = 'RUS120521'
+        area    = 'PMv'
+        trial   = 10
+        event   = 6
+        start   = -1000
+        stop    = 0
+        lowf    = 15
+        highf   = 30
+        params  = 0
+        times,xys,data = get_data(session,area,trial,event,start,stop,lowf,highf,params)
     """
-    '''
-    #Test code
-    session = 'RUS120521'
-    area    = 'PMv'
-    trial   = 10
-    event   = 6
-    start   = -1000
-    stop    = 0
-    lowf    = 15
-    highf   = 30
-    params  = 0
-    times,xys,data = get_data(session,area,trial,event,start,stop,lowf,highf,params)
-    '''
     if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     print('loading data...'),
     availableChannels = metaloadvariable(session,area,'availableChannels')
@@ -615,35 +629,41 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
     if (session,area,event,start,stop,lowf,highf,params) in get_data_all_trials_cache:
         return get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params]
     """
-    Need to abstract loading of neural data from the CGID arrays -- this is
-    getting too complicated.
-    Interface
-    request:
-        session
-        area
-        trial
-        reference event
-        start time offset
-        stop time offset
-        filter start frequency
-        filter stop frequency
-        filter parameter codes
-    returns:
-        times: len nt trial times in ms for the data relative to reference marker
-        xys:   nelectrode-x-2 x,y positions of electrodes in array map space
-        data:  a nt-x-nelectrode filtered neural data snippit
-    To do this, we will need to
+    Loads neural data from the CGID arrays; returns all trials from
+    specified experiment. 
+
+    Pseudocode of procedure
     -- identify and locate relevant data archive
     -- import data archive
     -- locate relevant trial, possibly in the raw LFP if we need to use padding
     -- perform requested filtering on all channels
     -- generate time and space bases
     -- extract and pack data
+
     Note: trial, event, start, stop are using the matlab convention, 1-index
-    Extracting the cortical locations of the electrodes is very very very
-    tricky. We will use the same coordinate system as in the videos, where Y is
-    the distance from ventral to dorsal along central sulcus from M1 array in
-    mm. and X is the distance from caudal to rostral from M1 implant in mm
+
+    Note:
+
+    To extract cortical locations of the electrodes, use the same coordinate 
+    system as in the videos, where Y is the distance from ventral to dorsal 
+    along central sulcus from M1 array in mm. and X is the distance from 
+    caudal to rostral from M1 implant in mm.
+
+    Args:
+        session (str): session name
+        area (str): area name
+        trial (int): 1-indexed trial number
+        event (int): experimental event number
+        start (int): time offset
+        stop (int): time offset
+        lowf (float): filter start frequency; data is in 1KHz
+        highf (float): filter stop frequency; data is in 1KHz
+        params (??): filter parameter codes
+
+    Returns:
+        times: len nt trial times in ms for the data relative to reference marker
+        xys:   nelectrode-x-2 x,y positions of electrodes in array map space
+        data:  a nt-x-nelectrode filtered neural data snippit
     """
     from scipy.io     import loadmat
     from scipy.signal import butter,filtfilt,lfilter
@@ -687,13 +707,19 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
 # load results from disk
 def load_ppc_results_archives(directory='.'):
     '''
+    DEPRECATED
+    
     Results are stored as keys and ppcs. There are 101 PPC values.
     The keys should have 13 variables. See the runppc function for details.
-    function [ppc,Pxx,F,nTapers] = runppc(
-        session,area,unit,obj,grp,event,start,stop,chid,perm,permstrategy,jitter,window,bandWidth,subgroup
-        )
     It may be better to dump the existing PPC archives, update the matlab
     code, and just run everything again.
+    
+    Example:
+    Function header apated from Matlab::
+    
+            function [ppc,Pxx,F,nTapers] = runppc(
+                session,area,unit,obj,grp,event,start,stop,chid,
+                perm,permstrategy,jitter,window,bandWidth,subgroup)
     '''
     import os
     results = [f for f in os.listdir(directory) if 'ppc' in f and '.mat' in f and not 'todo' in f]

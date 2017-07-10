@@ -18,10 +18,13 @@ if sys.version_info<(3,):
 # execute the main figure script first
 # this is just to check units
 
-from neurotools.nlab import *
-from cgid.setup import *
-from cgid.plotting_helper_functions import *
-from pylab import *
+# TODO: repair imports
+from neurotools.nlab import memoize
+
+# from cgid.setup import *
+# from cgid.plotting_helper_functions import *
+# from pylab import *
+
 from cgid.data_loader import metaloadvariable
 
 def unitsum(session,area,unit):

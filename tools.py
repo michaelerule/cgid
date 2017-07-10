@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -8,36 +7,31 @@ from __future__ import nested_scopes
 from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
-import sys
-# more py2/3 compat
 from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
-
 
 from collections import defaultdict
-
-from scipy.stats.stats  import *
 from matplotlib.cbook   import flatten
-from matplotlib.pyplot  import *
-
 from neurotools.tools   import memoize
-from neurotools.getfftw import *
-from neurotools.plot    import *
 from neurotools.spatial.array import trim_array, pack_array_data
 
-from   cgid.config        import *
-from   cgid.data_loader   import *
 import cgid.lfp
 import cgid.array
 
+# TODO fix imports
+#from scipy.stats.stats  import *
+#from matplotlib.pyplot  import *
+#from neurotools.getfftw import *
+#from neurotools.plot    import *
+#from cgid.config        import *
+#from cgid.data_loader   import *
+
 def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,labels=None,clip_on=False):
     '''
-    labels: default none. Can be
-        "markers" for symbols or
-        "names" for ['Object presented','Grip cued','Go cue']
-        "short" for ['Object','Grip','Go cue']
+    Args:
+        labels: default none. Can be
+            "markers" for symbols or
+            "names" for ['Object presented','Grip cued','Go cue']
+            "short" for ['Object','Grip','Go cue']
     '''
     a,b = xlim()
     dx,dy = get_ax_pixel()
@@ -253,7 +247,6 @@ def onarraydata(function,session,area,trial,epoch,fa,fb):
 
 def ondatadata(function,session,area,trial,epoch,fa,fb):
     '''
-    a bit... weird.
     '''
     # just a temp hack no time no time for better
     debug(epoch,trial)
@@ -316,13 +309,15 @@ def onpopdata(statistic,session,area,trial,epoch,fa,fb):
     that the data were truncated symmetrically to generate a cropped time
     base.
 
-    If not provided, session, area, and trial will be taken from globals
-        ( if they are not present in globals it will crash )
+    If not provided, session, area, and trial will be taken from 
+    globals ( if they are not present in globals it will crash )
+    
     If not provided, epoch is 6,-1000,6000 ( the whole trial )
 
-    x = onpopdata(sliding_population_signal_coherence)
+    TODO: support functions that returnmultiple values
 
-    todo support functions that returnmultiple values
+    Example:
+    >>> x = onpopdata(sliding_population_signal_coherence)
     '''
     if epoch is None:
         epoch = 6,-1000,6000
@@ -349,8 +344,8 @@ def overdata(statistic,session,area,trial,epoch,fa,fb):
     This applies the routine "statistic" over data. Statistic can either
     take a K x N array of population analytic signal data, or an A x B x N
     of array-positioned data. This function inspects the provided
-    "statistic" function. if it starts with "array_" it applies the function
-    to the array packed data. if it starts with "population_" it applies
+    "statistic" function. if it starts with "array\_" it applies the function
+    to the array packed data. if it starts with "population\_" it applies
     the function to population vector data. otherwise, an error is thrown.
 
     note: static typing and pattern matching to array dimension signatures

@@ -2,13 +2,12 @@
 import pickle
 import statsmodels
 from neurotools.tools import memoize
-from neurotools.pvalues import *
 
 @memoize
 def get_glm_phase_tuning_cache():
     all_GLM_results = pickle.load(open('all_GLM_results_blockshuffle.p','rb'))
-    # There was a mistake and there are some spurious keys that need to be 
-    # removed
+    # There was a mistake and there are some spurious keys that need 
+    # to be removed
     for k in all_GLM_results.keys():
         if len(k)<4: del all_GLM_results[k]
     return all_GLM_results
@@ -21,8 +20,8 @@ def get_glm_phase_tuning_result(session,area,unit,epoch):
 @memoize
 def get_ppc_phase_tuning_cache():
     all_PPC_results = pickle.load(open('all_PPC_results.p','rb'))
-    # There was a mistake and there are some spurious keys that need to be 
-    # removed
+    # There was a mistake and there are some spurious keys that need
+    #  to be removed
     for k in all_PPC_results.keys():
         if len(k)<4: del all_PPC_results[k]
     return all_PPC_results

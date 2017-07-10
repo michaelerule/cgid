@@ -1,20 +1,24 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# The above two lines should appear in all python source files!
-# It is good practice to include the lines below
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
 from __future__ import print_function
+from neurotools.system import *
 
 from neurotools.tools import memoize
-from cgid.data_loader import *
-from neurotools.signal.signal     import *
-from neurotools.signal.multitaper import *
-from scipy.signal.signaltools import *
 import pickle
 import cgid.tools
 import cgid.data_loader
+
+# TODO fix imports
+# from cgid.data_loader import *
+# from neurotools.signal.signal     import *
+# from neurotools.signal.multitaper import *
+# from scipy.signal.signaltools import *
 
 #    lfp = get_raw_lfp(session,area,tr,ch,(e,st,sp),padding)
 @memoize
@@ -61,8 +65,8 @@ def get_all_raw_lfp(session,area,trial,epoch,onlygood=True):
              for ch in cgid.data_loader.get_available_channels(session,area)])
 
 def get_good_trial_lfp_data(session,area,channel):
-    return array([get_raw_lfp(session,area,channel,trial,(6,-1000,6000))\
-         for trial in cgid.data_loader.get_get_good_trials(session)])
+    return array([get_raw_lfp(session,area,trial,channel,(6,-1000,6000))\
+         for trial in cgid.data_loader.get_good_trials(session)])
 
 def get_all_raw_lfp_all_areas(session,trial,epoch,onlygood=True):
     alllfp = []
@@ -214,14 +218,16 @@ def get_beta_suppression(session,area,tr,ch,epoch,fa,fb,fc=2,fsmooth=5):
 
 def beta_suppression_summary_plot(session,area,tr,ch):
     '''
-    Test example
-    plot_beta_suppression = beta_suppression_summary_plot
-    ch = cgid.data_loader.get_good_channels(session,area)[0]
-    for tr in cgid.data_loader.get_get_good_trials(session,area):
-        print(session,area,tr)
-        plot_beta_suppression(session,area,tr,ch)
-        wait()
-        clf()
+    Example:
+    ::
+    
+        plot_beta_suppression = beta_suppression_summary_plot
+        ch = cgid.data_loader.get_good_channels(session,area)[0]
+        for tr in cgid.data_loader.get_good_trials(session,area):
+            print(session,area,tr)
+            plot_beta_suppression(session,area,tr,ch)
+            wait()
+            clf()
     '''
     cla()
     if ch is None:
@@ -345,7 +351,7 @@ def get_mean_bandfiltered_session(session,epoch,fa,fb):
         mean_beta = mean_beta_cache[session,epoch]
     else:
         print('recomputing',session,epoch)
-        lfp = [concatenate([cgid.lfp.get_all_analytic_lfp(session, area, tr, epoch, fa, fb, onlygood=True) for area in areas]) for tr in cgid.data_loader.get_get_good_trials(session)]
+        lfp = [concatenate([cgid.lfp.get_all_analytic_lfp(session, area, tr, epoch, fa, fb, onlygood=True) for area in areas]) for tr in cgid.data_loader.get_good_trials(session)]
         lfp = array(lfp)
         mean_beta = mean(lfp,1)
         mean_beta_cache[session,epoch] = mean_beta
@@ -376,7 +382,7 @@ def get_all_good_MUA_unfiltered(session,area,epoch):
     MUALFP = array([[
         get_MUA_lfp_cached(session,area,tr,None,epoch,250,400)
             for ch in cgid.data_loader.get_good_channels(session,area)]
-            for tr in cgid.data_loader.get_get_good_trials(session)])
+            for tr in cgid.data_loader.get_good_trials(session)])
     return MUALFP
 
 @memoize

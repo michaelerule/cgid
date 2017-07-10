@@ -3,11 +3,9 @@
 Utility routines for interacting with the CGID datasets. These are
 "cued grasping with instructed delay" task recordings from multi-
 electrode arrays in primate motor cortex. 
-
 These routines depend on [miscellaneous python routines for 
 computational neuroscience](
 http://michaelerule.github.io/neurotools/_build/html/index.html)
-
 Rudimentary documentation is available on [github pages](
 http://michaelerule.github.io/cgid/_build/html/index.html)
 
@@ -25,8 +23,7 @@ contained herein is ever found to be useful to anyone,
 then it can be re-purposed and (2) should any future students work 
 with multi-electrode array datasets, then this project provides and 
 archive of past research code to facilitate reproducibility and 
-future exploratory research. 
-
+future exploration. 
 In the event that work concludes on said datasets, and if this 
 project is able to obtain the data under a suitable license, then
 the CGID datasets will be incorporated into this repository for

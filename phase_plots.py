@@ -27,6 +27,8 @@ import numpy as np
 def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
     drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',spacing=0,
     draw_colorbar=True):
+    '''
+    '''
     if extent!=(0,4,0,4):
         print('different size?')
     if vmin is None:
@@ -107,6 +109,8 @@ def array_plot_upsampled(data,factor,vmin=None,vmax=None,
     return cax
 
 def overlay_gradient(phase_gradient):
+    '''
+    '''
     NH,NW = shape(phase_gradient)[:2]
     p = arange(max(NW,NH))+0.5
     for row in range(NH):
@@ -123,6 +127,8 @@ def overlay_gradient(phase_gradient):
     plt.gca().tick_params(axis=u'both', which=u'both',length=0)
 
 def get_upsampled_extent(upsampled_shape):
+    '''
+    '''
     assert 0 # not implemented
     warn('assuming 10x10?')
     # upsampling trims the array a bit

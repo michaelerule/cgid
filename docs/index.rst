@@ -8,7 +8,9 @@ Welcome to CGID's documentation!
    :maxdepth: 3
    :caption: Contents:
 
-Scripts and utility routines for interacting with the CGID datasets
+Scripts and utility routines for interacting with the CGID datasets.
+This project is available for download on `Github
+<https://github.com/michaelerule/cgid>`_.
 
 Indices and tables
 ==================

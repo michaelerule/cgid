@@ -59,7 +59,6 @@ if not IN_SPHINX:
     from cgid.lfp           import *
 
     # the following imports may be optional
-    from cgid.phasetools                import *
     from cgid.phaseplane                import *
     from cgid.array_mapper              import *
     from cgid.array                     import *

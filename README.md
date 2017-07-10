@@ -5,9 +5,9 @@ Utility routines for interacting with the CGID datasets. These are
 electrode arrays in primate motor cortex. 
 These routines depend on [miscellaneous python routines for 
 computational neuroscience](
-http://michaelerule.github.io/neurotools/_build/html/index.html)
+http://michaelerule.github.io/neurotools/_build/html/index.html).
 Rudimentary documentation is available on [github pages](
-http://michaelerule.github.io/cgid/_build/html/index.html)
+http://michaelerule.github.io/cgid/_build/html/index.html).
 
 This read-me original contained the following grave disclaimer:
 

@@ -26,7 +26,6 @@ Submodules
    cgid.tools
    cgid.unitinfo
    cgid.visualize
-   cgid.waveparametrics
 
 Module contents
 ---------------

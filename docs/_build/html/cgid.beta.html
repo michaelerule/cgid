@@ -151,78 +151,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-cgid.beta">
-<span id="cgid-beta-module"></span><h1>cgid.beta module<a class="headerlink" href="#module-cgid.beta" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="cgid.beta.estimate_beta_band">
-<code class="descclassname">cgid.beta.</code><code class="descname">estimate_beta_band</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>bw=8</em>, <em>epoch=None</em>, <em>doplot=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#estimate_beta_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.estimate_beta_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>return betapeak-0.5*bw,betapeak+0.5*bw</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_amplitude_noise_cutoff">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_amplitude_noise_cutoff</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>SKIP</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_amplitude_noise_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_amplitude_noise_cutoff" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_beta_peak">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_beta_peak</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_beta_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_beta_peak" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_high_and_low_beta_spikes">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_high_and_low_beta_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_high_and_low_beta_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_high_and_low_beta_spikes" title="Permalink to this definition">¶</a></dt>
-<dd><p>threshold, event_spikes, nonevent_spikes = get_high_and_low_beta_spikes(session,area,unit,epoch,ishighbeta)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_high_beta_events">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_high_beta_events</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>channel</em>, <em>epoch</em>, <em>MINLEN=40</em>, <em>BOXLEN=50</em>, <em>THSCALE=1.5</em>, <em>lowf=10.0</em>, <em>highf=45.0</em>, <em>pad=200</em>, <em>clip=True</em>, <em>audit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_high_beta_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_high_beta_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>get_high_beta_events(session,area,channel,epoch) will identify periods of
-elevated beta-frequency power for the given channel.</p>
-<p>Thresholds are selected per-channel based on all available trials.
-The entire trial time is used when estimating the average beta power.
-To avoid recomputing, we extract beta events for all trials at once.</p>
-<p>By default events that extend past the edge of the specified epoch will
-be clipped. Passing clip=False will discard these events.</p>
-<p>returns the event threshold, and a list of event start and stop
-times relative to session time (not per-trial or epoch time)</p>
-<p>passing audit=True will enable previewing each trial and the isolated
-beta events.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thr</span><span class="p">,</span><span class="n">events</span> <span class="o">=</span> <span class="n">get_high_beta_events</span><span class="p">(</span><span class="s1">&#39;SPK120925&#39;</span><span class="p">,</span><span class="s1">&#39;PMd&#39;</span><span class="p">,</span><span class="mi">50</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_high_low_beta_firing_rates">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_high_low_beta_firing_rates</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_high_low_beta_firing_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_high_low_beta_firing_rates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_high_low_ppc_unit">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_high_low_ppc_unit</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>u</em>, <em>e</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_high_low_ppc_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_high_low_ppc_unit" title="Permalink to this definition">¶</a></dt>
-<dd><p>High/low beta PPC for a given band.
-The band is used only to identify beta events,
-PPC itself is broad-band.
-freqs, event_ppc, nonevent_ppc, threshold = get_high_low_ppc_unit(s,a,u,e,fa,fb)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_mean_beta_peak">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_mean_beta_peak</code><span class="sig-paren">(</span><em>session</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_mean_beta_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_mean_beta_peak" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_mean_beta_peak_full_trial">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_mean_beta_peak_full_trial</code><span class="sig-paren">(</span><em>session</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_mean_beta_peak_full_trial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_mean_beta_peak_full_trial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="cgid.beta.get_stored_beta_peak">
-<code class="descclassname">cgid.beta.</code><code class="descname">get_stored_beta_peak</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/beta.html#get_stored_beta_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.beta.get_stored_beta_peak" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+  <div class="section" id="cgid-beta-module">
+<h1>cgid.beta module<a class="headerlink" href="#cgid-beta-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

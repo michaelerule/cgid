@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Note: Array wire bundle exits to the right
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,17 +11,11 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-# more py2/3 compat
 from neurotools.system import *
 if sys.version_info<(3,):
     from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-'''
-Note: Array wire bundle exits to the right
-'''
-
-from neurotools.plot   import plot_complex
+from neurotools.graphics.plot   import plot_complex
 from matplotlib.pyplot import gca, gcf, figure, clf
 import cgid.data_loader
 from cgid.lfp          import *
@@ -28,15 +24,34 @@ from neurotools.nlab   import *
 from matplotlib.pyplot import *
 
 def event_preview(session,area,event,upsample=6,cut=2):
+    """
+    Plot a series of frames from MEA data?
+    TODO: this code doesn't look right; 
+    
+    Args:
+        session (str): experimental session to inspect
+        area (str): cortical area to inspect
+        event (tuple): (event ID, start frames, stop frames)
+        upsample (int, default is 6): multiplier for upsampling before display
+        cut (int, default is 2): wavelength in mm below which to low-pass spatial data
+    """
     t,f,s = event
     z = packArrayDataInterpolate(session,area,s)
-    for i,t in en(t):
+    for i,t in enumerate(t):
         j = z[:,:,i]
         j = dct_cut_antialias(j,cut)
         j = dct_upsample(j,6)
         plot_complex(j)
 
 def activity_preview(session,area,s,upsample=6,cut=1):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     nch,t = shape(s)
     z = packArrayDataInterpolate(session,area,s)
     for i in range(t):
@@ -46,19 +61,24 @@ def activity_preview(session,area,s,upsample=6,cut=1):
         plot_complex(j)
 
 def play_session(session,area,fa=10,fb=45,skip=5,upsample=6,cut=1):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     for tr in get_good_trials(session,area):
         #def get_all_analytic_lfp(session,area,tr,fa,fb,epoch,onlygood)
         activity = get_all_analytic_lfp(session,area,tr,fa,fb,None,None)
         activity_preview(session,area,activity[:,::skip],upsample,cut)
 
-def spiking_preview(session,area,data):
-    pass
-
 # keep as floats
-anatomy_x_start = -4.
-anatomy_w       = 17.
-anatomy_y_start = -7.
-anatomy_h       = 17.
+anatomy_x_start = -4.0
+anatomy_w       = 17.0
+anatomy_y_start = -7.0
+anatomy_h       = 17.0
 
 def create_multiunit_canvas(
     canvas_w_px,
@@ -70,8 +90,19 @@ def create_multiunit_canvas(
     '''
     Creates an image buffer for rendering array data to screen in
     anatomical coordinates.
-
+    
     This code is really complicated.
+    
+    Args:
+        canvas_w_px (int): Description
+        canvas_h_px (int): Description
+        session (str): Description
+        shapes (?): Description
+        starts (?): Description
+        areas (list, optional): Areas to visualize; defaults to all areas
+    
+    Returns:
+        TYPE: Description
     '''
     if areas is None: areas=['M1','PMv','PMd']
     # prepare textures
@@ -149,6 +180,12 @@ def draw_array_outlines(
     If anatomy is specified (is not None), it should be a dictionary that
     maps array names to quadrilateral outlines for the array perimeter, in
     the order top_left, bottom_left, bottom_right, top_right
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     assert (session==None)!=(anatomy==None)
     if areas is None: areas=['M1','PMv','PMd']
@@ -177,6 +214,14 @@ def get_phase_gradients_for_animation(session,trial,
     epoch=None,
     cut=1.7,
     skip=3):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if areas    is None: areas=['M1','PMv','PMd']
     gradients={}
     print('spatial low-pass is',cut)
@@ -202,6 +247,12 @@ def plot_derivative_anatomical(
     '''
     Plots the gradient vectors in the correct anatomical locations.
     Need to also change basis to get the correct orientation.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     assert shape(positions)[:2]==shape(gradient_data)
     Nrows,Ncols = shape(positions)[:2]
@@ -361,19 +412,28 @@ def full_analytic_lfp_video(session,tr,fa=10,fb=45,epoch=None,\
     upsample=None,cut=0.4,skip=3,canvas_N=None,saveas=None,\
     interp='nearest',hook=None,FPS=20,plot_gradient=True):
     '''
-    TEST CODE
-    >>> # play an animation
-    >>> session = 'RUS120518'
-    >>> for tr in get_good_trials(session):
-    >>>     full_analytic_lfp_video(session,tr,fa=18,fb=23)
-    >>> # Render 1 trial from Rusty 18 in both broad and narrow band
-    >>> close('all')
-    >>> figure(figsize=(5,5))
-    >>> tr = get_good_trials(session,area)[0]
-    >>> lfp = get_all_lfp(session,area,tr)
-    >>> full_analytic_lfp_video(session,tr,fa=10,fb=45,saveas='broadbeta')
-    >>> full_analytic_lfp_video(session,tr,fa=15,fb=25,saveas='beta')
-    >>> full_analytic_lfp_video(session,tr,fa=18,fb=22,saveas='narrowbeta')
+    Example
+    -------
+    ::
+    
+        # play an animation
+        session = 'RUS120518'
+        for tr in get_good_trials(session):
+             full_analytic_lfp_video(session,tr,fa=18,fb=23)
+        # Render 1 trial from Rusty 18 in both broad and narrow band
+        close('all')
+        figure(figsize=(5,5))
+        tr = get_good_trials(session,area)[0]
+        lfp = get_all_lfp(session,area,tr)
+        full_analytic_lfp_video(session,tr,fa=10,fb=45,saveas='broadbeta')
+        full_analytic_lfp_video(session,tr,fa=15,fb=25,saveas='beta')
+        full_analytic_lfp_video(session,tr,fa=18,fb=22,saveas='narrowbeta')
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # load and upsample all data
     print('epoch is',epoch)

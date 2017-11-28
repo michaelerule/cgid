@@ -18,6 +18,7 @@ Submodules
    cgid.lfp
    cgid.phase_plots
    cgid.phaseplane
+   cgid.phasetools
    cgid.plotting_helper_functions
    cgid.plotting_unit_summary
    cgid.results
@@ -26,6 +27,7 @@ Submodules
    cgid.tools
    cgid.unitinfo
    cgid.visualize
+   cgid.waveparametrics
 
 Module contents
 ---------------

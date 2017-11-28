@@ -169,13 +169,8 @@
 <span class="sd">phase gradients for the 10x10 Utah arrays.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="c1"># TODO: replace with specific absolute imports</span>
-<span class="c1"># from neurotools.color import *</span>
-<span class="c1"># from matplotlib.pyplot import *</span>
-<span class="c1"># from neurotools.nlab import *</span>
-
-<span class="kn">from</span> <span class="nn">neurotools.color</span> <span class="k">import</span> <span class="n">parula</span><span class="p">,</span><span class="n">extended</span><span class="p">,</span><span class="n">isolum</span>
-<span class="kn">from</span> <span class="nn">neurotools.plot</span> <span class="k">import</span> <span class="n">nox</span><span class="p">,</span><span class="n">noy</span><span class="p">,</span><span class="n">fudgex</span><span class="p">,</span><span class="n">fudgey</span><span class="p">,</span><span class="n">noaxis</span>
+<span class="kn">from</span> <span class="nn">neurotools.graphics.color</span> <span class="k">import</span> <span class="n">parula</span><span class="p">,</span><span class="n">extended</span><span class="p">,</span><span class="n">isolum</span>
+<span class="kn">from</span> <span class="nn">neurotools.graphics.plot</span> <span class="k">import</span> <span class="n">nox</span><span class="p">,</span><span class="n">noy</span><span class="p">,</span><span class="n">fudgex</span><span class="p">,</span><span class="n">fudgey</span><span class="p">,</span><span class="n">noaxis</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -183,6 +178,13 @@
     <span class="n">drawlines</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">draw_colorbar</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">extent</span><span class="o">!=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;different size?&#39;</span><span class="p">)</span>
@@ -227,6 +229,13 @@
 <span class="sd">    Handy because upsampling leaves strangely sized images, since you can</span>
 <span class="sd">    only interpolate and not extrapolate -- and this hadles automatically</span>
 <span class="sd">    placing the image at the correct location</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">upsampled</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">factor</span><span class="p">)</span>
     <span class="c1"># upsampling trims the array a bit</span>
@@ -264,7 +273,15 @@
     <span class="k">return</span> <span class="n">cax</span></div>
 
 <div class="viewcode-block" id="overlay_gradient"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.overlay_gradient">[docs]</a><span class="k">def</span> <span class="nf">overlay_gradient</span><span class="p">(</span><span class="n">phase_gradient</span><span class="p">):</span>
+
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">NH</span><span class="p">,</span><span class="n">NW</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">phase_gradient</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">NW</span><span class="p">,</span><span class="n">NH</span><span class="p">))</span><span class="o">+</span><span class="mf">0.5</span>
@@ -283,8 +300,15 @@
 
 <div class="viewcode-block" id="get_upsampled_extent"><a class="viewcode-back" href="../../cgid.phase_plots.html#cgid.phase_plots.get_upsampled_extent">[docs]</a><span class="k">def</span> <span class="nf">get_upsampled_extent</span><span class="p">(</span><span class="n">upsampled_shape</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">assert</span> <span class="mi">0</span> <span class="c1"># not implemented</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;This function isnt done yet&#39;</span><span class="p">)</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;assuming 10x10?&#39;</span><span class="p">)</span>
     <span class="c1"># upsampling trims the array a bit</span>
     <span class="c1"># figure out how to re-center the trimmed array:</span>
@@ -299,6 +323,13 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts an analytic signal map, upsamples it, and plots in the current</span>
 <span class="sd">    axis the phases. For now, expects a 10x10 array 4x4mm is size.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
     <span class="n">upsampled</span> <span class="o">=</span> <span class="n">dct_upsample</span><span class="p">(</span><span class="n">dct_cut_antialias</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">,</span><span class="n">smooth</span><span class="p">),</span><span class="n">UPSAMPLE</span><span class="p">)</span>
@@ -345,6 +376,13 @@
 <span class="sd">    that has been standardiszed.</span>
 
 <span class="sd">    TODO: circular gaussian plot is a little off here</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
     <span class="n">limit</span> <span class="o">=</span> <span class="mf">2.0</span>
@@ -391,6 +429,13 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Does a summary plot of the phases of the vectors provided.</span>
 <span class="sd">    vectors should be an array of complex numners</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
     <span class="n">vectors</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
@@ -406,6 +451,13 @@
 <span class="sd">    Does a weighted average of direction by the vector magnitudes.</span>
 <span class="sd">    CAUTION: Normalized vectors by squared mag for plotting,</span>
 <span class="sd">    need to check that this is OK</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
     <span class="n">R</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>

@@ -14,13 +14,8 @@ Utility functions for making nicely upsampled plots of phase delays and
 phase gradients for the 10x10 Utah arrays.
 '''
 
-# TODO: replace with specific absolute imports
-# from neurotools.color import *
-# from matplotlib.pyplot import *
-# from neurotools.nlab import *
-
-from neurotools.color import parula,extended,isolum
-from neurotools.plot import nox,noy,fudgex,fudgey,noaxis
+from neurotools.graphics.color import parula,extended,isolum
+from neurotools.graphics.plot import nox,noy,fudgex,fudgey,noaxis
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -28,6 +23,13 @@ def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
     drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',spacing=0,
     draw_colorbar=True):
     '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     if extent!=(0,4,0,4):
         print('different size?')
@@ -72,6 +74,13 @@ def array_plot_upsampled(data,factor,vmin=None,vmax=None,
     Handy because upsampling leaves strangely sized images, since you can
     only interpolate and not extrapolate -- and this hadles automatically
     placing the image at the correct location
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     upsampled = dct_upsample(data,factor)
     # upsampling trims the array a bit
@@ -109,7 +118,15 @@ def array_plot_upsampled(data,factor,vmin=None,vmax=None,
     return cax
 
 def overlay_gradient(phase_gradient):
+
     '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     NH,NW = shape(phase_gradient)[:2]
     p = arange(max(NW,NH))+0.5
@@ -128,8 +145,15 @@ def overlay_gradient(phase_gradient):
 
 def get_upsampled_extent(upsampled_shape):
     '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
-    assert 0 # not implemented
+    raise NotImplementedError('This function isnt done yet')
     warn('assuming 10x10?')
     # upsampling trims the array a bit
     # figure out how to re-center the trimmed array:
@@ -144,6 +168,13 @@ def phase_delay_plot(mean_analytic_signal,
     '''
     Accepts an analytic signal map, upsamples it, and plots in the current
     axis the phases. For now, expects a 10x10 array 4x4mm is size.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     plt.cla()
     upsampled = dct_upsample(dct_cut_antialias(mean_analytic_signal,smooth),UPSAMPLE)
@@ -190,6 +221,13 @@ def vector_summary_plot_subroutine(mu,sigma,vectors):
     that has been standardiszed.
 
     TODO: circular gaussian plot is a little off here
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     plt.cla()
     limit = 2.0
@@ -236,6 +274,13 @@ def vector_summary_plot(vectors):
     '''
     Does a summary plot of the phases of the vectors provided.
     vectors should be an array of complex numners
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     plt.cla()
     vectors = vectors/np.abs(vectors)
@@ -251,6 +296,13 @@ def weighted_vector_summary_plot(vectors):
     Does a weighted average of direction by the vector magnitudes.
     CAUTION: Normalized vectors by squared mag for plotting,
     need to check that this is OK
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    
     '''
     plt.cla()
     R  = np.abs(np.mean(vectors))/np.mean(np.abs(vectors))

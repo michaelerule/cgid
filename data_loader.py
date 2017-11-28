@@ -1,21 +1,5 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
-from __future__ import absolute_import
-from __future__ import with_statement
-from __future__ import division
-from __future__ import nested_scopes
-from __future__ import generators
-from __future__ import unicode_literals
-from __future__ import print_function
-import sys
-# more py2/3 compat
-from neurotools.system import *
-if sys.version_info<(3,):
-    from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
-
-
 """
 The documentation for the CGID archive format is important
 This archive contains extracted Cued Grasp with Instructed Delay (CGID)
@@ -118,29 +102,53 @@ ObjectPresent, GripCue, GoCue, StartMov, and Contact from completed trials
 only are copied over to events with "COMPLETE" appended to the name.
 """
 
-from warnings import warn
+from __future__ import absolute_import
+from __future__ import with_statement
+from __future__ import division
+from __future__ import nested_scopes
+from __future__ import generators
+from __future__ import unicode_literals
+from __future__ import print_function
+import sys
+if sys.version_info<(3,):
+    from itertools import imap as map
 
-from cgid.config       import CGID_ARCHIVE
-from matplotlib.mlab   import find
-from cgid.config       import *
-from scipy.io          import savemat,loadmat
-
+from   warnings import warn
+from   matplotlib.mlab   import find
+from   scipy.io          import savemat,loadmat
 import numpy as np
-from numpy import *
-
 import neurotools.tools
 import neurotools.jobs.cache
+import neurotools.jobs.initialize_system_cache
 import cgid.tools
 import cgid.lfp
 import cgid.spikes
+from   neurotools.nlab  import memoize
+from   neurotools.tools import dowarn,debug
+from   matplotlib.cbook import flatten
 
-from neurotools.nlab  import memoize
-from neurotools.tools import dowarn,debug
-from matplotlib.cbook import flatten
+from cgid.config import sessions, areas, sessionnames
 
 def archive_name(session,area):
+    '''
+    Converts a (session,area) tuple into a path to load data from disk. 
+    At the moment, the CGID_ARCHIVE variable in cgid.config must be set
+    by hand for this to work. (TODO)
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    string 
+        File path based on `CGID_ARCHIVE` configuration variable
+    '''
     archive = '%s_%s.mat'%(session,area)
-    return CGID_ARCHIVE+archive
+    return cgid.config.CGID_ARCHIVE+archive
 
 cgid_matfilecache = {}
 def metaloaddata(session,area):
@@ -150,8 +158,16 @@ def metaloaddata(session,area):
 
     Parameters
     ----------
-    path : string
-        unique absolute path to matfile to be loaded
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+        
+    Returns
+    -------
+    dict
+        Complete experimental archive as a `dict`. To load a single 
+        variable, see `metaloadvariable`.
     '''
     global cgid_matfilecache
     path = archive_name(session,area)
@@ -161,8 +177,29 @@ def metaloaddata(session,area):
     cgid_matfilecache[path]=data
     return data
 
-@neurotools.jobs.cache.unsafe_disk_cache
+@neurotools.jobs.initialize_system_cache.unsafe_disk_cache
 def metaloadvariable(session,area,variable):
+    '''
+    Loads a variable from a matfile at the provided path, caching it using
+    the disk memoization decorator.
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    variable : string
+        Which variable to load from the experiment archive
+    
+    Returns
+    -------
+    object
+        Loaded variable from session archive; The result is cached 
+        in RAM explicitly (for sharing amongst multiple processes) if 
+        caching has been enabled.
+        
+    '''
     global cgid_matfilecache
     path = archive_name(session,area)
 
@@ -174,16 +211,14 @@ def metaloadvariable(session,area,variable):
     return loadmat(path,variable_names=[variable])[variable]
 
 def preload_cgid():
+    '''
+    Prefetches all CGID archives and commonly used data. Can be used
+    to prepare intermediate processing stages for interactive exploration.
+    '''
     # It's faster to just load the whole archives into memory
     for session,area in cgid.tools.sessions_areas():
         prefetched = metaloaddata(session,area)
         print('preloaded',session,area)
-    '''
-    for s in flatten(sessionnames):
-        for a in areas:
-            dataset = metaloaddata(s,a)
-            print('preloaded',s,a)
-    '''
     # First prefetch individual variables
     variables = '''
         README ByTrialLFP1KHz ByTrialSpikesMS UnsegmentedLFP1KHz
@@ -202,26 +237,115 @@ def preload_cgid():
 
 @memoize
 def get_waveforms(session,area,unit=None):
+    '''
+    Loads waveforms from CGID archive; 
+    Uses memoization to speed up subsequent calls.
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    unit : None or int, default None
+        Which unit to load (indexing starts at 1 for Matlab comatibility)
+        If None, then all units are loaded.
+
+    Returns
+    -------
+    '''
     waveforms = metaloadvariable(session,area,'waveForms')
-    if unit is None: return waveforms
+    if unit is None: 
+        return waveforms
     return waveforms[0,unit-1]
 
 def get_unitIds(session,area):
+    '''
+    Get `unitIds` from CGID archive
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        unitIds variable loaded from file
+    '''
     return metaloadvariable(session,area,'unitIds')[0]
 
 def get_channelIds(session,area):
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        Channel ID number (starting at 1) for all units in the session
+    '''
     return metaloadvariable(session,area,'channelIds')
 
-def get_availableChannels(session,area):
-    return metaloadvariable(session,area,'availableChannels')
-
 def get_unitQualities(session,area):
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        unitQuality: manual categorization, 0 for noise, 1 for multiunit,
+        2 for acceptable single-unit, and 3 for well-isolated.
+    '''
     return metaloadvariable(session,area,'unitQuality')[:,0]
 
 def readme(session,area):
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    string
+        The readme string from the matlab archive
+    '''
     return metaloadvariable(session,area,'README')[0]
 
 def get_array_map(session,area,removebad=True):
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        Array channel map; Only set up for subjects SPK and RUS at the
+        moment (some channels needed to be hard coded into the source
+        code). 
+    '''
     # there is a problem where bad channels were removed from this
     # array before saving in the archive. If you really want all channes
     # we need the original map -- which i've hard coded here
@@ -244,14 +368,48 @@ def get_array_map(session,area,removebad=True):
     return arrmap
 
 def get_trial_event(session,area,trial,event):
-    if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
-    if dowarn(): print('EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    trial : int
+        Which trial to use from the session
+    event : int
+        Which event marker to use
+    
+    Returns
+    -------
+    float
+        Time-stamp of selected event on selected trial in selected session
+    '''
+    if dowarn(): 
+        print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+        print('EVENT IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     assert trial>0
     debug(trial,event)
     return metaloadvariable(session,area,'eventsByTrial')[trial-1,event-1]
 
 def get_valid_trials(session,area=None):
-    if dowarn(): print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+    '''
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        A list of trials on which the subject completed the task.
+    '''
+    if dowarn(): 
+        print('TRIAL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
     if area is None:
         trials  = set(find(metaloadvariable(session,'M1' ,'eventsByTrial')[:,0])+1)
         trials &= set(find(metaloadvariable(session,'PMv','eventsByTrial')[:,0])+1)
@@ -263,9 +421,24 @@ def get_valid_trials(session,area=None):
 def get_available_channels(session,area):
     '''
     Gets the list of channels that are available for a sessiona and area
+    
+    Parameters
+    ----------
+    session : string
+        Which experimental session to use, for example "SPK120924"
+    area : string
+        Which motor area to use, for example 'PMv'
+    
+    Returns
+    -------
+    np.array
+        availableChannels: which channels in the archive actually exist
+        (missing channels may have been electrically bad, or assigned to
+        record from a different area)
     '''
-    if dowarn(): print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
-    return find(metaloadvariable(session,area,'availableChannels')[:,0])+1
+    if dowarn(): 
+        warn('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
+    return np.int64(find(metaloadvariable(session,area,'availableChannels')[:,0])+1)
 
 def get_bad_channels_and_trials(rule='liberal'):
     forbid = {'conservative':'''
@@ -446,6 +619,12 @@ def get_bad_trials(session,area=None,rule='liberal'):
     '''
     This will mark a trial as bad if it is marked as bad for any of
     each of the three arrays
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     x = get_bad_channels_and_trials(rule=rule)
     bad = set()
@@ -456,9 +635,16 @@ def get_bad_trials(session,area=None,rule='liberal'):
 
 
 def get_good_channels(session,area,keepBad=False,rule='liberal'):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if dowarn():
-        print('CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY')
-    warn('CALLING SEMANTICS CHANGE')
+        print('CHANNEL IS 1-INDEXED FOR MATLAB COMPATIBILITY')
     good = get_available_channels(session,area)
     if not keepBad:
         for bad in get_bad_channels(session,area,rule=rule):
@@ -467,6 +653,14 @@ def get_good_channels(session,area,keepBad=False,rule='liberal'):
 
 
 def get_good_trials(session,rule='liberal'):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     trials = get_valid_trials(session)
     for a in areas:
         for bad in get_bad_trials(session,a,rule=rule):
@@ -479,6 +673,12 @@ def get_trial_epoch_in_session_ms(session,area,trial,epoch=None):
     finds the trial times in ms for given start and stop range relative
     to event.
     epoch = event, start, stop
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
@@ -492,6 +692,12 @@ def get_trial_times_ms(session,area,trial,epoch=None):
     to event. These times are not shifted to align with session time,
     they are aligned to object presentation.
     epoch = event, start, stop
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
@@ -503,6 +709,12 @@ def get_session_times_ms(session,area,tr,epoch=None):
     '''
     Trial times are shifted so that the reported times are in session time.
     This means they should agree with spike times relative to the session.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if epoch is None: epoch = (6,-1000,6000)
     e,st,sp = epoch
@@ -510,6 +722,14 @@ def get_session_times_ms(session,area,tr,epoch=None):
     return get_trial_times_ms(session,area,tr,epoch)+tm0
 
 def get_trial_start_time(session,area,tr):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return get_trial_event(session,area,tr,4)
 
 
@@ -519,6 +739,12 @@ def get_channel_as_data_index(session,area,ch):
     missing. Routines that return "all data" will remove missing channels.
     It is necessary to convert channel index into indecies into the packed
     data
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     available = get_available_channels(session,area)
     # list of channels, 1-indexed, that are available
@@ -530,6 +756,14 @@ def get_channel_as_data_index(session,area,ch):
 
 
 def get_all_pairs_ordered_as_channel_indecies(session,area):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     am = get_array_map(session,area)
     pairs = []
     h,w = shape(am)
@@ -623,11 +857,6 @@ def get_data(session,area,trial,event,start,stop,lowf,highf,params):
 
 
 def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
-    global get_data_all_trials_cache
-    if (not 'get_data_all_trials_cache' in vars() and not 'get_data_all_trials_cache' in globals()) or get_data_all_trials_cache==None:
-        get_data_all_trials_cache = {}
-    if (session,area,event,start,stop,lowf,highf,params) in get_data_all_trials_cache:
-        return get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params]
     """
     Loads neural data from the CGID arrays; returns all trials from
     specified experiment. 
@@ -665,6 +894,11 @@ def get_data_all_trials(session,area,event,start,stop,lowf,highf,params):
         xys:   nelectrode-x-2 x,y positions of electrodes in array map space
         data:  a nt-x-nelectrode filtered neural data snippit
     """
+    global get_data_all_trials_cache
+    if (not 'get_data_all_trials_cache' in vars() and not 'get_data_all_trials_cache' in globals()) or get_data_all_trials_cache==None:
+        get_data_all_trials_cache = {}
+    if (session,area,event,start,stop,lowf,highf,params) in get_data_all_trials_cache:
+        return get_data_all_trials_cache[session,area,event,start,stop,lowf,highf,params]
     from scipy.io     import loadmat
     from scipy.signal import butter,filtfilt,lfilter
     archive = '%s_%s.mat'%(session,area)
@@ -732,11 +966,17 @@ def load_ppc_results_archives(directory='.'):
         allresults[session,area] = (keys,ppcs)
     return allresults
 
-'''
-USING THIS FUNCTION COULD BE A SOURCE OF ERRORS
-DO NOT USE IT.
-USE THE allunitsbysession in unitinfo.py instead
+
 def get_cgid_unit_info():
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    raise DepricationWarning('Depricated; use allunitsbysession in unitinfo.py instead')
     print('identifying units')
     allfiles=[]
     for parent,dirs,files in os.walk(sortedunits):
@@ -758,4 +998,3 @@ def get_cgid_unit_info():
         narea = areas.index(area)+1
         units.append((session,area,uid))
     return units
-'''

@@ -171,22 +171,26 @@
 
 <span class="kn">import</span> <span class="nn">cgid.lfp</span>
 <span class="kn">import</span> <span class="nn">cgid.array</span>
+<span class="kn">import</span> <span class="nn">cgid.config</span>
 
-<span class="c1"># TODO fix imports</span>
-<span class="c1">#from scipy.stats.stats  import *</span>
-<span class="c1">#from matplotlib.pyplot  import *</span>
-<span class="c1">#from neurotools.getfftw import *</span>
-<span class="c1">#from neurotools.plot    import *</span>
-<span class="c1">#from cgid.config        import *</span>
-<span class="c1">#from cgid.data_loader   import *</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <div class="viewcode-block" id="overlay_markers"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.overlay_markers">[docs]</a><span class="k">def</span> <span class="nf">overlay_markers</span><span class="p">(</span><span class="n">c1</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">c2</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span><span class="n">nevents</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span><span class="n">npad</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Args:</span>
-<span class="sd">        labels: default none. Can be</span>
-<span class="sd">            &quot;markers&quot; for symbols or</span>
-<span class="sd">            &quot;names&quot; for [&#39;Object presented&#39;,&#39;Grip cued&#39;,&#39;Go cue&#39;]</span>
-<span class="sd">            &quot;short&quot; for [&#39;Object&#39;,&#39;Grip&#39;,&#39;Go cue&#39;]</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c1 : &#39;w&#39;</span>
+<span class="sd">    c2 : &#39;k&#39;</span>
+<span class="sd">    FS : 1000.</span>
+<span class="sd">    nevents : int; 3</span>
+<span class="sd">    fontsize : int; 14</span>
+<span class="sd">    npad : int or None</span>
+<span class="sd">    labels: default none. Can be</span>
+<span class="sd">        &quot;markers&quot; for symbols or</span>
+<span class="sd">        &quot;names&quot; for [&#39;Object presented&#39;,&#39;Grip cued&#39;,&#39;Go cue&#39;]</span>
+<span class="sd">        &quot;short&quot; for [&#39;Object&#39;,&#39;Grip&#39;,&#39;Go cue&#39;]</span>
+<span class="sd">    clip_on : bool; default False</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">xlim</span><span class="p">()</span>
     <span class="n">dx</span><span class="p">,</span><span class="n">dy</span> <span class="o">=</span> <span class="n">get_ax_pixel</span><span class="p">()</span>
@@ -204,29 +208,58 @@
         <span class="n">time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span>
         <span class="k">if</span> <span class="n">time</span><span class="o">&lt;=</span><span class="n">a</span><span class="p">:</span> <span class="k">continue</span>
         <span class="k">if</span> <span class="n">time</span><span class="o">&gt;=</span><span class="n">b</span><span class="p">:</span> <span class="k">continue</span>
-        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c2</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
-        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c2</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
+        <span class="n">plot</span><span class="p">([</span><span class="n">time</span><span class="p">,</span><span class="n">time</span><span class="p">],</span><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(),</span><span class="n">color</span><span class="o">=</span><span class="n">c1</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="n">Inf</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="n">clip_on</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">text</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">dy</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span><span class="n">label</span><span class="p">,</span>
-                <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">,</span>
-                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">time</span><span class="p">,</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">dy</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">label</span><span class="p">,</span>
+                <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span>
+                <span class="n">fontsize</span><span class="o">=</span><span class="n">fontsize</span><span class="p">,</span>
+                <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;bottom&#39;</span><span class="p">)</span>
     <span class="n">xlim</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span></div>
 
 <span class="n">overlay_events</span> <span class="o">=</span> <span class="n">overlay_markers</span>
 
 <div class="viewcode-block" id="channel2index"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.channel2index">[docs]</a><span class="k">def</span> <span class="nf">channel2index</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span><span class="n">availableChannels</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE EXPECTING 1 INDEXED CHANNEL&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;RETURNING 0 INDEX OF DATA ARRAY&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    channel</span>
+<span class="sd">    availableChannels</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE EXPECTING 1 INDEXED CHANNEL&#39;</span><span class="p">)</span>
     <span class="n">availableChannels</span> <span class="o">=</span> <span class="n">squeeze</span><span class="p">(</span><span class="n">availableChannels</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cumsum</span><span class="p">(</span><span class="n">availableChannels</span><span class="p">)[</span><span class="n">channel</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span></div>
 
 <div class="viewcode-block" id="unit_channel_as_index"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.unit_channel_as_index">[docs]</a><span class="k">def</span> <span class="nf">unit_channel_as_index</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">channel2index</span><span class="p">(</span><span class="n">channelIds</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">availableChannels</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_all_isi_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_isi_epoch">[docs]</a><span class="k">def</span> <span class="nf">get_all_isi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Returns the durations of all ISI intervals from the given session, area,</span>
 <span class="sd">    unit, and epoch</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">all_isi</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_valid_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
@@ -236,11 +269,27 @@
     <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">all_isi</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_burstiness"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_burstiness">[docs]</a><span class="k">def</span> <span class="nf">get_burstiness</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">isi</span> <span class="o">=</span> <span class="n">get_all_isi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;obj&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">isi</span><span class="o">&lt;</span><span class="n">thr</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">isi</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="get_all_ibi_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_ibi_epoch">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_all_ibi_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: threshold is in ms, defaults to 5&#39;</span><span class="p">)</span>
     <span class="n">all_ibi</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">thr</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span> <span class="n">thr</span><span class="o">=</span><span class="mi">5</span>
@@ -258,6 +307,14 @@
 
 <div class="viewcode-block" id="get_all_ibi_merged_epoch"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.get_all_ibi_merged_epoch">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_all_ibi_merged_epoch</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">thr</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: threshold is in ms, defaults to 5&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;note: misses burst if starts on 1st spike, TODOFIX&#39;</span><span class="p">)</span>
     <span class="n">all_ibi</span> <span class="o">=</span> <span class="p">[]</span>
@@ -276,16 +333,40 @@
     <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">all_ibi</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="sessions_areas"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.sessions_areas">[docs]</a><span class="k">def</span> <span class="nf">sessions_areas</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">sessionnames</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">flatten</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sessionnames</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">areas</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">s</span><span class="p">,</span><span class="n">a</span></div>
 
 <div class="viewcode-block" id="quicksessions"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.quicksessions">[docs]</a><span class="k">def</span> <span class="nf">quicksessions</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sessionnames</span><span class="p">]:</span>
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sessionnames</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">areas</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">s</span><span class="p">,</span><span class="n">a</span></div>
 
 <div class="viewcode-block" id="fftppc"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.fftppc">[docs]</a><span class="k">def</span> <span class="nf">fftppc</span><span class="p">(</span><span class="n">snippits</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">M</span><span class="p">,</span><span class="n">window</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">M</span><span class="o">&lt;=</span><span class="n">window</span> <span class="ow">and</span> <span class="n">dowarn</span><span class="p">():</span> <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING SAMPLES SEEM TRANSPOSED?&#39;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">M</span><span class="o">&gt;</span><span class="n">window</span>
@@ -298,6 +379,12 @@
 <div class="viewcode-block" id="ch2chi"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ch2chi">[docs]</a><span class="k">def</span> <span class="nf">ch2chi</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Some electrode banks are split over two arrays.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="n">ch</span><span class="o">&gt;</span><span class="mi">0</span>
     <span class="n">all_available</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
@@ -320,6 +407,12 @@
 <span class="sd">    :param session: the session corresponding to data, needed for array map</span>
 <span class="sd">    :param area: the area corresponding to the data, needed to get array map</span>
 <span class="sd">    :return: returns LxKxNtimes 3D array of the interpolated channel data</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">arrayMap</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_array_map</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">pack_array_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">arrayMap</span><span class="p">):</span>
@@ -377,6 +470,12 @@
 
 <span class="sd">    Note: array interp routines take array map from get_array_map.</span>
 <span class="sd">    Bad channels can be removed by removing them in this function.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">frames</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">get_analytic_frames</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
     <span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">N</span>  <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
@@ -402,6 +501,12 @@
 
 <div class="viewcode-block" id="ondatadata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ondatadata">[docs]</a><span class="k">def</span> <span class="nf">ondatadata</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># just a temp hack no time no time for better</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">trial</span><span class="p">)</span>
@@ -428,6 +533,14 @@
 
 
 <div class="viewcode-block" id="ofrawdata"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ofrawdata">[docs]</a><span class="k">def</span> <span class="nf">ofrawdata</span><span class="p">(</span><span class="n">function</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># just a temp hack no time no time for better</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">trial</span><span class="p">)</span>
     <span class="n">trial</span><span class="o">=</span><span class="n">trial</span><span class="o">+</span><span class="mi">0</span>
@@ -473,6 +586,12 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">    &gt;&gt;&gt; x = onpopdata(sliding_population_signal_coherence)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">epoch</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span>
@@ -506,6 +625,12 @@
 <span class="sd">    note: static typing and pattern matching to array dimension signatures</span>
 <span class="sd">    could render this necessray. sadly a language feature python lacks,</span>
 <span class="sd">    afaik.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">trial</span> <span class="o">+=</span> <span class="mi">0</span>
     <span class="n">fname</span> <span class="o">=</span> <span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span>
@@ -529,6 +654,12 @@
 <span class="sd">    doesn&#39;t return exact times since events have different timings on each</span>
 <span class="sd">    trial. instead returns an event-relative time base.</span>
 <span class="sd">    times,res=onsession(array_average_ampltiude)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span>  <span class="o">=</span> <span class="n">epoch</span>
@@ -557,6 +688,12 @@
 <div class="viewcode-block" id="onsession_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.onsession_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">onsession_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">color1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">drawCues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">smoothat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dolegend</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    onsession_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
     <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;!&gt;&gt;&gt; applying&#39;</span><span class="p">,</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
@@ -608,11 +745,15 @@
         <span class="n">overlayEvents</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">draw</span><span class="p">()</span></div>
 
-
-
 <div class="viewcode-block" id="allsession_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.allsession_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">allsession_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">monkey</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">color1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">color2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">drawCues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">smoothat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">dolegend</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    allsession_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">filter_function</span> <span class="o">=</span> <span class="n">box_filter</span>
     <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
@@ -673,6 +814,12 @@
 <div class="viewcode-block" id="ontrial_summary_plot"><a class="viewcode-back" href="../../cgid.tools.html#cgid.tools.ontrial_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">ontrial_summary_plot</span><span class="p">(</span><span class="n">statistic</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    ontrial_summary_plot(array_average_ampltiude)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">statistic</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -696,6 +843,12 @@
 <span class="sd">    number is mapped to a list of the up to 4 channels immediately</span>
 <span class="sd">    adjacent to it. If argument &quot;onlygood&quot; is true, then bad channels</span>
 <span class="sd">    are excluded from this map.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">am</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_array_map</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">removebad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>

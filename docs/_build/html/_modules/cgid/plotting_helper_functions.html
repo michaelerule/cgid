@@ -155,7 +155,10 @@
   <h1>Source code for cgid.plotting_helper_functions</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/python</span>
 <span class="c1"># -*- coding: UTF-8 -*-</span>
-<span class="c1"># BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
+<span class="sd">&#39;&#39;&#39; </span>
+<span class="sd">Helper functions for making figures</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">with_statement</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
@@ -164,28 +167,23 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">unicode_literals</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">neurotools.system</span> <span class="k">import</span> <span class="o">*</span>
-<span class="c1"># END PYTHON 2/3 COMPATIBILITY BOILERPLATE</span>
 
-<span class="c1">#####################################################################</span>
-<span class="c1"># helper functions</span>
-
-<span class="c1"># TODO repair imports</span>
-<span class="kn">from</span> <span class="nn">neurotools.color</span> <span class="k">import</span> <span class="n">parula</span><span class="p">,</span><span class="n">extended</span><span class="p">,</span><span class="n">isolum</span>
-<span class="c1"># from pylab import *</span>
-<span class="c1"># from cgid.data_loader import *</span>
-<span class="c1"># from neurotools.plot  import *</span>
-<span class="c1"># from neurotools.stats.modefind import *</span>
-<span class="c1"># from cgid.spikes import *</span>
-<span class="c1"># from cgid.lfp    import *</span>
-<span class="c1"># from neurotools.getfftw import *</span>
-
+<span class="kn">from</span>   <span class="nn">neurotools.graphics.color</span> <span class="k">import</span> <span class="n">parula</span><span class="p">,</span><span class="n">extended</span><span class="p">,</span><span class="n">isolum</span>
 <span class="kn">import</span> <span class="nn">cgid.spikes</span>
-<span class="kn">from</span> <span class="nn">neurotools.signal.ppc</span> <span class="k">import</span> <span class="n">pairwise_phase_consistancy</span>
-<span class="kn">from</span> <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">hann</span>
+<span class="kn">from</span>   <span class="nn">neurotools.signal.ppc</span> <span class="k">import</span> <span class="n">pairwise_phase_consistancy</span>
+<span class="kn">from</span>   <span class="nn">scipy.signal.windows</span> <span class="k">import</span> <span class="n">hann</span>
+
 <span class="n">CMAP</span> <span class="o">=</span> <span class="n">parula</span>
 
-<div class="viewcode-block" id="specshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.specshow">[docs]</a><span class="k">def</span> <span class="nf">specshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
-    <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
+<div class="viewcode-block" id="specshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.specshow">[docs]</a><span class="k">def</span> <span class="nf">specshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span>
     <span class="n">NF</span><span class="p">,</span><span class="n">NT</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -204,11 +202,16 @@
     <span class="n">add_spectrum_colorbar</span><span class="p">(</span><span class="n">specdata</span><span class="p">,</span><span class="n">cmap</span><span class="p">)</span>
     <span class="n">sca</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="waveletshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.waveletshow">[docs]</a><span class="k">def</span> <span class="nf">waveletshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
-    <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
+<div class="viewcode-block" id="waveletshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.waveletshow">[docs]</a><span class="k">def</span> <span class="nf">waveletshow</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span><span class="n">specdata</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">CMAP</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    basically specshow -- diffent units for scale bar</span>
 <span class="sd">    uV^2</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">))</span><span class="o">==</span><span class="mi">2</span>
     <span class="n">NF</span><span class="p">,</span><span class="n">NT</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">specdata</span><span class="p">)</span>
@@ -232,6 +235,14 @@
     <span class="k">return</span> <span class="n">ax</span><span class="p">,</span><span class="n">cbax</span></div>
 
 <div class="viewcode-block" id="getTrial"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getTrial">[docs]</a><span class="k">def</span> <span class="nf">getTrial</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">trial</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">tsp</span> <span class="o">=</span> <span class="n">ByTrialSpikesMS</span><span class="p">[</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">trial</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">tsp</span> <span class="o">=</span> <span class="n">tsp</span><span class="p">[</span><span class="n">tsp</span><span class="o">&gt;=</span><span class="n">start</span><span class="o">+</span><span class="mi">1000</span><span class="p">]</span>
@@ -239,6 +250,14 @@
     <span class="k">return</span> <span class="n">tsp</span></div>
 
 <div class="viewcode-block" id="getSTLFP"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getSTLFP">[docs]</a><span class="k">def</span> <span class="nf">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ByTrialLFP1KHz</span>  <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialLFP1KHz&#39;</span><span class="p">)</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">channelIds</span>      <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;channelIds&#39;</span><span class="p">)</span>
@@ -258,6 +277,14 @@
 <div class="viewcode-block" id="ppc"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.ppc">[docs]</a><span class="k">def</span> <span class="nf">ppc</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
     <span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nTapers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nTapers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING: no longer using multitaper, nTapers will be ignored! using Hann window&#39;</span><span class="p">)</span>
     <span class="c1"># depricating original code due to inconsistency with matlab PPC code</span>
@@ -320,6 +347,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Try with</span>
 <span class="sd">    compare_ppc_approaches(&#39;RUS120523&#39;,&#39;PMv&#39;,42,-1000,0,200)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">channel</span> <span class="o">=</span> <span class="n">get_unit_channel</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">)</span>
     <span class="n">signal</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">)</span>
@@ -374,7 +407,15 @@
     <span class="n">simpleaxis</span><span class="p">(</span><span class="n">gca</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="coherence"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.coherence">[docs]</a><span class="k">def</span> <span class="nf">coherence</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="kc">False</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Coherence function is not implemented; use scipy instead&#39;</span><span class="p">)</span>
     <span class="c1"># this is untested, don&#39;t use it</span>
     <span class="n">snippits</span>  <span class="o">=</span> <span class="n">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
     <span class="n">M</span>         <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">snippits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -394,6 +435,14 @@
 <div class="viewcode-block" id="plotSTA"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotSTA">[docs]</a><span class="k">def</span> <span class="nf">plotSTA</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
     <span class="n">window</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">texttop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">snippits</span> <span class="o">=</span> <span class="n">getSTLFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">window</span><span class="p">)</span>
     <span class="n">time</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">,</span><span class="n">window</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">sta</span>  <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">snippits</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
@@ -414,6 +463,14 @@
     <span class="k">return</span> <span class="n">snippits</span></div>
 
 <div class="viewcode-block" id="getRaster"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getRaster">[docs]</a><span class="k">def</span> <span class="nf">getRaster</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1">#print(&#39;both unit and trial should be 1 indexed&#39;)</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">tsp</span>    <span class="o">=</span> <span class="n">ByTrialSpikesMS</span><span class="p">[</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">trial</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -423,6 +480,14 @@
 
 <div class="viewcode-block" id="plotAllTrials"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotAllTrials">[docs]</a><span class="k">def</span> <span class="nf">plotAllTrials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span>
     <span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">eventsByTrial</span>   <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;eventsByTrial&#39;</span><span class="p">)</span>
     <span class="n">cla</span><span class="p">()</span>
@@ -448,6 +513,14 @@
     <span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="plotLFP"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotLFP">[docs]</a><span class="k">def</span> <span class="nf">plotLFP</span><span class="p">(</span><span class="n">lfp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">plot</span><span class="p">(</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">,</span><span class="n">lfp</span><span class="p">,</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
     <span class="n">ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span><span class="mi">150</span><span class="p">)</span>
@@ -458,6 +531,14 @@
 
 <div class="viewcode-block" id="plotLFPSpikes"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotLFPSpikes">[docs]</a><span class="k">def</span> <span class="nf">plotLFPSpikes</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">spikes</span><span class="p">,</span>
     <span class="n">zoom</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">vrange</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">SPIKECOLOR</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;caution assumes starting at beginning of trial&#39;</span><span class="p">)</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">plot</span><span class="p">((</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="o">-</span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="n">FS</span><span class="p">)[:</span><span class="n">zoom</span><span class="p">],</span><span class="n">lfp</span><span class="p">[:</span><span class="n">zoom</span><span class="p">],</span>
@@ -493,6 +574,12 @@
 <span class="sd">    then add padding zeros to FFT, then iFFT, then crop, etc, etc</span>
 <span class="sd">    factor should be an integer (default is 4)</span>
 <span class="sd">    data is converted to float64</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span>
     <span class="k">assert</span> <span class="n">factor</span><span class="o">&gt;</span><span class="mi">1</span>
@@ -520,6 +607,14 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="plotWaveforms"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotWaveforms">[docs]</a><span class="k">def</span> <span class="nf">plotWaveforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">waveForms</span> <span class="o">=</span> <span class="n">get_waveforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)</span>
     <span class="n">wfs</span> <span class="o">=</span> <span class="n">waveForms</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">unit</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -542,6 +637,14 @@
     <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
 
 <div class="viewcode-block" id="plotISIhist"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotISIhist">[docs]</a><span class="k">def</span> <span class="nf">plotISIhist</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
@@ -561,6 +664,14 @@
     <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
 
 <div class="viewcode-block" id="isimodefreq"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.isimodefreq">[docs]</a><span class="k">def</span> <span class="nf">isimodefreq</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">NUNITS</span><span class="p">,</span><span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
     <span class="n">isi</span> <span class="o">=</span> <span class="p">[]</span>
@@ -576,6 +687,14 @@
     <span class="n">FS</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">nbins</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">fmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">FMAX</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">ByTrialSpikesMS</span> <span class="o">=</span> <span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;ByTrialSpikesMS&#39;</span><span class="p">)</span>
     <span class="n">NUNITS</span><span class="p">,</span> <span class="n">NTRIALS</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">ByTrialSpikesMS</span><span class="p">)</span>
     <span class="n">isi</span> <span class="o">=</span> <span class="p">[]</span>
@@ -607,6 +726,14 @@
     <span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">labelpad</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span></div>
 
 <div class="viewcode-block" id="getSpec"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.getSpec">[docs]</a><span class="k">def</span> <span class="nf">getSpec</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1">#times,xys,data,availableChannels = get_data(session,area,trial,event,start,stop,lowf,highf,params)</span>
     <span class="c1">#channel        = channelIds[0,unit-1] # channels are also 1 indexed</span>
     <span class="c1">#chix           = channel2index(channel,availableChannels)</span>
@@ -619,6 +746,14 @@
         <span class="n">neurotools</span><span class="o">.</span><span class="n">signal</span><span class="o">.</span><span class="n">morlet</span><span class="o">.</span><span class="n">fft_cwt</span><span class="p">(</span><span class="n">channeldata</span><span class="p">,</span><span class="n">lowf</span><span class="p">,</span><span class="n">highf</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="plotPPC"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.plotPPC">[docs]</a><span class="k">def</span> <span class="nf">plotPPC</span><span class="p">(</span><span class="n">unit</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># PPC is 1 indexed by unit</span>
     <span class="n">fftopt</span>    <span class="o">=</span> <span class="mi">100</span><span class="p">,</span><span class="mi">10</span>    <span class="c1">#(window,bandWidth)</span>
     <span class="n">ch</span>        <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -639,6 +774,14 @@
 
 <div class="viewcode-block" id="add_wavelet_colorbar"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.add_wavelet_colorbar">[docs]</a><span class="k">def</span> <span class="nf">add_wavelet_colorbar</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">COLORMAP</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span>
     <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># manually add colorbar axes because matplotlib gets it wrong</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span><span class="o">=</span><span class="n">gca</span><span class="p">()</span>
     <span class="n">noaxis</span><span class="p">()</span>
@@ -678,6 +821,14 @@
 
 
 <div class="viewcode-block" id="add_spectrum_colorbar"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.add_spectrum_colorbar">[docs]</a><span class="k">def</span> <span class="nf">add_spectrum_colorbar</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">COLORMAP</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span><span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># manually add colorbar axes because matplotlib gets it wrong</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">ax</span><span class="o">=</span><span class="n">gca</span><span class="p">()</span>
     <span class="n">noaxis</span><span class="p">()</span>
@@ -717,6 +868,14 @@
 
 <div class="viewcode-block" id="array_imshow"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.array_imshow">[docs]</a><span class="k">def</span> <span class="nf">array_imshow</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="n">extended</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>
     <span class="n">drawlines</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bicubic&#39;</span><span class="p">,</span><span class="n">extent</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">ctitle</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">W</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">extent</span><span class="o">!=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;different size?&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -748,6 +907,12 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Accepts an analytic signal map, upsamples it, and plots in the current</span>
 <span class="sd">    axis the phases. For now, expects a 10x10 array 4x4mm is size.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">W</span><span class="p">,</span><span class="n">H</span> <span class="o">=</span> <span class="n">shape</span><span class="p">(</span><span class="n">mean_analytic_signal</span><span class="p">)</span>
@@ -784,6 +949,14 @@
     <span class="k">return</span> <span class="n">cax</span></div>
 
 <div class="viewcode-block" id="unit_ISI_plot"><a class="viewcode-back" href="../../cgid.plotting_helper_functions.html#cgid.plotting_helper_functions.unit_ISI_plot">[docs]</a><span class="k">def</span> <span class="nf">unit_ISI_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">unit</span><span class="p">,</span><span class="n">epoch</span><span class="o">=</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">),(</span><span class="mi">8</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span><span class="n">INFOXPOS</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span><span class="n">LABELSIZE</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">NBINS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span><span class="n">TMAX</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span><span class="n">INFOYSTART</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">BURST</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">spikes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
@@ -838,6 +1011,12 @@
     <span class="n">INFOXPOS</span> <span class="o">=</span> <span class="mi">70</span><span class="p">,</span> <span class="n">LABELSIZE</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">NBINS</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">FMAX</span> <span class="o">=</span> <span class="mi">250</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Add statistical summary printout to the ISI example figures</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="n">spikes</span> <span class="o">=</span> <span class="p">[]</span>

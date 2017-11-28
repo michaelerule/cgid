@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+''' 
+Helper functions for making figures
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,28 +12,23 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 from neurotools.system import *
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
-#####################################################################
-# helper functions
-
-# TODO repair imports
-from neurotools.color import parula,extended,isolum
-# from pylab import *
-# from cgid.data_loader import *
-# from neurotools.plot  import *
-# from neurotools.stats.modefind import *
-# from cgid.spikes import *
-# from cgid.lfp    import *
-# from neurotools.getfftw import *
-
+from   neurotools.graphics.color import parula,extended,isolum
 import cgid.spikes
-from neurotools.signal.ppc import pairwise_phase_consistancy
-from scipy.signal.windows import hann
+from   neurotools.signal.ppc import pairwise_phase_consistancy
+from   scipy.signal.windows import hann
+
 CMAP = parula
 
-def specshow(freqs,specdata,start,stop,
-    FS=1000,aspect='auto',cmap=CMAP):
+def specshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     assert len(shape(specdata))==2
     NF,NT = shape(specdata)
     try:
@@ -49,11 +47,16 @@ def specshow(freqs,specdata,start,stop,
     add_spectrum_colorbar(specdata,cmap)
     sca(ax)
 
-def waveletshow(freqs,specdata,start,stop,
-    FS=1000,aspect='auto',cmap=CMAP):
+def waveletshow(freqs,specdata,start,stop,FS=1000,aspect='auto',cmap=CMAP):
     '''
     basically specshow -- diffent units for scale bar
     uV^2
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     assert len(shape(specdata))==2
     NF,NT = shape(specdata)
@@ -77,6 +80,14 @@ def waveletshow(freqs,specdata,start,stop,
     return ax,cbax
 
 def getTrial(session,area,unit,start,stop,trial):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     tsp = ByTrialSpikesMS[unit-1,trial-1]
     tsp = tsp[tsp>=start+1000]
@@ -84,6 +95,14 @@ def getTrial(session,area,unit,start,stop,trial):
     return tsp
 
 def getSTLFP(session,area,unit,start,stop,window=100):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ByTrialLFP1KHz  = metaloadvariable(session,area,'ByTrialLFP1KHz')
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     channelIds      = metaloadvariable(session,area,'channelIds')
@@ -103,6 +122,14 @@ def getSTLFP(session,area,unit,start,stop,window=100):
 def ppc(session,area,unit,start,stop,
     window=100,FMAX=250,color='k',label=None,nTapers=None,
     lw=1.5,linestyle='-'):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if not nTapers is None:
         warn('WARNING: no longer using multitaper, nTapers will be ignored! using Hann window')
     # depricating original code due to inconsistency with matlab PPC code
@@ -165,6 +192,12 @@ def compare_ppc_approaches(session,area,unit,start,stop,
     '''
     Try with
     compare_ppc_approaches('RUS120523','PMv',42,-1000,0,200)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     channel = get_unit_channel(session,area,unit)
     signal = get_raw_lfp_session(session,area,channel)
@@ -219,7 +252,15 @@ def compare_ppc_approaches(session,area,unit,start,stop,
     simpleaxis(gca())
 
 def coherence(session,area,unit,window=100,FMAX=250):
-    assert False
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    raise NotImplementedError('Coherence function is not implemented; use scipy instead')
     # this is untested, don't use it
     snippits  = getSTLFP(session,area,unit,window)
     M         = shape(snippits)[0]
@@ -239,6 +280,14 @@ def coherence(session,area,unit,window=100,FMAX=250):
 def plotSTA(session,area,unit,start,stop,
     window=100,texttop=False,color='k',label=None,
     lw=1.5,linestyle='-'):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     snippits = getSTLFP(session,area,unit,start,stop,window)
     time = arange(-window,window+1)
     sta  = mean(snippits,0)
@@ -259,6 +308,14 @@ def plotSTA(session,area,unit,start,stop,
     return snippits
 
 def getRaster(session,area,unit,trial):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     #print('both unit and trial should be 1 indexed')
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     tsp    = ByTrialSpikesMS[unit-1,trial-1]
@@ -268,6 +325,14 @@ def getRaster(session,area,unit,trial):
 
 def plotAllTrials(session,area,unit,start,stop,
     FS=1000.0,s=4,clip_on=False):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     eventsByTrial   = metaloadvariable(session,area,'eventsByTrial')
     cla()
@@ -293,6 +358,14 @@ def plotAllTrials(session,area,unit,start,stop,
     xlabel('Time (s)')
 
 def plotLFP(lfp):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cla()
     plot(arange(stop-start)/FS,lfp,'k')
     ylim(-150,150)
@@ -303,6 +376,14 @@ def plotLFP(lfp):
 
 def plotLFPSpikes(lfp,start,stop,spikes,
     zoom=1000,vrange=100,FS=1000.0,SPIKECOLOR=(1,0.5,0),lw=2):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     print('caution assumes starting at beginning of trial')
     cla()
     plot((arange(stop-start)/FS)[:zoom],lfp[:zoom],
@@ -338,6 +419,12 @@ def time_upsample(x,factor=4):
     then add padding zeros to FFT, then iFFT, then crop, etc, etc
     factor should be an integer (default is 4)
     data is converted to float64
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     assert type(factor) is int
     assert factor>1
@@ -365,6 +452,14 @@ def time_upsample(x,factor=4):
     return x
 
 def plotWaveforms(session,area,unit):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cla()
     waveForms = get_waveforms(session,area)
     wfs = waveForms[0,unit-1]
@@ -387,6 +482,14 @@ def plotWaveforms(session,area,unit):
     gca().yaxis.labelpad = -20
 
 def plotISIhist(session,area,unit,start,stop):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cla()
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS,NTRIALS = shape(ByTrialSpikesMS)
@@ -406,6 +509,14 @@ def plotISIhist(session,area,unit,start,stop):
     gca().yaxis.labelpad = -20
 
 def isimodefreq(session,area,unit,start,stop,FS=1000):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS,NTRIALS = shape(ByTrialSpikesMS)
     isi = []
@@ -421,6 +532,14 @@ def plotISIhistHz(session,area,unit,start,stop,
     FS=1000,style='bar',color='k',nbins=30,label=None,
     fmin=0,FMAX=100,
     linestyle='-',lw=2,w=0.8):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     ByTrialSpikesMS = metaloadvariable(session,area,'ByTrialSpikesMS')
     NUNITS, NTRIALS = shape(ByTrialSpikesMS)
     isi = []
@@ -452,6 +571,14 @@ def plotISIhistHz(session,area,unit,start,stop,
     gca().yaxis.labelpad = -20
 
 def getSpec(session,area,unit,trial,epoch,lowf,highf):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     #times,xys,data,availableChannels = get_data(session,area,trial,event,start,stop,lowf,highf,params)
     #channel        = channelIds[0,unit-1] # channels are also 1 indexed
     #chix           = channel2index(channel,availableChannels)
@@ -464,6 +591,14 @@ def getSpec(session,area,unit,trial,epoch,lowf,highf):
         neurotools.signal.morlet.fft_cwt(channeldata,lowf,highf,w=10.0)
 
 def plotPPC(unit):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # PPC is 1 indexed by unit
     fftopt    = 100,10    #(window,bandWidth)
     ch        = 0,
@@ -484,6 +619,14 @@ def plotPPC(unit):
 
 def add_wavelet_colorbar(data=None,COLORMAP=extended,
     ax=None,vmin=None,vmax=None):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # manually add colorbar axes because matplotlib gets it wrong
     if ax is None: ax=gca()
     noaxis()
@@ -523,6 +666,14 @@ def add_wavelet_colorbar(data=None,COLORMAP=extended,
 
 
 def add_spectrum_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=None):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # manually add colorbar axes because matplotlib gets it wrong
     if ax is None: ax=gca()
     noaxis()
@@ -562,6 +713,14 @@ def add_spectrum_colorbar(data=None,COLORMAP=extended,ax=None,vmin=None,vmax=Non
 
 def array_imshow(data,vmin=None,vmax=None,cmap=extended,origin='lower',
     drawlines=1,interpolation='bicubic',extent=(0,4,0,4),ctitle='',W=4,H=4):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if extent!=(0,4,0,4):
         print('different size?')
     if vmin is None:
@@ -593,6 +752,12 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     '''
     Accepts an analytic signal map, upsamples it, and plots in the current
     axis the phases. For now, expects a 10x10 array 4x4mm is size.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     cla()
     W,H = shape(mean_analytic_signal)
@@ -629,6 +794,14 @@ def phase_delay_plot(mean_analytic_signal,cm=isolum,UPSAMPLE=50,smooth=2.3,NLINE
     return cax
 
 def unit_ISI_plot(session,area,unit,epoch=((6,-1000,0),(8,-1000,0)),INFOXPOS=70,LABELSIZE=8,NBINS=20,TMAX=300,INFOYSTART=0,BURST=10):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     cla()
     spikes = []
     for trial in get_good_trials(session):
@@ -683,6 +856,12 @@ def do_unit_ISI_plot(session, area, unit,
     INFOXPOS = 70, LABELSIZE=8, NBINS=20, FMAX = 250):
     '''
     Add statistical summary printout to the ISI example figures
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     cla()
     spikes = []

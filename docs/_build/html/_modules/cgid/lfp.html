@@ -169,6 +169,9 @@
 <span class="kn">import</span> <span class="nn">cgid.tools</span>
 <span class="kn">import</span> <span class="nn">cgid.data_loader</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">neurotools.tools</span>
+
 <span class="c1"># TODO fix imports</span>
 <span class="c1"># from cgid.data_loader import *</span>
 <span class="c1"># from neurotools.signal.signal     import *</span>
@@ -176,14 +179,34 @@
 <span class="c1"># from scipy.signal.signaltools import *</span>
 
 <span class="c1">#    lfp = get_raw_lfp(session,area,tr,ch,(e,st,sp),padding)</span>
+<span class="c1"># from warnings import warn</span>
+
+<span class="c1"># Patch for now</span>
+<div class="viewcode-block" id="warn"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.warn">[docs]</a><span class="k">def</span> <span class="nf">warn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<span class="kn">from</span> <span class="nn">neurotools.signal.signal</span> <span class="k">import</span> <span class="n">bandfilter</span><span class="p">,</span><span class="n">hilbert</span>
+
 <div class="viewcode-block" id="get_raw_lfp_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_raw_lfp_session">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;%a is not available channel for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> is not available channel for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
-        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;%a is not a good channel for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
-    <span class="n">lfp</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">metaloadvariable</span><span class="p">(</span>
-        <span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;UnsegmentedLFP1KHz&#39;</span><span class="p">)[</span><span class="n">ch</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> is not a good channel for </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">))</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">metaloadvariable</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="s1">&#39;UnsegmentedLFP1KHz&#39;</span><span class="p">)[</span><span class="n">ch</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">lfp</span><span class="o">.</span><span class="n">shape</span><span class="o">==</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Requested LFP from nonexistent channel&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfp</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span></div>
@@ -192,12 +215,24 @@
 <span class="k">def</span> <span class="nf">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">pad</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    get_raw_lfp(session,area,trial,channel,epoch,pad=0)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">if</span> <span class="n">dowarn</span><span class="p">():</span>
+    <span class="c1"># TODO: fix warning situation</span>
+    <span class="k">if</span> <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">dowarn</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE CHANNEL IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE TRIAL   IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NOTE EVENT   IS 1 INDEXED FOR MATLAB COMPATIBILITY&#39;</span><span class="p">)</span>
-    <span class="n">debug</span><span class="p">(</span><span class="s1">&#39; get_raw_lfp&#39;</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
+    <span class="n">neurotools</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39; get_raw_lfp&#39;</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">channel</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
     <span class="n">trial</span> <span class="o">=</span> <span class="n">trial</span><span class="o">+</span><span class="mi">0</span>
     <span class="k">if</span> <span class="n">epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">)</span>
     <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
@@ -212,18 +247,57 @@
     <span class="k">return</span> <span class="n">lfp</span><span class="p">[</span><span class="n">st</span><span class="p">:</span><span class="n">sp</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="get_all_raw_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_raw_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
              <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>\
              <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="get_good_trial_lfp_data"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_good_trial_lfp_data">[docs]</a><span class="k">def</span> <span class="nf">get_good_trial_lfp_data</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">channel</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">channel</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">))</span>\
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">channel</span><span class="p">,(</span><span class="mi">6</span><span class="p">,</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">6000</span><span class="p">))</span>\
          <span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="get_all_raw_lfp_all_areas"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_raw_lfp_all_areas">[docs]</a><span class="k">def</span> <span class="nf">get_all_raw_lfp_all_areas</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">alllfp</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">:</span>
         <span class="n">alllfp</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">get_all_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="p">))</span>
@@ -233,6 +307,33 @@
 <span class="k">def</span> <span class="nf">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    get_filtered_lfp(session,area,tr,ch,epoch,fa,fb,Fs=1000)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    tr : int</span>
+<span class="sd">        Which trial to use. Trial indexing starts at 1 for Matlab </span>
+<span class="sd">        compatibility</span>
+<span class="sd">    ch : int</span>
+<span class="sd">        Which channel (electrode) to use. Channel indexing starts at 1 for</span>
+<span class="sd">        Matlab compatibility</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        Which experiment epoch to use. </span>
+<span class="sd">    fa : float</span>
+<span class="sd">        Low-frequency cutoff in Hz</span>
+<span class="sd">    fb : float</span>
+<span class="sd">        High-frequency cutoff in Hz</span>
+<span class="sd">    Fs : float, default 1000</span>
+<span class="sd">        Sampling rate in Hz</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    np.array</span>
+<span class="sd">        Selected raw LFP, bandpass filtered between frequencies fs and fb</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
     <span class="n">tr</span><span class="o">=</span><span class="n">tr</span><span class="o">+</span><span class="mi">0</span>
@@ -243,29 +344,90 @@
         <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
     <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
     <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
-    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
-    <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;padding </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,(</span><span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span><span class="p">),</span><span class="n">padding</span><span class="p">)</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfp</span><span class="p">[</span><span class="n">padding</span><span class="p">:</span><span class="o">-</span><span class="n">padding</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="get_filtered_lfp_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_filtered_lfp_session">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_filtered_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    ch : int</span>
+<span class="sd">        Which channel (electrode) to use. Channel indexing starts at 1 for</span>
+<span class="sd">        Matlab compatibility</span>
+<span class="sd">    fa : float</span>
+<span class="sd">        Low-frequency cutoff in Hz</span>
+<span class="sd">    fb : float</span>
+<span class="sd">        High-frequency cutoff in Hz</span>
+<span class="sd">    Fs : float, default 1000</span>
+<span class="sd">        Sampling rate in Hz</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_all_filtered_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_filtered_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">onlygood</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    tr : int</span>
+<span class="sd">        Which trial to use. Trial indexing starts at 1 for Matlab </span>
+<span class="sd">        compatibility</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        Which experiment epoch to use. </span>
+<span class="sd">    fa : float</span>
+<span class="sd">        Low-frequency cutoff in Hz</span>
+<span class="sd">    fb : float</span>
+<span class="sd">        High-frequency cutoff in Hz</span>
+<span class="sd">    onlygood : bool</span>
+<span class="sd">        If true, use only channels specified as `good` by</span>
+<span class="sd">        `cgid.data_loader.get_good_channels`</span>
+<span class="sd">    Fs : float, default 1000</span>
+<span class="sd">        Sampling rate in Hz</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span> \
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="p">)</span> \
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span>
                 <span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="get_analytic_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_analytic_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">Fs</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">fb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;need at least one frequency bound&#39;</span><span class="p">)</span>
         <span class="k">assert</span> <span class="mi">0</span>
@@ -273,71 +435,173 @@
     <span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span> <span class="o">=</span> <span class="n">epoch</span>
     <span class="n">bandwidth</span>  <span class="o">=</span> <span class="n">fb</span> <span class="k">if</span> <span class="n">fa</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fa</span> <span class="k">if</span> <span class="n">fb</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">min</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
     <span class="n">wavelength</span> <span class="o">=</span> <span class="n">Fs</span><span class="o">/</span><span class="n">bandwidth</span>
-    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
+    <span class="n">padding</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="mf">2.5</span><span class="o">*</span><span class="n">wavelength</span><span class="p">))</span>
     <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;padding </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">padding</span><span class="p">)</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,(</span><span class="n">e</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">sp</span><span class="p">),</span><span class="n">pad</span><span class="o">=</span><span class="n">padding</span><span class="p">)</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">hilbert</span><span class="p">(</span><span class="n">lfp</span><span class="p">)[</span><span class="n">padding</span><span class="p">:</span><span class="o">-</span><span class="n">padding</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="get_all_analytic_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_analytic_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">onlygood</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>\
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="get_MUA_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MUA_lfp">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span></div>
 
 <div class="viewcode-block" id="get_all_MUA_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_MUA_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_all_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span></div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">get_MUA_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_available_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="get_mean_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_mean_lfp">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_mean_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="get_mean_raw_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_mean_raw_lfp">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_mean_raw_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">get_all_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">get_all_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">),</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="get_band_envelope"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_band_envelope">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_band_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Amplitude envelope for a specified band.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">lfp</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">lfp</span></div>
 
 <div class="viewcode-block" id="get_beta_power"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_beta_power">[docs]</a><span class="k">def</span> <span class="nf">get_beta_power</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="n">get_band_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_MEP"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MEP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
@@ -345,18 +609,44 @@
 
 <div class="viewcode-block" id="get_MEP_average"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP_average">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MEP_average</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span><span class="n">tr</span><span class="p">)</span>
     <span class="n">tr</span><span class="o">=</span><span class="n">tr</span><span class="o">+</span><span class="mi">0</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfp</span></div>
 
 <div class="viewcode-block" id="get_MEP_envelope"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MEP_envelope">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MEP_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="n">amp</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
@@ -365,6 +655,19 @@
 
 <div class="viewcode-block" id="get_beta_suppression"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_beta_suppression">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_beta_suppression</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fc</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">fsmooth</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">bpwr</span> <span class="o">=</span> <span class="n">get_beta_power</span>  <span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span>
     <span class="n">mepp</span> <span class="o">=</span> <span class="n">get_MEP_envelope</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">)</span>
     <span class="n">meps</span> <span class="o">=</span> <span class="n">get_MEP</span>         <span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">)</span>
@@ -373,7 +676,8 @@
 
 <div class="viewcode-block" id="beta_suppression_summary_plot"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.beta_suppression_summary_plot">[docs]</a><span class="k">def</span> <span class="nf">beta_suppression_summary_plot</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Example:</span>
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
 <span class="sd">    ::</span>
 <span class="sd">    </span>
 <span class="sd">        plot_beta_suppression = beta_suppression_summary_plot</span>
@@ -383,6 +687,17 @@
 <span class="sd">            plot_beta_suppression(session,area,tr,ch)</span>
 <span class="sd">            wait()</span>
 <span class="sd">            clf()</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">cla</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -398,25 +713,63 @@
     <span class="n">plot</span><span class="p">(</span><span class="n">get_beta_suppression</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_wavelet_transforms"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_wavelet_transforms">[docs]</a><span class="nd">@memoize</span>
-<span class="k">def</span> <span class="nf">get_wavelet_transforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span>
-    <span class="n">fa</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_wavelet_transforms</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">fa</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">fb</span><span class="o">=</span><span class="mi">55</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">onlygood</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">freqs</span><span class="p">,</span><span class="n">cwt</span> <span class="o">=</span> <span class="n">fft_cwt_transposed</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="n">w</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span><span class="n">resolution</span><span class="o">=</span><span class="n">resolution</span><span class="p">,</span><span class="n">threads</span><span class="o">=</span><span class="n">threads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">freqs</span><span class="p">,</span><span class="n">cwt</span></div>
 
 <div class="viewcode-block" id="get_nearest_neighbor_average_referenced_LFP"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_nearest_neighbor_average_referenced_LFP">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_nearest_neighbor_average_referenced_LFP</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nn</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="n">ch</span><span class="p">]</span>
-    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nn</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nn</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfp</span><span class="o">-</span><span class="n">nn_avg</span></div>
 
 
 <div class="viewcode-block" id="get_nearest_neighbor_average_referenced_LFP_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_nearest_neighbor_average_referenced_LFP_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">nn</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="n">ch</span><span class="p">]</span>
     <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">)</span>
-    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">mean</span><span class="p">([</span><span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nn</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">nn_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">get_raw_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nn</span><span class="p">],</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lfp</span><span class="o">-</span><span class="n">nn_avg</span></div>
 
 
@@ -426,6 +779,13 @@
 <span class="sd">    Takes whole session LFP, filtered, gets the Hilbert amplitude per</span>
 <span class="sd">    channel, returns average over channels.</span>
 <span class="sd">    function is too slow don&#39;t use it.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">global</span> <span class="n">areas</span>
     <span class="n">use_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">area</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">areas</span>
@@ -434,11 +794,30 @@
         <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
             <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_filtered_lfp_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">)</span>
             <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">lfp</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">mean</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="signal_history_features"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.signal_history_features">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">signal_history_features</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    tr : int</span>
+<span class="sd">        Which trial to use from the session</span>
+<span class="sd">    ch : int</span>
+<span class="sd">        Which channel to examine</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="c1"># note: as currently implemeted this adds a 1ms delay</span>
     <span class="c1"># that is, history features are really history features, and</span>
     <span class="c1"># never include the current timestep,</span>
@@ -462,12 +841,27 @@
 
         <span class="n">tapped</span>     <span class="o">=</span> <span class="p">[</span><span class="n">zscore</span><span class="p">(</span><span class="n">xfilt</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="n">sampleskip</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">hlen</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">sampleskip</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">hlen</span><span class="p">)]</span>
         <span class="n">allfeatures</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tapped</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">allfeatures</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">allfeatures</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_array_packed_lfp"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_array_packed_lfp">[docs]</a><span class="k">def</span> <span class="nf">get_array_packed_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieves LFP signals and packs them as they are arranged in the</span>
 <span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    trial : int</span>
+<span class="sd">        Which trial to use from the session</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
@@ -477,6 +871,21 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieves LFP signals and packs them as they are arranged in the</span>
 <span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    trial : </span>
+<span class="sd">        Which trial to use from the session</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_filtered_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">cgid</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
@@ -487,6 +896,21 @@
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Retrieves LFP signals and packs them as they are arranged in the</span>
 <span class="sd">    array. Missing channels are interpolated from nearest neighbors</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    trial : int</span>
+<span class="sd">        Which trial to use from the session</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">trial</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">,</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">pack_array_data_interpolate</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
@@ -494,6 +918,19 @@
 
 <div class="viewcode-block" id="get_mean_bandfiltered_session"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_mean_bandfiltered_session">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_mean_bandfiltered_session</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fa</span><span class="p">,</span><span class="n">fb</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mean_beta_cache</span>
     <span class="k">except</span><span class="p">:</span>
@@ -507,22 +944,41 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;recomputing&#39;</span><span class="p">,</span><span class="n">session</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="p">[</span><span class="n">concatenate</span><span class="p">([</span><span class="n">cgid</span><span class="o">.</span><span class="n">lfp</span><span class="o">.</span><span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">fa</span><span class="p">,</span> <span class="n">fb</span><span class="p">,</span> <span class="n">onlygood</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">areas</span><span class="p">])</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)]</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
-        <span class="n">mean_beta</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">lfp</span><span class="p">)</span>
+        <span class="n">mean_beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">mean_beta_cache</span><span class="p">[</span><span class="n">session</span><span class="p">,</span><span class="n">epoch</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_beta</span>
         <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">mean_beta</span><span class="p">,</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;mean_beta_cache.p&#39;</span><span class="p">,</span><span class="s1">&#39;wb&#39;</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">mean_beta</span></div>
 
 <div class="viewcode-block" id="get_MUA_lfp_cached"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MUA_lfp_cached">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MUA_lfp_cached</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">fsmooth</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    tr : int</span>
+<span class="sd">        Which trial to use from the session</span>
+<span class="sd">    ch : int</span>
+<span class="sd">        Which channel to examine</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">debug</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_all_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fsmooth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+            <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bandfilter</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="n">fb</span><span class="o">=</span><span class="n">fsmooth</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lfp</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
-        <span class="n">lfp</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lfp</span><span class="p">])</span>
+        <span class="n">lfp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lfp</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lfp</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lfp</span> <span class="o">=</span> <span class="n">get_analytic_lfp</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="n">ch</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
@@ -534,7 +990,22 @@
 
 <div class="viewcode-block" id="get_all_good_MUA_unfiltered"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_all_good_MUA_unfiltered">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_all_good_MUA_unfiltered</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
-    <span class="n">MUALFP</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">MUALFP</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>
         <span class="n">get_MUA_lfp_cached</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">tr</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">epoch</span><span class="p">,</span><span class="mi">250</span><span class="p">,</span><span class="mi">400</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">)])</span>
@@ -542,6 +1013,21 @@
 
 <div class="viewcode-block" id="get_MUA_PSD_from_high_frequency_power"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MUA_PSD_from_high_frequency_power">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MUA_PSD_from_high_frequency_power</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">MUALFP</span>    <span class="o">=</span> <span class="n">get_all_good_MUA_unfiltered</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
     <span class="n">MUA</span>       <span class="o">=</span> <span class="n">MUALFP</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">shape</span><span class="p">(</span><span class="n">MUALFP</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">freqs</span><span class="p">,</span><span class="n">specs</span> <span class="o">=</span> <span class="n">multitaper_spectrum</span><span class="p">(</span><span class="n">MUA</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
@@ -549,6 +1035,21 @@
 
 <div class="viewcode-block" id="get_MUA_squared_PSD_from_high_frequency_power"><a class="viewcode-back" href="../../cgid.lfp.html#cgid.lfp.get_MUA_squared_PSD_from_high_frequency_power">[docs]</a><span class="nd">@memoize</span>
 <span class="k">def</span> <span class="nf">get_MUA_squared_PSD_from_high_frequency_power</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    session : string</span>
+<span class="sd">        Which experimental session to use, for example &quot;SPK120924&quot;</span>
+<span class="sd">    area : string</span>
+<span class="sd">        Which motor area to use, for example &#39;PMv&#39;</span>
+<span class="sd">    epoch : </span>
+<span class="sd">        Which event marker to use</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">MUALFP</span>    <span class="o">=</span> <span class="n">get_all_good_MUA_unfiltered</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">,</span><span class="n">epoch</span><span class="p">)</span>
     <span class="n">MUA</span>       <span class="o">=</span> <span class="n">MUALFP</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">shape</span><span class="p">(</span><span class="n">MUALFP</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
     <span class="n">freqs</span><span class="p">,</span><span class="n">specs</span> <span class="o">=</span> <span class="n">multitaper_squared_spectrum</span><span class="p">(</span><span class="n">MUA</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>

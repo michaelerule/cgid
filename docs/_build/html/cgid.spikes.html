@@ -153,6 +153,7 @@
             
   <div class="section" id="module-cgid.spikes">
 <span id="cgid-spikes-module"></span><h1>cgid.spikes module<a class="headerlink" href="#module-cgid.spikes" title="Permalink to this headline">¶</a></h1>
+<p>spiking analysis tools for the CGID datasets</p>
 <dl class="function">
 <dt id="cgid.spikes.amap">
 <code class="descclassname">cgid.spikes.</code><code class="descname">amap</code><span class="sig-paren">(</span><em>f</em>, <em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#amap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.amap" title="Permalink to this definition">¶</a></dt>
@@ -161,62 +162,241 @@
 <dl class="function">
 <dt id="cgid.spikes.get_MUA_all_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_MUA_all_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch=None</em>, <em>fsmooth=5</em>, <em>epoch=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_MUA_all_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_MUA_all_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_MUA_good_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_MUA_good_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>ch=None</em>, <em>fsmooth=None</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#cgid.spikes.get_MUA_good_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_MUA_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_MUA_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>ch=None</em>, <em>fsmooth=None</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_MUA_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_MUA_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_MUA_all_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_MUA_all_spikes</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>tr</em>, <em>fsmooth=5</em>, <em>epoch=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_MUA_all_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_MUA_all_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_MUA_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_MUA_spikes</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>tr</em>, <em>epoch</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_MUA_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_MUA_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>a</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_MUA_spikes_all_areas">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_MUA_spikes_all_areas</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_MUA_spikes_all_areas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_MUA_spikes_all_areas" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_MUA_spikes_all_areas_average">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_MUA_spikes_all_areas_average</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em>, <em>fsmooth=5</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_MUA_spikes_all_areas_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_MUA_spikes_all_areas_average" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_good_spike_rasters">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_good_spike_rasters</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_good_spike_rasters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_good_spike_rasters" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_good_spike_rasters_all_areas">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_good_spike_rasters_all_areas</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_good_spike_rasters_all_areas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_good_spike_rasters_all_areas" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_good_spike_times">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_good_spike_times</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_good_spike_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_good_spike_times" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_good_spike_times_all_areas">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_good_spike_times_all_areas</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_good_spike_times_all_areas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_good_spike_times_all_areas" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_good_trial_spike_times">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_good_trial_spike_times</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_good_trial_spike_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_good_trial_spike_times" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_other_spikes_on_channel">
@@ -225,6 +405,23 @@
 has as well as potentially well isolated units, on a given
 channel. EXCLUDING the unit passed as argument.
 Returns a 1ms binned count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -234,17 +431,60 @@ Returns a 1ms binned count</p>
 has as well as potentially well isolated units, on a given
 channel.
 Returns a 1ms binned count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>channel</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_units">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_units</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_units" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_all_units_on_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_all_units_on_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_all_units_on_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_all_units_on_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_boxfiltered_mua">
@@ -263,53 +503,192 @@ Created November 2015
 See the file Figure_1_ISIs_and_classifications.py
 All Units have at least 200 ISI events between the first second
 and 1s pre-go periods.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#cgid.spikes.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_channel_id">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_channel_id</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_channel_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_channel_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_channel_ids">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_channel_ids</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_channel_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_channel_ids" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_epoch_firing_rate">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_epoch_firing_rate</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_epoch_firing_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_epoch_firing_rate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_good_MUA_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_good_MUA_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>ch=None</em>, <em>fsmooth=None</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#cgid.spikes.get_good_MUA_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_good_high_rate_units">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_good_high_rate_units</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_good_high_rate_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_good_high_rate_units" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_good_units">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_good_units</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_good_units"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_good_units" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_good_units_on_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_good_units_on_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_good_units_on_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_good_units_on_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_hash_on_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_hash_on_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>channel</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_hash_on_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_hash_on_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the multi-unit hash (if available) on the specified channel
 Returns a 1ms binned count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>channel</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -328,9 +707,21 @@ return burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_me
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_mean_rate, burst_free_mode</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>----------</strong> – </li>
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -339,50 +730,197 @@ return burstiness, ISI_cv, mean_rate, KS, mode, burst_free_ISI_cv, burst_free_me
 <dl class="function">
 <dt id="cgid.spikes.get_mean_waveform">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_mean_waveform</code><span class="sig-paren">(</span><em>s</em>, <em>a</em>, <em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_mean_waveform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_mean_waveform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>----------</strong> – </li>
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_multiunit_on_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_multiunit_on_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>channel</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_multiunit_on_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_multiunit_on_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the multi-unit hash (if available) on the specified channel
 Returns a 1ms binned count</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>channel</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_neighbor_MUA">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_neighbor_MUA</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_neighbor_MUA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_neighbor_MUA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version 0.2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spike_times_all_trials">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spike_times_all_trials</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em>, <em>good=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spike_times_all_trials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spike_times_all_trials" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>trial</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_and_lfp_all_trials">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_and_lfp_all_trials</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_and_lfp_all_trials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_and_lfp_all_trials" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>----------</strong> – </li>
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_epoch">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_epoch</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_epoch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_epoch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_epoch_all_trials">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_epoch_all_trials</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_epoch_all_trials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_epoch_all_trials" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_event">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_event</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>trial</em>, <em>event</em>, <em>start</em>, <em>stop</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>event</strong> (<em>int</em>) – Which trial epoch to examine</li>
+<li><strong>start</strong> (<em>float</em>) – Start time</li>
+<li><strong>stop</strong> (<em>float</em>) – Stop time</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_for_all_units_all_areas">
@@ -392,12 +930,44 @@ Returns a 1ms binned count</p>
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_raster">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_raster</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>trial</em>, <em>epoch=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_raster" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to example. Trial indexing start at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_raster_all_trials">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_raster_all_trials</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_raster_all_trials"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_raster_all_trials" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_session">
@@ -407,6 +977,20 @@ Returns a 1ms binned count</p>
 <dd>1xNUNITS cell array of spike times in seconds. These are raw spike times
 for the whole session and have not been segmented into individual trials.</dd>
 </dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -415,6 +999,21 @@ for the whole session and have not been segmented into individual trials.</dd>
 <dd><p>spike times from session.
 spike times outside of trials, from bad trials, and outside of epoch
 on good trials, are removed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which trial epoch to examine</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -422,12 +1021,45 @@ on good trials, are removed</p>
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_session_raster</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>start</em>, <em>stop</em>, <em>decimate=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_session_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_session_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get spikes as raster for a fixed time window relative to session time
 sample rate is 1KHz and sample times are in ms (equiv. samples)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>start</strong> (<em>float</em>) – Start time</li>
+<li><strong>stop</strong> (<em>float</em>) – Stop time</li>
+<li><strong>decimate</strong> (<em>int</em><em>, </em><em>default 1</em>) – If decimate is &gt; 1, spike raster will be down-sampled by decimate</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_spikes_session_time">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_spikes_session_time</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em>, <em>start</em>, <em>stop</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_spikes_session_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_spikes_session_time" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>start</strong> (<em>float</em>) – Start time</li>
+<li><strong>stop</strong> (<em>float</em>) – Stop time</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_unfiltered_mua">
@@ -439,22 +1071,75 @@ sample rate is 1KHz and sample times are in ms (equiv. samples)</p>
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_unit_SNR</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_unit_SNR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_unit_SNR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defined as in Vargas-Irwin and Donoghue 2007
 SNR = 0.5 * (peak-trough) / np.std( first time-bin )</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>----------</strong> – </li>
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_unit_channel">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_unit_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit</em><span class="sig-paren">)</span><a class="headerlink" href="#cgid.spikes.get_unit_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>unit</strong> (<em>int</em>) – Which unit to examine. Unit indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_unit_ids">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_unit_ids</code><span class="sig-paren">(</span><em>session</em>, <em>area</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_unit_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_unit_ids" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.get_unit_quality">
 <code class="descclassname">cgid.spikes.</code><code class="descname">get_unit_quality</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>unit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#get_unit_quality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.get_unit_quality" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.spikes.locate_multiunit_hash_on_channel">
@@ -463,6 +1148,20 @@ SNR = 0.5 * (peak-trough) / np.std( first time-bin )</p>
 ID (1-indexed) corresponds to the multi-unit hash on that channel.
 Note that this may not always be available. Note that some
 “sorted” units may also be multi-unit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -470,6 +1169,20 @@ Note that this may not always be available. Note that some
 <code class="descclassname">cgid.spikes.</code><code class="descname">locate_multiunits_on_channel</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/spikes.html#locate_multiunits_on_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.spikes.locate_multiunits_on_channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Any channel may have one or more units marked as multi-unit.
 This code locates them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine. Channel indexing starts at 1 for Matlab
+compatibility</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">

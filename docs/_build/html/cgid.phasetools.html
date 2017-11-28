@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>cgid.phasetools module &mdash; CGID 2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="CGID 2 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CGID
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CGID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>cgid.phasetools module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/cgid.phasetools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-cgid.phasetools">
+<span id="cgid-phasetools-module"></span><h1>cgid.phasetools module<a class="headerlink" href="#module-cgid.phasetools" title="Permalink to this headline">¶</a></h1>
+<p>Library of array statistics routines.</p>
+<dl class="function">
+<dt id="cgid.phasetools.array_average_ampltiude">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_average_ampltiude</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_average_ampltiude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_average_ampltiude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_kuromoto">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_kuromoto</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_kuromoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_kuromoto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_kuromoto_pgd">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_kuromoto_pgd</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_kuromoto_pgd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_kuromoto_pgd" title="Permalink to this definition">¶</a></dt>
+<dd><p>A related directionality index ignores vector amplitude. Nice if
+there are large outliers.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_pgd_lower">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_pgd_lower</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_pgd_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_pgd_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>The magnitude of the average gradient provides a very accurate estimate
+of wavelength even in the presence of noise. However, it will
+understimate the phase gradient if the wave structure is not perfectly
+planar</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_pgd_upper">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_pgd_upper</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_pgd_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_pgd_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average gradient magnitude can be inflated if there is noise
+but provides an upper bound on spatial frequency ( lower bound on
+wavelength ).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_synchrony">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_synchrony</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_synchrony"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_synchrony" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_synchrony_pgd">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_synchrony_pgd</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_synchrony_pgd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_synchrony_pgd" title="Permalink to this definition">¶</a></dt>
+<dd><p>The phase gradient directionality measure from Rubinto et al 2009 is
+abs(mean(pg))/mean(abs(pg))</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_wavelength_lower">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_wavelength_lower</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_wavelength_lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_wavelength_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>phase gradients are in units of radians per electrode
+we would like units of mm per cycle
+there are 2pi radians per cycle
+there are 0.4mm per electrode
+phase gradient / 2 pi is in units of cycles per electrode
+electrode spacing / (phase gradient / 2 pi)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.array_wavelength_upper">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">array_wavelength_upper</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#array_wavelength_upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.array_wavelength_upper" title="Permalink to this definition">¶</a></dt>
+<dd><p>phase gradients are in units of radians per electrode
+we would like units of mm per cycle
+there are 2pi radians per cycle
+there are 0.4mm per electrode
+phase gradient / 2 pi is in units of cycles per electrode
+electrode spacing / (phase gradient / 2 pi)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.phase_gradient_array">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">phase_gradient_array</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#phase_gradient_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.phase_gradient_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.population_average_amplitude">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">population_average_amplitude</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#population_average_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.population_average_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.population_kuromoto">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">population_kuromoto</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#population_kuromoto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.population_kuromoto" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cgid.phasetools.population_synchrony">
+<code class="descclassname">cgid.phasetools.</code><code class="descname">population_synchrony</code><span class="sig-paren">(</span><em>population</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/phasetools.html#population_synchrony"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.phasetools.population_synchrony" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, M Rule.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

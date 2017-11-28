@@ -156,7 +156,7 @@
 <dl class="function">
 <dt id="cgid.lfp.beta_suppression_summary_plot">
 <code class="descclassname">cgid.lfp.</code><code class="descname">beta_suppression_summary_plot</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#beta_suppression_summary_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.beta_suppression_summary_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Example:</p>
+<dd><p class="rubric">Example</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plot_beta_suppression</span> <span class="o">=</span> <span class="n">beta_suppression_summary_plot</span>
 <span class="n">ch</span> <span class="o">=</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_channels</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">cgid</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">get_good_trials</span><span class="p">(</span><span class="n">session</span><span class="p">,</span><span class="n">area</span><span class="p">):</span>
@@ -166,83 +166,291 @@
     <span class="n">clf</span><span class="p">()</span>
 </pre></div>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MEP">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MEP_average">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP_average</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fb=7</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP_average" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MEP_envelope">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MEP_envelope</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fb=2</em>, <em>fsmooth=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MEP_envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MEP_envelope" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MUA_PSD_from_high_frequency_power">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_PSD_from_high_frequency_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_PSD_from_high_frequency_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_PSD_from_high_frequency_power" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MUA_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fc=250</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MUA_lfp_cached">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_lfp_cached</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fc</em>, <em>fsmooth</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_lfp_cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_lfp_cached" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to use from the session</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_MUA_squared_PSD_from_high_frequency_power">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_MUA_squared_PSD_from_high_frequency_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_MUA_squared_PSD_from_high_frequency_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_MUA_squared_PSD_from_high_frequency_power" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_MUA_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_MUA_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fc=250</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_MUA_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_MUA_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_analytic_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_analytic_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>onlygood=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_analytic_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_analytic_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_filtered_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_filtered_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>onlygood</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_filtered_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_filtered_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to use. Trial indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which experiment epoch to use.</li>
+<li><strong>fa</strong> (<em>float</em>) – Low-frequency cutoff in Hz</li>
+<li><strong>fb</strong> (<em>float</em>) – High-frequency cutoff in Hz</li>
+<li><strong>onlygood</strong> (<em>bool</em>) – If true, use only channels specified as <cite>good</cite> by
+<cite>cgid.data_loader.get_good_channels</cite></li>
+<li><strong>Fs</strong> (<em>float</em><em>, </em><em>default 1000</em>) – Sampling rate in Hz</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_good_MUA_unfiltered">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_good_MUA_unfiltered</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_good_MUA_unfiltered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_good_MUA_unfiltered" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_raw_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>onlygood=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_raw_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_all_raw_lfp_all_areas">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_all_raw_lfp_all_areas</code><span class="sig-paren">(</span><em>session</em>, <em>trial</em>, <em>epoch</em>, <em>onlygood=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_all_raw_lfp_all_areas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_all_raw_lfp_all_areas" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_analytic_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_analytic_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_analytic_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_analytic_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_array_packed_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves LFP signals and packs them as they are arranged in the
 array. Missing channels are interpolated from nearest neighbors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to use from the session</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -250,6 +458,20 @@ array. Missing channels are interpolated from nearest neighbors</p>
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp_analytic</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp_analytic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp_analytic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves LFP signals and packs them as they are arranged in the
 array. Missing channels are interpolated from nearest neighbors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> (<em>int</em>) – Which trial to use from the session</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -257,6 +479,20 @@ array. Missing channels are interpolated from nearest neighbors</p>
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_array_packed_lfp_filtered</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_array_packed_lfp_filtered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_array_packed_lfp_filtered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves LFP signals and packs them as they are arranged in the
 array. Missing channels are interpolated from nearest neighbors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>trial</strong> – Which trial to use from the session</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -271,76 +507,283 @@ function is too slow don’t use it.</p>
 <dt id="cgid.lfp.get_band_envelope">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_band_envelope</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_band_envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_band_envelope" title="Permalink to this definition">¶</a></dt>
 <dd><p>Amplitude envelope for a specified band.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_beta_power">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_beta_power</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_beta_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_beta_power" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_beta_suppression">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_beta_suppression</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>fc=2</em>, <em>fsmooth=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_beta_suppression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_beta_suppression" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_filtered_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_filtered_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_filtered_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_filtered_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to use. Trial indexing starts at 1 for Matlab
+compatibility</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel (electrode) to use. Channel indexing starts at 1 for
+Matlab compatibility</li>
+<li><strong>epoch</strong> (<em>int</em>) – Which experiment epoch to use.</li>
+<li><strong>fa</strong> (<em>float</em>) – Low-frequency cutoff in Hz</li>
+<li><strong>fb</strong> (<em>float</em>) – High-frequency cutoff in Hz</li>
+<li><strong>Fs</strong> (<em>float</em><em>, </em><em>default 1000</em>) – Sampling rate in Hz</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Selected raw LFP, bandpass filtered between frequencies fs and fb</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_filtered_lfp_session">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_filtered_lfp_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em>, <em>fa</em>, <em>fb</em>, <em>Fs=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_filtered_lfp_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_filtered_lfp_session" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel (electrode) to use. Channel indexing starts at 1 for
+Matlab compatibility</li>
+<li><strong>fa</strong> (<em>float</em>) – Low-frequency cutoff in Hz</li>
+<li><strong>fb</strong> (<em>float</em>) – High-frequency cutoff in Hz</li>
+<li><strong>Fs</strong> (<em>float</em><em>, </em><em>default 1000</em>) – Sampling rate in Hz</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_good_trial_lfp_data">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_good_trial_lfp_data</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_good_trial_lfp_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_good_trial_lfp_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_mean_bandfiltered_session">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_bandfiltered_session</code><span class="sig-paren">(</span><em>session</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_bandfiltered_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_bandfiltered_session" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_mean_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em>, <em>fa</em>, <em>fb</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_mean_raw_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_mean_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_mean_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_mean_raw_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_nearest_neighbor_average_referenced_LFP">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_nearest_neighbor_average_referenced_LFP</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_nearest_neighbor_average_referenced_LFP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_nearest_neighbor_average_referenced_LFP" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_nearest_neighbor_average_referenced_LFP_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_nearest_neighbor_average_referenced_LFP_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_nearest_neighbor_average_referenced_LFP_session" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_raw_lfp">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_raw_lfp</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>channel</em>, <em>epoch</em>, <em>pad=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_raw_lfp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_raw_lfp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_raw_lfp_session">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_raw_lfp_session</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>ch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_raw_lfp_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_raw_lfp_session" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.get_wavelet_transforms">
 <code class="descclassname">cgid.lfp.</code><code class="descname">get_wavelet_transforms</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>trial</em>, <em>fa=1</em>, <em>fb=55</em>, <em>resolution=1</em>, <em>threads=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#get_wavelet_transforms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.get_wavelet_transforms" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="cgid.lfp.signal_history_features">
 <code class="descclassname">cgid.lfp.</code><code class="descname">signal_history_features</code><span class="sig-paren">(</span><em>session</em>, <em>area</em>, <em>tr</em>, <em>ch</em>, <em>epoch</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#signal_history_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.signal_history_features" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>session</strong> (<em>string</em>) – Which experimental session to use, for example “SPK120924”</li>
+<li><strong>area</strong> (<em>string</em>) – Which motor area to use, for example ‘PMv’</li>
+<li><strong>tr</strong> (<em>int</em>) – Which trial to use from the session</li>
+<li><strong>ch</strong> (<em>int</em>) – Which channel to examine</li>
+<li><strong>epoch</strong> – Which event marker to use</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cgid.lfp.warn">
+<code class="descclassname">cgid.lfp.</code><code class="descname">warn</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/cgid/lfp.html#warn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cgid.lfp.warn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

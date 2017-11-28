@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Routines related to extracting and processing beta
+'''
+
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,22 +12,16 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-# more py2/3 compat
 from neurotools.system import *
 if sys.version_info<(3,):
     from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
-
-
-'''
-Routines related to extracting and processing beta
-'''
-
-#def compare_high_low_beta_amplitude_spikes_ppc_5050(session,area,unit,epoch):
 
 from matplotlib.pyplot import *
 from numpy import *
-from neurotools.plot import *
+import numpy as np # TODO namespace
+
+from neurotools import nlab
+from neurotools.graphics.plot import *
 
 import numpy as np
 from numpy.core.numeric       import convolve
@@ -42,8 +39,18 @@ from cgid.lfp                 import *
 from cgid.spikes              import get_spikes_session_filtered_by_epoch,get_unit_channel
 from cgid.data_loader         import get_trial_event,get_good_trials,get_good_channels
 
+from neurotools.signal.multitaper import multitaper_spectrum
+
 @memoize
 def get_beta_peak(session,area,epoch,fa,fb):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # determine beta peak
     Fs=1000
     allspec=[]
@@ -51,18 +58,24 @@ def get_beta_peak(session,area,epoch,fa,fb):
         x = get_all_raw_lfp(session, area, trial, epoch)
         f,mts = multitaper_spectrum(x,5,Fs)
         allspec.append(mts)
-    allspec     = arr(allspec)
-    Ntr,Nch,Nti = shape(allspec)
-    meanspec    = mean(allspec,axis=(0,1))
-    peaks,vals  = local_maxima(meanspec)
+    allspec     = np.array(allspec)
+    Ntr,Nch,Nti = np.shape(allspec)
+    meanspec    = np.mean(allspec,axis=(0,1))
+    peaks,vals  = nlab.local_maxima(meanspec)
     betapeaks   = peaks[(f[peaks]>fa)&(f[peaks]<fb)]
-    betapeak    = f[betapeaks][argmax(meanspec[betapeaks])]
+    betapeak    = f[betapeaks][np.argmax(meanspec[betapeaks])]
     return betapeak
 
 
 def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
     '''
     return betapeak-0.5*bw,betapeak+0.5*bw
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     print('THIS IS NOT THE ONE YOU WANT TO USE')
     print('IT IS EXPERIMENTAL COHERENCE BASED IDENTIFICATION OF BETA')
@@ -94,11 +107,11 @@ def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
     m = mean(allco,0)
     sem = std(allco,0)/sqrt(shape(allco)[0])
     # temporary in lieu of multitaper
-    smooth = ceil(float(bw)/(diff(fr)[0]))
-    smoothed = convolve(m,ones(smooth)/smooth,'same')
+    smooth = ceil(float(bw)/(np.diff(fr)[0]))
+    smoothed = convolve(m,np.ones(smooth)/smooth,'same')
     use    = (fr<=56)&(fr>=5)
     betafr = (fr<=30-0.5*bw)&(fr>=15+0.5*bw)
-    betapeak = fr[betafr][argmax(smoothed[betafr])]
+    betapeak = fr[betafr][np.argmax(smoothed[betafr])]
     if doplot:
         clf()
         plot(fr[use],m[use],lw=2,color='k')
@@ -113,6 +126,14 @@ def estimate_beta_band(session,area,bw=8,epoch=None,doplot=False):
 
 
 def get_stored_beta_peak(session,area,epoch):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     epochs = [(6, -1000, 0),(8, -1000, 0)]
     if epoch not in epochs:
         print('supporting onle the 1s pre-obj and pre go')
@@ -159,12 +180,26 @@ def get_stored_beta_peak(session,area,epoch):
     return beta_peaks[session,area,epoch]
 
 def get_mean_beta_peak(session,epoch):
-    return mean([get_stored_beta_peak(session,a,epoch) for a in areas])
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    return np.mean([get_stored_beta_peak(session,a,epoch) for a in areas])
 
 def get_mean_beta_peak_full_trial(session):
-    return mean([get_stored_beta_peak(session,a,epoch) for a in areas for epoch in [(6,-1000,0),(8,-1000,0)]])
-
-
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    return np.mean([get_stored_beta_peak(session,a,epoch) for a in areas for epoch in [(6,-1000,0),(8,-1000,0)]])
 
 @memoize
 def get_high_beta_events(session,area,channel,epoch,
@@ -195,6 +230,12 @@ def get_high_beta_events(session,area,channel,epoch,
     beta events.
 
     >>> thr,events = get_high_beta_events('SPK120925','PMd',50,(6,-1000,0))
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
 
     # get LFP data
@@ -250,6 +291,12 @@ def get_high_beta_events(session,area,channel,epoch,
 def get_high_and_low_beta_spikes(session,area,unit,epoch,fa,fb):
     '''
     threshold, event_spikes, nonevent_spikes = get_high_and_low_beta_spikes(session,area,unit,epoch,ishighbeta)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     threshold,events = get_high_beta_events(session,area,get_unit_channel(session,area,unit),epoch,lowf=fa,highf=fb)
     spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
@@ -271,6 +318,12 @@ def get_high_low_ppc_unit(s,a,u,e,fa,fb):
     The band is used only to identify beta events,
     PPC itself is broad-band.
     freqs, event_ppc, nonevent_ppc, threshold = get_high_low_ppc_unit(s,a,u,e,fa,fb)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # get beta LFP.
     # No need to restrict this to high or low beta,
@@ -292,6 +345,12 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
     Computes the unit firing rates during high and low beta events for
     the given task epoch. Good trials only. Defaults to Fs = 1000
     returns threshold, event_rate, nonevent_rate
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     threshold,events = get_high_beta_events(session,area,get_unit_channel(session,area,unit),epoch,lowf=fa,highf=fb)
     spikes = get_spikes_session_filtered_by_epoch(session,area,unit,epoch)
@@ -316,7 +375,15 @@ def get_high_low_beta_firing_rates(session,area,unit,epoch,fa,fb):
 
 @memoize
 def get_amplitude_noise_cutoff(session,area,epoch,fa,fb,SKIP):
-    # get amplitude noise cutoff
+    '''
+    get amplitude noise cutoff
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     x = [get_array_packed_lfp_analytic(session,area,trial,epoch,fa,fb)[...,::SKIP] \
          for trial in get_good_trials(session)]
     s = std(arr(x).real)

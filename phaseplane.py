@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# BEGIN PYTHON 2/3 COMPATIBILITY BOILERPLATE
+'''
+Phase plane plotting routines for LFP phase analysis
+'''
 from __future__ import absolute_import
 from __future__ import with_statement
 from __future__ import division
@@ -9,25 +11,29 @@ from __future__ import generators
 from __future__ import unicode_literals
 from __future__ import print_function
 import sys
-# more py2/3 compat
 from neurotools.system import *
 if sys.version_info<(3,):
     from itertools import imap as map
-# END PYTHON 2/3 COMPATIBILITY BOILERPLATE
 
 from cgid.data_loader  import *
 from cgid.lfp          import *
-from neurotools.ntime  import *
-from neurotools.tools  import memoize,globalize,warn
+from neurotools.tools  import memoize,globalize,warn,tic,toc
 from matplotlib.pyplot import *
-from neurotools.plot   import *
-from neurotools.color  import *
+from neurotools.graphics.plot   import *
+from neurotools.graphics.color  import *
 from neurotools.stats.circular import *
+
+import matplotlib as plt
+import numpy as np
 
 def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
     skip=1,saveas=None,hook=None,FPS=30,stabilize=True,extension='.pdf',markersize=1.5,figtitle=None):
     '''
     phase_plane_animation(session,tr)
+    
+    Parameters
+    ----------
+    
     '''
     warn('Also plots "bad" channels')
     areacolors = [OCHRE,AZURE,RUST]
@@ -83,7 +89,8 @@ def phase_plane_animation(session,tr,areas,fa=10,fb=45,epoch=None,\
             savefig(savedir+'/'+saveas+'_%s.%s'%(t,extension))
         if not hook is None: hook(t)
         st=waitfor(st+1000/FPS)
-    if not ff is None: figure(ff.number)
+    if not ff is None: 
+        plt.figure(ff.number)
 
 def phase_plane_animation_arraygrid(session,tr,fa=10,fb=45,\
     epoch=None,skip=1,saveas=None,hook=None,FPS=30,stabilize=True,markersize=1.5):

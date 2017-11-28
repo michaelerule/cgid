@@ -16,22 +16,26 @@ from neurotools.spatial.array import trim_array, pack_array_data
 
 import cgid.lfp
 import cgid.array
+import cgid.config
 
-# TODO fix imports
-#from scipy.stats.stats  import *
-#from matplotlib.pyplot  import *
-#from neurotools.getfftw import *
-#from neurotools.plot    import *
-#from cgid.config        import *
-#from cgid.data_loader   import *
+import numpy as np
+import matplotlib as plt
 
 def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,labels=None,clip_on=False):
     '''
-    Args:
-        labels: default none. Can be
-            "markers" for symbols or
-            "names" for ['Object presented','Grip cued','Go cue']
-            "short" for ['Object','Grip','Go cue']
+    Parameters
+    ----------
+    c1 : 'w'
+    c2 : 'k'
+    FS : 1000.
+    nevents : int; 3
+    fontsize : int; 14
+    npad : int or None
+    labels: default none. Can be
+        "markers" for symbols or
+        "names" for ['Object presented','Grip cued','Go cue']
+        "short" for ['Object','Grip','Go cue']
+    clip_on : bool; default False
     '''
     a,b = xlim()
     dx,dy = get_ax_pixel()
@@ -49,29 +53,58 @@ def overlay_markers(c1='w',c2='k',FS=1000.,nevents=3,fontsize=14,npad=None,label
         time = float(time)/FS
         if time<=a: continue
         if time>=b: continue
-        plot([time,time],ylim(),color=c2,lw=3,zorder=Inf,clip_on=clip_on)
-        plot([time,time],ylim(),color=c1,lw=1,zorder=Inf,clip_on=clip_on)
+        plot([time,time],plt.ylim(),color=c2,lw=3,zorder=Inf,clip_on=clip_on)
+        plot([time,time],plt.ylim(),color=c1,lw=1,zorder=Inf,clip_on=clip_on)
         if not labels is None:
-            text(time,ylim()[1]+dy*4,label,
-                rotation=0,color='k',fontsize=fontsize,
-                horizontalalignment='center',verticalalignment='bottom')
+            text(time,
+                plt.ylim()[1]+dy*4,
+                label,
+                rotation=0,
+                color='k',
+                fontsize=fontsize,
+                horizontalalignment='center',
+                verticalalignment='bottom')
     xlim(a,b)
 
 overlay_events = overlay_markers
 
 def channel2index(channel,availableChannels):
-    if dowarn(): print('NOTE EXPECTING 1 INDEXED CHANNEL')
-    if dowarn(): print('RETURNING 0 INDEX OF DATA ARRAY')
+    '''
+    
+    Parameters
+    ----------
+    channel
+    availableChannels
+    
+    Returns
+    -------
+    '''
+    if dowarn(): 
+        print('NOTE EXPECTING 1 INDEXED CHANNEL')
     availableChannels = squeeze(availableChannels)
     return cumsum(availableChannels)[channel-1]-1
 
 def unit_channel_as_index(unit):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     return channel2index(channelIds[0,unit-1],availableChannels)
 
 def get_all_isi_epoch(session,area,unit,epoch):
     '''
     Returns the durations of all ISI intervals from the given session, area,
     unit, and epoch
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     all_isi = []
     for trial in cgid.data_loader.get_valid_trials(session,area):
@@ -81,11 +114,27 @@ def get_all_isi_epoch(session,area,unit,epoch):
     return array(all_isi)
 
 def get_burstiness(session,area,unit,epoch,thr=5):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     isi = get_all_isi_epoch(session,area,unit,'obj')
     return sum(isi<thr)/float(len(isi))
 
 @memoize
 def get_all_ibi_epoch(session,area,unit,epoch,thr):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if dowarn(): print('note: threshold is in ms, defaults to 5')
     all_ibi = []
     if thr==None: thr=5
@@ -103,6 +152,14 @@ def get_all_ibi_epoch(session,area,unit,epoch,thr):
 
 @memoize
 def get_all_ibi_merged_epoch(session,area,unit,epoch,thr):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     if dowarn(): print('note: threshold is in ms, defaults to 5')
     if dowarn(): print('note: misses burst if starts on 1st spike, TODOFIX')
     all_ibi = []
@@ -121,16 +178,40 @@ def get_all_ibi_merged_epoch(session,area,unit,epoch,thr):
     return array(all_ibi)
 
 def sessions_areas():
-    for s in flatten(sessionnames):
-        for a in areas:
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    for s in flatten(cgid.config.sessionnames):
+        for a in cgid.config.areas:
             yield s,a
 
 def quicksessions():
-    for s in [x[0] for x in sessionnames]:
-        for a in areas:
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
+    for s in [x[0] for x in cgid.config.sessionnames]:
+        for a in cgid.config.areas:
             yield s,a
 
 def fftppc(snippits):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     M,window = shape(snippits)
     if M<=window and dowarn(): print('WARNING SAMPLES SEEM TRANSPOSED?')
     assert M>window
@@ -143,6 +224,12 @@ def fftppc(snippits):
 def ch2chi(session,area,ch):
     '''
     Some electrode banks are split over two arrays.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     assert ch>0
     all_available = cgid.data_loader.get_available_channels(session,area)
@@ -165,6 +252,12 @@ def pack_array_data_interpolate(session,area,data):
     :param session: the session corresponding to data, needed for array map
     :param area: the area corresponding to the data, needed to get array map
     :return: returns LxKxNtimes 3D array of the interpolated channel data
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     arrayMap = cgid.data_loader.get_array_map(session,area)
     def pack_array_data(data,arrayMap):
@@ -222,6 +315,12 @@ def onarraydata(function,session,area,trial,epoch,fa,fb):
 
     Note: array interp routines take array map from get_array_map.
     Bad channels can be removed by removing them in this function.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     frames = cgid.array.get_analytic_frames(session,area,trial,epoch,fa,fb)
     A,B,N  = shape(frames)
@@ -247,6 +346,12 @@ def onarraydata(function,session,area,trial,epoch,fa,fb):
 
 def ondatadata(function,session,area,trial,epoch,fa,fb):
     '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     # just a temp hack no time no time for better
     debug(epoch,trial)
@@ -273,6 +378,14 @@ def ondatadata(function,session,area,trial,epoch,fa,fb):
 
 
 def ofrawdata(function,session,area,trial,epoch):
+    '''
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+    '''
     # just a temp hack no time no time for better
     debug(epoch,trial)
     trial=trial+0
@@ -318,6 +431,12 @@ def onpopdata(statistic,session,area,trial,epoch,fa,fb):
 
     Example:
     >>> x = onpopdata(sliding_population_signal_coherence)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     if epoch is None:
         epoch = 6,-1000,6000
@@ -351,6 +470,12 @@ def overdata(statistic,session,area,trial,epoch,fa,fb):
     note: static typing and pattern matching to array dimension signatures
     could render this necessray. sadly a language feature python lacks,
     afaik.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     trial += 0
     fname = statistic.__name__
@@ -374,6 +499,12 @@ def onsession(statistic,session,area,epoch,fa,fb):
     doesn't return exact times since events have different timings on each
     trial. instead returns an event-relative time base.
     times,res=onsession(array_average_ampltiude)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     try:
         e,st,sp  = epoch
@@ -402,6 +533,12 @@ def onsession(statistic,session,area,epoch,fa,fb):
 def onsession_summary_plot(statistic,session,area,fa,fb,color1=None,color2=None,colors=None,drawCues=False,smoothat=None,dolegend=False):
     '''
     onsession_summary_plot(array_average_ampltiude)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     epoch = (6,-1000,6000)
     debug('!>>> applying',statistic,session,area,epoch,fa,fb)
@@ -453,11 +590,15 @@ def onsession_summary_plot(statistic,session,area,fa,fb,color1=None,color2=None,
         overlayEvents('k','w',FS=1)
     draw()
 
-
-
 def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,colors=None,drawCues=False,smoothat=None,dolegend=False):
     '''
     allsession_summary_plot(array_average_ampltiude)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     filter_function = box_filter
     epoch = (6,-1000,6000)
@@ -518,6 +659,12 @@ def allsession_summary_plot(statistic,monkey,area,fa,fb,color1=None,color2=None,
 def ontrial_summary_plot(statistic,session,area,trial,epoch,fa,fb):
     '''
     ontrial_summary_plot(array_average_ampltiude)
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     name = ' '.join(statistic.__name__.replace('_',' ').split()).title()
     assert epoch is None
@@ -541,6 +688,12 @@ def neighbors(session,area,onlygood):
     number is mapped to a list of the up to 4 channels immediately
     adjacent to it. If argument "onlygood" is true, then bad channels
     are excluded from this map.
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
     '''
     am = cgid.data_loader.get_array_map(session,area,removebad=False)
     if onlygood:

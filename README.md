@@ -9,25 +9,7 @@ http://michaelerule.github.io/neurotools/_build/html/index.html).
 Rudimentary documentation is available on [github pages](
 http://michaelerule.github.io/cgid/_build/html/index.html).
 
-This read-me original contained the following grave disclaimer:
-
->   This is not a library, module or package. It should not be used
->   by anyone, for any purpose, ever. This entire code-base should be
->   broken, all of the time, and this is intentional. This is 
->   internal code and depends on files not available in the 
->   repository.
-
-In reality, this repository is simply not-maintained and perpetually
-"under construction". The hope is mainly that (1) if any code 
-contained herein is ever found to be useful to anyone,
-then it can be re-purposed and (2) should any future students work 
-with multi-electrode array datasets, then this project provides and 
-archive of past research code to facilitate reproducibility and 
-future exploration. 
-In the event that work concludes on said datasets, and if this 
-project is able to obtain the data under a suitable license, then
-the CGID datasets will be incorporated into this repository for
-archival and reproducibility.
+This project is not maintained.
 
 This project is published in the spirit (but not the letter) of the 
 [tongue-and-cheek CRAPL license for academic code](
